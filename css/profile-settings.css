@@ -1,0 +1,594 @@
+/* Profile Settings Page Styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: auto;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Settings Container - Unified Container */
+.settings-container {
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    border: 2px solid var(--border-light);
+    overflow: hidden;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+
+
+/* Settings Panels - Now as sections within the container */
+.settings-panel {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    transition: all 0.3s ease;
+    overflow: visible;
+    position: relative;
+}
+
+.settings-panel:not(:last-child) {
+    border-bottom: 1px solid var(--border-light);
+}
+
+.settings-panel:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: transparent;
+}
+
+.danger-panel:hover {
+    border-color: transparent;
+}
+
+/* Add subtle hover effect for sections */
+.settings-panel:hover .panel-header {
+    filter: brightness(1.05);
+}
+
+.danger-panel:hover .panel-header {
+    filter: brightness(1.05);
+}
+
+/* Panel Header - Adapted for unified container */
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 25px 30px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    color: white;
+    margin: 0;
+}
+
+.danger-panel .panel-header {
+    background: linear-gradient(135deg, var(--danger-color) 0%, var(--danger-hover) 100%);
+}
+
+.panel-icon {
+    font-size: 2.2rem;
+    flex-shrink: 0;
+}
+
+.panel-title h2 {
+    margin: 0 0 5px 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.panel-title p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+/* Panel Content - Adapted for unified container */
+.panel-content {
+    padding: 25px 30px;
+}
+
+/* Settings Forms */
+.settings-form {
+    max-width: 500px;
+}
+
+.settings-form .form-group {
+    margin-bottom: 25px;
+}
+
+.settings-form .form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.settings-form .form-group input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid var(--border-light);
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.settings-form .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+}
+
+/* Language Selector Styles */
+.language-select {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid var(--border-light);
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    background: white;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 20px;
+    padding-right: 45px;
+}
+
+.language-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+}
+
+.language-select:hover {
+    border-color: var(--primary-hover);
+}
+
+.settings-form .form-group input[readonly] {
+    background: var(--background-light);
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.input-hint {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Password Indicators */
+.password-indicator {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.indicator-text {
+    font-size: 12px;
+}
+
+.indicator-icon {
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.indicator-icon.valid {
+    color: var(--success-color);
+}
+
+.indicator-icon.invalid {
+    color: var(--danger-color);
+}
+
+.password-indicator.valid .indicator-text {
+    color: var(--success-color);
+}
+
+.password-indicator.invalid .indicator-text {
+    color: var(--danger-color);
+}
+
+/* Form Actions */
+.form-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-light);
+}
+
+.btn-save {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-save:hover:not(:disabled) {
+    background: var(--success-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.btn-save:disabled {
+    background: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Danger Zone - Simplified */
+.danger-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+
+.btn-delete-account {
+    background: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-delete-account:hover {
+    background: var(--danger-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.modal.show .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.modal-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.danger-icon {
+    color: var(--danger-color);
+}
+
+.modal-content h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.danger-icon + h3 {
+    color: var(--danger-color);
+}
+
+.modal-content p {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+/* Warning Details in Modal */
+.warning-details {
+    background: rgba(220, 53, 69, 0.05);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.warning-details .warning-message {
+    color: var(--danger-color);
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.warning-details .destruction-list {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.warning-details .destruction-list li {
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-cancel, .btn-delete, .btn-primary {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel {
+    background: var(--background-light);
+    color: var(--text-muted);
+    border: 1px solid var(--border-light);
+}
+
+.btn-cancel:hover {
+    background: var(--border-light);
+}
+
+.btn-delete {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-delete:hover {
+    background: var(--danger-hover);
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+/* Success Message Animation */
+.success-message {
+    background: rgba(40, 167, 69, 0.1);
+    border: 2px solid var(--success-color);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: var(--success-color);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .panel-header {
+        padding: 20px;
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .panel-icon {
+        font-size: 2rem;
+    }
+    
+    .panel-title h2 {
+        font-size: 1.3rem;
+    }
+    
+    .panel-content {
+        padding: 20px;
+    }
+    
+    .settings-form {
+        max-width: 100%;
+    }
+    
+    .danger-zone {
+        max-width: 100%;
+    }
+    
+    .modal-content {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-cancel, .btn-delete, .btn-primary {
+        width: 100%;
+    }
+}
+
+/* Loading State */
+.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Focus Management */
+.settings-form input:focus,
+.btn-save:focus,
+.btn-delete-account:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.btn-delete-account:focus {
+    outline-color: var(--danger-color);
+}
+
+/* Email Verification Modal Styles */
+.email-icon {
+    color: var(--primary-color);
+    font-size: 3rem;
+}
+
+.verification-details {
+    background: rgba(65, 105, 225, 0.05);
+    border: 1px solid rgba(65, 105, 225, 0.2);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.email-info {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.email-address {
+    display: block;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 5px;
+    word-break: break-all;
+}
+
+.verification-tips p {
+    margin: 0 0 10px 0;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.verification-tips ul {
+    margin: 0;
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+.verification-tips li {
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    position: relative;
+    padding-left: 20px;
+    line-height: 1.4;
+}
+
+.verification-tips li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.btn-secondary {
+    background: var(--background-light);
+    color: var(--text-muted);
+    border: 1px solid var(--border-light);
+}
+
+.btn-secondary:hover {
+    background: var(--border-light);
+    color: var(--text-primary);
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .settings-panel {
+        border-width: 3px;
+    }
+    
+    .settings-form input {
+        border-width: 3px;
+    }
+    
+    .btn-save,
+    .btn-delete-account {
+        border: 3px solid currentColor;
+    }
+}

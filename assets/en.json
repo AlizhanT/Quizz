@@ -1,0 +1,425 @@
+{
+  "en": {
+    "welcome": "📝 Multiple Choice Test Generator",
+    "savedQuizzes": "📚 Saved Quizzes",
+    "auth": {
+      "login": "Login",
+      "signup": "Sign Up",
+      "logout": "Log Out",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "fullName": "Full Name",
+      "loginSuccess": "Login successful! Redirecting...",
+      "loginFailed": "Login failed. Please try again.",
+      "userNotFound": "This email is not registered or incorrect password.",
+      "emailNotConfirmed": "Please verify your email before logging in.",
+      "signupSuccess": "Account created successfully! You can now log in.",
+      "signupFailed": "Signup failed. Please try again.",
+      "emailAlreadyExists": "This email is already registered. Please log in instead.",
+      "emailVerificationSuccess": "Email verified successfully! You can now log in.",
+      "passwordResetSuccess": "Password reset successfully! You can now log in with your new password.",
+      "passwordMismatch": "Passwords do not match. Please check and try again.",
+      "passwordTooShort": "Password must be at least 6 characters long.",
+      "profileSettings": "Profile Settings",
+      "profileSettingsComingSoon": "Profile settings feature coming soon!",
+      "logoutFailed": "Failed to sign out. Please try again."
+    },
+    "navigation": {
+      "createNewQuiz": "+ Create New Quiz",
+      "savedQuizzes": "📚 Saved Quizzes",
+      "saveQuiz": "💾 Save Quiz",
+      "downloadPDF": "📥 Download PDF",
+      "run": "▶ RUN",
+      "main": "Main",
+      "home": "Home",
+      "menu": "Menu",
+      "language": "Language"
+    },
+    "quiz": {
+      "title": "Test Title",
+      "titlePlaceholder": "e.g., Math Quiz, Biology Test",
+      "instructions": "Instructions (optional)",
+      "addQuestion": "Add Question",
+      "questionType": "Question Type",
+      "multipleChoice": "Multiple Choice",
+      "typingAnswer": "Typing Answer",
+      "fillBlank": "Fill in the Blank",
+      "matching": "Matching",
+      "questionText": "Question Text",
+      "questionPlaceholder": "Enter your question here...",
+      "answer": "Answer",
+      "answerPlaceholder": "Answer option",
+      "sentenceWithBlanks": "Sentence with blanks",
+      "sentencePlaceholder": "Enter the sentence that should have hidden words here",
+      "fillOptions": "Fill Options",
+      "fillOptionsPlaceholder": "Enter options separated by commas and press Add",
+      "leftSide": "Left side",
+      "rightSide": "Right side",
+      "typingAnswerPlaceholder": "Enter your answer here...",
+      "addOption": "Add Option",
+      "addPair": "Add Pair",
+      "removePair": "Remove Pair",
+      "addFillOptions": "Add Fill Options",
+      "addImage": "Add image",
+      "typingWarning": "!",
+      "typingWarningTooltip": "This question type will be included in PDF but ignored by test runner",
+      "questions": "questions",
+      "noSavedQuizzes": "No Saved Quizzes Yet",
+      "noSavedQuizzesDesc": "Create your first quiz and save it to see it here!",
+      "createFirstQuiz": "Create Your First Quiz",
+      "noResults": "No Results Found",
+      "noResultsDesc": "Try adjusting your search criteria",
+      "search": "Search",
+      "searchPlaceholder": "Search quizzes...",
+      "clearSearch": "✖",
+      "filter": "Filter",
+      "sortBy": "Sort by",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "alphabetical": "Alphabetical",
+      "recentlyUpdated": "Recently Updated",
+      "mostQuestions": "Most Questions",
+      "leastQuestions": "Least Questions",
+      "edit": "Edit",
+      "deleteSuccess": "Quiz deleted successfully!",
+      "deleteError": "Error deleting quiz",
+      "duplicateSuccess": "Quiz duplicated successfully!",
+      "duplicateError": "Error duplicating quiz",
+      "duplicate": "Duplicate",
+      "merge": "Merge",
+      "split": "Split",
+      "sort": "Sort",
+      "refresh": "Refresh",
+      "settings": "Settings",
+      "help": "Help",
+      "about": "About",
+      "contact": "Contact",
+      "feedback": "Feedback",
+      "report": "Report"
+    },
+    "page": {
+      "title": "Multiple Choice Test Generator",
+      "profileSettings": "Profile Settings - QuizMaster Pro",
+      "resetPassword": "Reset Password - QuizMaster Pro"
+    },
+    "modal": {
+      "notification": "Notification",
+      "messagePlaceholder": "Message goes here",
+      "delete": {
+        "title": "Delete Quiz?",
+        "message": "Are you sure you want to delete \"<span id=\"deleteQuizName\"></span>\"? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "deleteAccount": {
+        "title": "Delete Account Forever?",
+        "message": "Are you absolutely sure? This action cannot be undone and all your data will be permanently lost.",
+        "warning": "Warning:",
+        "warningText": "This action will permanently remove:",
+        "quizzes": "All your saved quizzes and questions",
+        "profile": "Your profile information and preferences",
+        "history": "Your account history and statistics",
+        "data": "All associated data and settings",
+        "cancel": "Cancel",
+        "confirm": "Delete Account",
+        "error": "Account deletion failed. Please contact support for assistance."
+      },
+      "success": {
+        "title": "Success!",
+        "message": "Your changes have been saved.",
+        "ok": "OK"
+      },
+      "auth": {
+        "success": {
+          "title": "Welcome to QuizMaster Pro!",
+          "description": "You're all set! You will be redirected to the quiz editor to start creating amazing quizzes.",
+          "startCreating": "Start Creating Quizzes"
+        },
+        "login": {
+          "title": "Welcome Back!",
+          "description": "Log in to your QuizMaster Pro account",
+          "email": "Email Address",
+          "password": "Password",
+          "submit": "Log In",
+          "forgotPassword": "Forgot Password?",
+          "noAccount": "Don't have an account? <a href=\"#\" onclick=\"switchToSignup()\">Sign Up</a>"
+        },
+        "forgotPassword": {
+          "title": "Reset Your Password",
+          "description": "Enter your email address and we'll send you a link to reset your password.",
+          "email": "Email Address",
+          "submit": "Send Reset Link",
+          "backToLogin": "Remember your password? <a href=\"#\" onclick=\"closeForgotPasswordModal(); showLoginModal()\">Log In</a>",
+          "success": "Password reset email sent! Please check your inbox.",
+          "error": "Failed to send password reset email. Please try again.",
+          "userNotFound": "This email is not registered. Please sign up first."
+        },
+        "resetPassword": {
+          "title": "Reset Your Password",
+          "description": "Enter your new password below.",
+          "newPassword": "New Password",
+          "confirmPassword": "Confirm New Password",
+          "passwordMatch": "Passwords must match",
+          "submit": "Reset Password",
+          "loading": "Verifying reset token...",
+          "invalidToken": "This password reset link is invalid or has expired.",
+          "backToHome": "Back to Home",
+          "success": "Your password has been reset successfully!",
+          "login": "Log In"
+        },
+        "signup": {
+          "title": "Join QuizMaster Pro!",
+          "description": "Create your account and start creating amazing quizzes",
+          "fullName": "Full Name",
+          "email": "Email Address",
+          "password": "Password",
+          "passwordRequirement": "Password must be at least 6 characters",
+          "confirmPassword": "Confirm Password",
+          "passwordMatch": "Passwords must match",
+          "submit": "Sign Up",
+          "hasAccount": "Already have an account? <a href=\"#\" onclick=\"switchToLogin()\">Log In</a>"
+        },
+        "emailVerification": {
+          "title": "Verify Your Email Address",
+          "message": "Thank you for signing up! We've sent a verification email to your email address. Please check your inbox and click the verification link to activate your account.",
+          "sentTo": "Email sent to:",
+          "tipsTitle": "Tips:",
+          "tip1": "Check your spam/junk folder if you don't see the email",
+          "tip2": "The verification link expires in 24 hours",
+          "tip3": "Make sure to click the link in the email to complete verification",
+          "resend": "Resend Email",
+          "close": "I've Verified",
+          "resendSuccess": "Verification email has been resent!",
+          "resendError": "Failed to resend verification email. Please try again.",
+          "verificationRequired": "Email verification required. Please check your inbox and click the verification link."
+        }
+      },
+      "validation": {
+        "title": "Validation Error",
+        "missingAnswers": "Cannot run test: {count} multiple choice question(s) missing correct answer. Please select a correct answer for each highlighted question."
+      },
+      "error": "Error",
+      "supabaseNotInitialized": "Supabase client not initialized. Please refresh the page.",
+      "cannotSave": "Cannot Save Quiz",
+      "noQuestions": "Please add at least one question before saving quiz.",
+      "saveError": "Error saving quiz",
+      "ok": "OK",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "removeImage": "Remove this image?",
+      "unsavedChanges": "Unsaved Changes",
+      "unsavedChangesMessage": "You have unsaved changes. Would you like to save them before leaving?",
+      "dontSave": "Don't Save",
+      "save": "Save",
+      "unsavedProject": "Unsaved Project",
+      "unsavedProjectMessage": "Your current project has not been saved yet. If you leave this page, your work will be lost. Would you like to save your project first?",
+      "leaveAnyway": "Leave Anyway",
+      "saveProject": "Save Project"
+    },
+    "testRunner": {
+      "toggleFullscreen": "Toggle Fullscreen",
+      "notifications": "Notifications",
+      "finish": "Finish",
+      "complete": "Test Complete!",
+      "completed": "You have completed test.",
+      "close": "Close Test",
+      "errorLoading": "Error loading test data. Please try again.",
+      "noTestData": "No test data found. Please create a test first.",
+      "noQuestions": "No questions available in this test.",
+      "noScorableQuestions": "No scorable questions available in this test (all questions are typing questions).",
+      "test": "Test"
+    },
+    "profile": {
+      "backToEditor": "Back to Editor",
+      "changeDisplayName": {
+        "title": "Change Display Name",
+        "description": "Update your name as it appears across the platform"
+      },
+      "currentDisplayName": "Current Display Name",
+      "newDisplayName": "New Display Name",
+      "newDisplayNamePlaceholder": "Enter new display name",
+      "displayNameHint": "Display name must be 3-20 characters long",
+      "updateDisplayName": "Update Display Name",
+      "changePassword": {
+        "title": "Change Password",
+        "description": "Secure your account with a new password"
+      },
+      "currentPassword": "Current Password",
+      "currentPasswordPlaceholder": "Enter current password",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "Enter new password",
+      "passwordRequirement": "Password must be at least 6 characters",
+      "confirmNewPassword": "Confirm New Password",
+      "confirmNewPasswordPlaceholder": "Confirm new password",
+      "passwordMatch": "Passwords must match",
+      "updatePassword": "Update Password",
+      "accountManagement": {
+        "title": "Account Management",
+        "description": "Manage your account settings"
+      },
+      "deleteAccount": "Delete Account",
+      "currentPasswordIncorrect": "Current password is incorrect",
+      "errorLoadingUser": "Error loading user",
+      "languageSettings": {
+        "title": "Language Settings",
+        "description": "Choose your preferred language for the interface",
+        "selectLanguage": "Select Language",
+        "languageHint": "Language preference will be saved and applied across all pages",
+        "saveLanguage": "Save Language Preference"
+      }
+    },
+    "nav": {
+      "features": "Features",
+      "classroom": "Classroom",
+      "about": "About"
+    },
+    "hero": {
+      "title": "Create Professional Quizzes in Minutes",
+      "subtitle": "The ultimate platform for educators, trainers, and content creators to design, manage, and deliver engaging multiple-choice assessments.",
+      "learnMore": "Learn More",
+      "sampleTitle": "Math Quiz - Sample",
+      "sampleQuestion": "What is 2 + 2?"
+    },
+    "features": {
+      "title": "Powerful Features for Modern Assessment",
+      "subtitle": "Everything you need to create engaging and effective quizzes",
+      "multipleQuestionTypes": {
+        "title": "Multiple Question Types",
+        "description": "Support for multiple choice, true/false, fill-in-the-blank, and matching questions with rich text and image support."
+      },
+      "instantResults": {
+        "title": "Instant Results",
+        "description": "Real-time scoring and detailed analytics to track performance and identify knowledge gaps."
+      },
+      "saveManage": {
+        "title": "Save & Manage",
+        "description": "Organize your quizzes with our intuitive management system. Save, edit, and reuse assessments anytime."
+      },
+      "pdfExport": {
+        "title": "PDF Export",
+        "description": "Generate professional PDF documents with customizable layouts for printing and distribution."
+      },
+      "richMedia": {
+        "title": "Rich Media Support",
+        "description": "Embed images, diagrams, and visual content directly into your questions for enhanced learning."
+      },
+      "responsiveDesign": {
+        "title": "Responsive Design",
+        "description": "Create and take quizzes on any device. Our platform works seamlessly on desktop, tablet, and mobile."
+      }
+    },
+    "classroom": {
+      "title": "Perfect for Interactive Classroom Desks",
+      "subtitle": "Transform your classroom into an engaging learning environment with our interactive quiz platform",
+      "interactiveDisplay": {
+        "title": "Interactive Display Ready",
+        "description": "Optimized for smart boards, interactive displays, and classroom technology. Students can participate directly from their seats or at the main display."
+      },
+      "realTimeEngagement": {
+        "title": "Real-Time Engagement",
+        "description": "Instant feedback and live results keep students engaged. Watch participation soar as students see their answers and rankings in real-time."
+      },
+      "assessmentFly": {
+        "title": "Assessment on the Fly",
+        "description": "Create quick quizzes during lessons to check understanding. Perfect for formative assessment and identifying learning gaps immediately."
+      },
+      "classroomAnalytics": {
+        "title": "Classroom Analytics",
+        "description": "Track class performance and individual student progress. Export detailed reports for parent conferences and administrative reviews."
+      },
+      "multiDevice": {
+        "title": "Multi-Device Support",
+        "description": "Students can join from tablets, laptops, or classroom computers. Seamless integration with existing classroom technology infrastructure."
+      },
+      "schoolWide": {
+        "title": "School-Wide Implementation",
+        "description": "Scale from single classroom to entire school districts. Admin controls and user management make it perfect for educational institutions."
+      },
+      "cta": {
+        "title": "Ready to Transform Your Classroom?",
+        "description": "Join thousands of teachers already using QuizMaster Pro for interactive learning"
+      }
+    },
+    "about": {
+      "title": "Designed for Educators, Built for Excellence",
+      "description": "QuizMaster Pro was created by educators who understand the challenges of modern assessment. We've combined powerful features with an intuitive interface to help you create professional quizzes that engage students and provide meaningful insights.",
+      "activeUsers": "Active Users",
+      "quizzesCreated": "Quizzes Created",
+      "questionsAnswered": "Questions Answered",
+      "testimonial": "\"QuizMaster Pro has transformed how I create assessments. The intuitive interface and powerful features save me hours every week!\"",
+      "authorName": "Sarah Johnson",
+      "authorTitle": "High School Math Teacher"
+    },
+    "footer": {
+      "tagline": "Empowering educators with modern assessment tools",
+      "product": "Product",
+      "features": "Features",
+      "api": "API",
+      "integrations": "Integrations",
+      "company": "Company",
+      "aboutUs": "About Us",
+      "blog": "Blog",
+      "careers": "Careers",
+      "contact": "Contact",
+      "support": "Support",
+      "helpCenter": "Help Center",
+      "documentation": "Documentation",
+      "community": "Community",
+      "status": "Status",
+      "copyright": "© 2024 QuizMaster Pro. All rights reserved.",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "cookiePolicy": "Cookie Policy"
+    },
+    "js": {
+      "common": {
+        "errorLoadingUser": "Error loading user",
+        "user": "User",
+        "updating": "Updating...",
+        "deleting": "Deleting...",
+        "unknownDate": "Unknown date",
+        "questions": "questions",
+        "editQuiz": "Edit Quiz",
+        "deleteQuiz": "Delete Quiz",
+        "runQuiz": "▶ Run Quiz",
+        "questionNumber": "Question {number}",
+        "remove": "Remove"
+      },
+      "profileSettings": {
+        "passwordStrength": {
+          "good": "Password strength: Good",
+          "mustBe6Chars": "Password must be at least 6 characters"
+        },
+        "passwordMatch": {
+          "mustMatch": "Passwords must match",
+          "match": "Passwords match",
+          "noMatch": "Passwords do not match"
+        },
+        "failedToUpdateDisplayName": "Failed to update display name. Please try again.",
+        "failedToUpdatePassword": "Failed to update password. Please try again.",
+        "accountDeleted": "Your account has been deleted successfully.",
+        "failedToDeleteAccount": "Failed to delete account. Please try again."
+      },
+      "savedQuizzes": {
+        "noResultsFound": "No Results Found",
+        "tryAdjustingSearch": "Try adjusting your search criteria",
+        "clearSearch": "✖",
+        "searchQuizzes": "Search quizzes...",
+        "createNewQuiz": "+ Create New Quiz",
+        "noSavedQuizzes": "No Saved Quizzes Yet",
+        "noSavedQuizzesDesc": "Create your first quiz and save it to see it here!",
+        "createFirstQuiz": "Create Your First Quiz"
+      },
+      "notifications": {
+        "changesSaved": "Your changes have been saved.",
+        "accountDeletedTitle": "Account Deleted"
+      },
+      "testRunner": {
+        "confirmAnswer": "Confirm Answer",
+        "checkPairs": "Check Pairs",
+        "answerConfirmed": "Answer Confirmed"
+      }
+    }
+  }
+}

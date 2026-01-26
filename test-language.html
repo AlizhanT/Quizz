@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .language-selector { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Language Functionality Test</h1>
+    
+    <div class="language-selector">
+        <select id="languageSelector">
+            <option value="en">English</option>
+            <option value="ru">Русский</option>
+            <option value="kk" selected>Қазақша</option>
+        </select>
+    </div>
+
+    <div class="test-section">
+        <h2>Auth Buttons Test</h2>
+        <button data-translate="auth.login">Login</button>
+        <button data-translate="auth.signup">Sign Up</button>
+        <button data-translate="auth.logout">Log Out</button>
+        <button data-translate="auth.profileSettings">Profile Settings</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Navigation Test</h2>
+        <span data-translate="navigation.createNewQuiz">+ Create New Quiz</span> |
+        <span data-translate="navigation.savedQuizzes">📚 Saved Quizzes</span> |
+        <span data-translate="navigation.saveQuiz">💾 Save Quiz</span>
+    </div>
+
+    <div class="test-section">
+        <h2>Quiz Test</h2>
+        <span data-translate="quiz.title">Test Title</span>:
+        <input type="text" data-translate="quiz.titlePlaceholder" placeholder="e.g., Math Quiz, Biology Test">
+        <br><br>
+        <span data-translate="quiz.addQuestion">Add Question</span> |
+        <span data-translate="quiz.multipleChoice">Multiple Choice</span>
+    </div>
+
+    <div class="test-section">
+        <h2>Debug Info</h2>
+        <div id="debugInfo">Loading...</div>
+    </div>
+
+    <script src="../js/language.js"></script>
+    <script>
+        function updateDebugInfo() {
+            const debugDiv = document.getElementById('debugInfo');
+            if (window.languageManager) {
+                debugDiv.innerHTML = `
+                    <strong>Current Language:</strong> ${window.languageManager.getCurrentLanguage()}<br>
+                    <strong>Available Languages:</strong> ${window.languageManager.getAvailableLanguages().join(', ')}<br>
+                    <strong>Translation Test (auth.login):</strong> ${window.languageManager.t('auth.login')}<br>
+                    <strong>Translation Test (auth.signup):</strong> ${window.languageManager.t('auth.signup')}<br>
+                    <strong>Translation Test (navigation.savedQuizzes):</strong> ${window.languageManager.t('navigation.savedQuizzes')}<br>
+                    <strong>localStorage:</strong> ${localStorage.getItem('selectedLanguage')}<br>
+                    <strong>Translations loaded:</strong> ${Object.keys(window.languageManager.translations).join(', ')}
+                `;
+            }
+        }
+
+        // Update debug info when language manager is ready
+        setTimeout(() => {
+            updateDebugInfo();
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to QuizMaster Pro</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/welcome.css">
+    <link rel="stylesheet" href="../css/loading-animations.css">
+</head>
+<body>
+    <div class="welcome-container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="logo">
+                    <span class="logo-icon">📝</span>
+                    <span class="logo-text">QuizMaster Pro</span>
+                </div>
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="scrollToSection('features')" data-translate="nav.features">Features</button>
+                    <button class="nav-btn" onclick="scrollToSection('classroom')" data-translate="nav.classroom">Classroom</button>
+                    <button class="nav-btn" onclick="scrollToSection('about')" data-translate="nav.about">About</button>
+                    <div class="language-selector">
+                        <select id="languageSelector" onchange="changeLanguage(this.value)">
+                            <option value="en">English</option>
+                            <option value="ru">Русский</option>
+                            <option value="kk" selected>Қазақша</option>
+                        </select>
+                    </div>
+                    <div class="auth-buttons">
+                        <button class="nav-btn auth-btn" onclick="showLoginModal()" data-translate="auth.login">Log In</button>
+                        <button class="nav-btn primary auth-btn" onclick="showSignupModal()" data-translate="auth.signup">Sign Up</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title" data-translate="hero.title">Create Professional Quizzes in Minutes</h1>
+                <p class="hero-subtitle" data-translate="hero.subtitle">The ultimate platform for educators, trainers, and content creators to design, manage, and deliver engaging multiple-choice assessments.</p>
+                <div class="hero-buttons">
+                    <button class="btn-secondary large" onclick="scrollToSection('features')" data-translate="hero.learnMore">Learn More</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="preview-mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <div class="mockup-title" data-translate="hero.sampleTitle">Math Quiz - Sample</div>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="mockup-question" data-translate="hero.sampleQuestion">What is 2 + 2?</div>
+                        <div class="mockup-options">
+                            <div class="mockup-option">A) 3</div>
+                            <div class="mockup-option correct">B) 4 ✓</div>
+                            <div class="mockup-option">C) 5</div>
+                            <div class="mockup-option">D) 6</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <div class="section-header">
+                <h2 data-translate="features.title">Powerful Features for Modern Assessment</h2>
+                <p data-translate="features.subtitle">Everything you need to create engaging and effective quizzes</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 data-translate="features.multipleQuestionTypes.title">Multiple Question Types</h3>
+                    <p data-translate="features.multipleQuestionTypes.description">Support for multiple choice, true/false, fill-in-the-blank, and matching questions with rich text and image support.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 data-translate="features.instantResults.title">Instant Results</h3>
+                    <p data-translate="features.instantResults.description">Real-time scoring and detailed analytics to track performance and identify knowledge gaps.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3 data-translate="features.saveManage.title">Save & Manage</h3>
+                    <p data-translate="features.saveManage.description">Organize your quizzes with our intuitive management system. Save, edit, and reuse assessments anytime.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3 data-translate="features.pdfExport.title">PDF Export</h3>
+                    <p data-translate="features.pdfExport.description">Generate professional PDF documents with customizable layouts for printing and distribution.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🖼️</div>
+                    <h3 data-translate="features.richMedia.title">Rich Media Support</h3>
+                    <p data-translate="features.richMedia.description">Embed images, diagrams, and visual content directly into your questions for enhanced learning.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 data-translate="features.responsiveDesign.title">Responsive Design</h3>
+                    <p data-translate="features.responsiveDesign.description">Create and take quizzes on any device. Our platform works seamlessly on desktop, tablet, and mobile.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Classroom Integration Section -->
+        <section id="classroom" class="classroom">
+            <div class="classroom-content">
+                <div class="classroom-header">
+                    <h2 data-translate="classroom.title">Perfect for Interactive Classroom Desks</h2>
+                    <p data-translate="classroom.subtitle">Transform your classroom into an engaging learning environment with our interactive quiz platform</p>
+                </div>
+                <div class="classroom-grid">
+                    <div class="classroom-card">
+                        <div class="classroom-icon">🖥️</div>
+                        <h3 data-translate="classroom.interactiveDisplay.title">Interactive Display Ready</h3>
+                        <p data-translate="classroom.interactiveDisplay.description">Optimized for smart boards, interactive displays, and classroom technology. Students can participate directly from their seats or at the main display.</p>
+                    </div>
+                    <div class="classroom-card">
+                        <div class="classroom-icon">⚡</div>
+                        <h3 data-translate="classroom.realTimeEngagement.title">Real-Time Engagement</h3>
+                        <p data-translate="classroom.realTimeEngagement.description">Instant feedback and live results keep students engaged. Watch participation soar as students see their answers and rankings in real-time.</p>
+                    </div>
+                    <div class="classroom-card">
+                        <div class="classroom-icon">🎯</div>
+                        <h3 data-translate="classroom.assessmentFly.title">Assessment on the Fly</h3>
+                        <p data-translate="classroom.assessmentFly.description">Create quick quizzes during lessons to check understanding. Perfect for formative assessment and identifying learning gaps immediately.</p>
+                    </div>
+                    <div class="classroom-card">
+                        <div class="classroom-icon">📊</div>
+                        <h3 data-translate="classroom.classroomAnalytics.title">Classroom Analytics</h3>
+                        <p data-translate="classroom.classroomAnalytics.description">Track class performance and individual student progress. Export detailed reports for parent conferences and administrative reviews.</p>
+                    </div>
+                    <div class="classroom-card">
+                        <div class="classroom-icon">🔗</div>
+                        <h3 data-translate="classroom.multiDevice.title">Multi-Device Support</h3>
+                        <p data-translate="classroom.multiDevice.description">Students can join from tablets, laptops, or classroom computers. Seamless integration with existing classroom technology infrastructure.</p>
+                    </div>
+                    <div class="classroom-card">
+                        <div class="classroom-icon">🏫</div>
+                        <h3 data-translate="classroom.schoolWide.title">School-Wide Implementation</h3>
+                        <p data-translate="classroom.schoolWide.description">Scale from single classroom to entire school districts. Admin controls and user management make it perfect for educational institutions.</p>
+                    </div>
+                </div>
+                <div class="classroom-cta">
+                    <h3 data-translate="classroom.cta.title">Ready to Transform Your Classroom?</h3>
+                    <p data-translate="classroom.cta.description">Join thousands of teachers already using QuizMaster Pro for interactive learning</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 data-translate="about.title">Designed for Educators, Built for Excellence</h2>
+                    <p data-translate="about.description">QuizMaster Pro was created by educators who understand the challenges of modern assessment. We've combined powerful features with an intuitive interface to help you create professional quizzes that engage students and provide meaningful insights.</p>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-number">10K+</div>
+                            <div class="stat-label" data-translate="about.activeUsers">Active Users</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">50K+</div>
+                            <div class="stat-label" data-translate="about.quizzesCreated">Quizzes Created</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">1M+</div>
+                            <div class="stat-label" data-translate="about.questionsAnswered">Questions Answered</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p data-translate="about.testimonial">"QuizMaster Pro has transformed how I create assessments. The intuitive interface and powerful features save me hours every week!"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👩‍🏫</div>
+                            <div class="author-info">
+                                <div class="author-name" data-translate="about.authorName">Sarah Johnson</div>
+                                <div class="author-title" data-translate="about.authorTitle">High School Math Teacher</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <span class="logo-icon">📝</span>
+                        <span class="logo-text">QuizMaster Pro</span>
+                    </div>
+                    <p data-translate="footer.tagline">Empowering educators with modern assessment tools</p>
+                </div>
+                <div class="footer-section">
+                    <h4 data-translate="footer.product">Product</h4>
+                    <ul>
+                        <li><a href="#" onclick="scrollToSection('features')" data-translate="footer.features">Features</a></li>
+                        <li><a href="#" data-translate="footer.api">API</a></li>
+                        <li><a href="#" data-translate="footer.integrations">Integrations</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 data-translate="footer.company">Company</h4>
+                    <ul>
+                        <li><a href="#" data-translate="footer.aboutUs">About Us</a></li>
+                        <li><a href="#" data-translate="footer.blog">Blog</a></li>
+                        <li><a href="#" data-translate="footer.careers">Careers</a></li>
+                        <li><a href="#" data-translate="footer.contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 data-translate="footer.support">Support</h4>
+                    <ul>
+                        <li><a href="#" data-translate="footer.helpCenter">Help Center</a></li>
+                        <li><a href="#" data-translate="footer.documentation">Documentation</a></li>
+                        <li><a href="#" data-translate="footer.community">Community</a></li>
+                        <li><a href="#" data-translate="footer.status">Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-translate="footer.copyright">&copy; 2024 QuizMaster Pro. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#" data-translate="footer.privacyPolicy">Privacy Policy</a>
+                    <a href="#" data-translate="footer.termsOfService">Terms of Service</a>
+                    <a href="#" data-translate="footer.cookiePolicy">Cookie Policy</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-icon">✅</div>
+            <h3 data-translate="modal.auth.success.title">Welcome to QuizMaster Pro!</h3>
+            <p data-translate="modal.auth.success.description">You're all set! You will be redirected to the quiz editor to start creating amazing quizzes.</p>
+            <button class="btn-primary" onclick="goToMainApp()" data-translate="modal.auth.success.startCreating">Start Creating Quizzes</button>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-icon">🔐</div>
+            <h3 data-translate="modal.auth.login.title">Welcome Back!</h3>
+            <p data-translate="modal.auth.login.description">Log in to your QuizMaster Pro account</p>
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="loginEmail" data-translate="modal.auth.login.email">Email Address</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword" data-translate="modal.auth.login.password">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                <div class="forgot-password">
+                    <a href="#" onclick="showForgotPasswordModal()" data-translate="modal.auth.login.forgotPassword">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn-primary full-width" data-translate="modal.auth.login.submit">Log In</button>
+            </form>
+            <div class="auth-switch">
+                <p data-translate="modal.auth.login.noAccount">Don't have an account? <a href="#" onclick="switchToSignup()">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-icon">🚀</div>
+            <h3 data-translate="modal.auth.signup.title">Join QuizMaster Pro!</h3>
+            <p data-translate="modal.auth.signup.description">Create your account and start creating amazing quizzes</p>
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="signupName" data-translate="modal.auth.signup.fullName">Full Name</label>
+                    <input type="text" id="signupName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail" data-translate="modal.auth.signup.email">Email Address</label>
+                    <input type="email" id="signupEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword" data-translate="modal.auth.signup.password">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="signupPassword" name="password" required maxlength="50">
+                        <span class="char-counter" id="passwordCounter">0/6</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirmPassword" data-translate="modal.auth.signup.confirmPassword">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" name="confirmPassword" required>
+                    <div class="password-indicator" id="confirmIndicator">
+                        <span class="indicator-text" data-translate="modal.auth.signup.passwordMatch">Passwords must match</span>
+                        <span class="indicator-icon" id="passwordMatchIcon">❌</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary full-width" id="signupSubmitBtn" disabled data-translate="modal.auth.signup.submit">Sign Up</button>
+            </form>
+            <div class="auth-switch">
+                <p data-translate="modal.auth.signup.hasAccount">Already have an account? <a href="#" onclick="switchToLogin()">Log In</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-icon">🔑</div>
+            <h3 data-translate="modal.auth.forgotPassword.title">Reset Your Password</h3>
+            <p data-translate="modal.auth.forgotPassword.description">Enter your email address and we'll send you a link to reset your password.</p>
+            <form id="forgotPasswordForm" class="auth-form">
+                <div class="form-group">
+                    <label for="forgotPasswordEmail" data-translate="modal.auth.forgotPassword.email">Email Address</label>
+                    <input type="email" id="forgotPasswordEmail" name="email" required>
+                </div>
+                <button type="submit" class="btn-primary full-width" data-translate="modal.auth.forgotPassword.submit">Send Reset Link</button>
+            </form>
+            <div class="auth-switch">
+                <p data-translate="modal.auth.forgotPassword.backToLogin">Remember your password? <a href="#" onclick="closeForgotPasswordModal(); showLoginModal()">Log In</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/loading-manager.js"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/language.js"></script>
+    <script src="../js/email-verification.js"></script>
+    <script src="../js/welcome.js"></script>
+</body>
+</html>

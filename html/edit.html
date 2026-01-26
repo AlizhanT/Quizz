@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="page.title">Multiple Choice Test Generator</title>
+	
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- jsPDF with Unicode support -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-font-roboto@1.0.0/Roboto-Regular.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-font-roboto@1.0.0/Roboto-Bold.js"></script>
+    <!-- html2canvas for Cyrillic support -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/loading-animations.css">
+</head>
+<body>
+    <div class="container with-side-nav">
+        <!-- Simple Navigation Buttons -->
+        <div class="simple-nav">
+            <button class="nav-btn home-btn" onclick="goHome()" data-translate-title="navigation.home" title="Home">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                    <path d="M240-200h120v-240h240v240h120v-360h120L480-840 120-560h120v360Z"/>
+                </svg>
+            </button>
+        </div>
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1 data-translate="welcome">📝 Multiple Choice Test Generator</h1>
+                <div class="header-buttons">
+                    <button class="btn-save" onclick="saveQuiz()" data-translate="navigation.saveQuiz">💾 Save Quiz</button>
+                    <button class="btn-generate" onclick="generatePDF()" data-translate="navigation.downloadPDF">📥 Download PDF</button>
+                    <button class="btn-run" onclick="runTest()" data-translate="navigation.run">▶ RUN</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label data-translate="quiz.title">Test Title</label>
+                <div class="input-with-counter">
+                    <input type="text" id="testTitle" data-translate-placeholder="quiz.titlePlaceholder" placeholder="e.g., Math Quiz, Biology Test" maxlength="36">
+                    <span class="char-counter" id="titleCounter">0/36</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label data-translate="quiz.instructions">Instructions (optional)</label>
+                <textarea id="instructions" rows="3"></textarea>
+            </div>
+
+            <div class="questions-container" id="questionsContainer"></div>
+
+            <button class="add-question-btn" id="addQuestionBtn" data-translate="quiz.addQuestion"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M440-120v-320H120v-80h320v-320h80v320h320v80H520v320h-80Z"/></svg> Add Question</button>
+            
+            <!-- Hidden preview for PDF generation -->
+            <div id="pdfPreview" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Modal for notifications -->
+    <div id="notificationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" data-translate="modal.notification">Notification</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMessage" data-translate="modal.messagePlaceholder">Message goes here</div>
+                <div id="modalButtons" class="modal-buttons"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="../js/loading-manager.js"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/language.js"></script>
+    <script src="../js/top-navigation.js"></script>
+    <script src="../js/navigation-scroll.js"></script>
+    <script src="../js/side-navigation.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/pdf-converter.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Translation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        button { margin: 5px; padding: 10px; cursor: pointer; }
+        select { margin: 10px; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h1 data-translate="welcome">Testing Dynamic Translations</h1>
+    
+    <div class="test-section">
+        <h2>Static Elements (should translate immediately)</h2>
+        <p data-translate="quiz.questionType">Question Type</p>
+        <button data-translate="quiz.addQuestion">Add Question</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Dynamic Elements Test</h2>
+        <button onclick="addDynamicElement()">Add Dynamic Element</button>
+        <div id="dynamicContainer"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Language Switch</h2>
+        <select id="languageSelector" onchange="changeLanguage(this.value)">
+            <option value="kk">Қазақша</option>
+            <option value="en">English</option>
+        </select>
+    </div>
+
+    <script src="../js/language.js"></script>
+    <script>
+        // Test function to add dynamic elements
+        function addDynamicElement() {
+            const container = document.getElementById('dynamicContainer');
+            const div = document.createElement('div');
+            div.className = 'dynamic-element';
+            div.innerHTML = `
+                <h3 data-translate="quiz.questionText">Question Text</h3>
+                <input type="text" data-translate-placeholder="quiz.questionPlaceholder" placeholder="Enter your question here...">
+                <button data-translate="quiz.addOption">Add Option</button>
+                <div class="sub-content">
+                    <span data-translate="quiz.multipleChoice">Multiple Choice</span>
+                    <span data-translate="quiz.typingAnswer">Typing Answer</span>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+        
+        // Language change function
+        async function changeLanguage(lang) {
+            localStorage.setItem('selectedLanguage', lang);
+            await languageManager.setLanguage(lang);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await languageManager.loadLanguage();
+        });
+    </script>
+</body>
+</html>

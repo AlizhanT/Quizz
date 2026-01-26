@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="page.profileSettings">Profile Settings - QuizMaster Pro</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/profile-settings.css">
+</head>
+<body>
+    <div class="container with-side-nav">
+        <!-- Menu Toggle Button -->
+        <button class="menu-toggle" onclick="toggleSideNav()">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>
+            </svg>
+        </button>
+
+        <!-- Side Navigation -->
+        <nav class="side-navbar" id="sideNavbar">
+            <div class="nav-header">
+                <div class="logo">
+                    <span class="logo-icon">📝</span>
+                    <span class="logo-text">QuizMaster Pro</span>
+                </div>
+                <div class="user-profile" id="userProfile">
+                    <div class="profile-info" onclick="openProfileSettings()">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                            <path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"/>
+                        </svg>
+                        <span class="profile-name" id="userName">Loading...</span>
+                    </div>
+                </div>
+                <button class="close-btn" onclick="toggleSideNav()">×</button>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title" data-translate="navigation.main">Main</div>
+                <button class="nav-item" onclick="goToSavedQuizzes()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M120-680v-80h720v80H120Zm0 480v-80h720v80H120Zm0-240v-80h720v80H120Z"/></svg>
+                    <span data-translate="navigation.savedQuizzes">Saved Quizzes</span>
+                </button>
+            </div>
+
+
+            <div class="nav-section logout-section">
+                <button class="nav-item logout-btn" onclick="logout()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                        <path d="M200-120v-80h560v80H200Zm280-160v-200h-80l120-160 120 160h-80v200h-80Z"/>
+                    </svg>
+                    <span data-translate="auth.logout">Log Out</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Overlay -->
+        <div class="side-nav-overlay" id="sideNavOverlay" onclick="toggleSideNav()"></div>
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 data-translate="auth.profileSettings">Profile Settings</h1>
+                <div class="header-buttons">
+                    <button class="btn-back" onclick="goToMainApp()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        <span data-translate="profile.backToEditor">Back to Editor</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Settings Panels -->
+            <div class="settings-container">
+                <!-- Username Change Panel -->
+                <div class="settings-panel">
+                    <div class="panel-header">
+                        <div class="panel-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-246q54-53 125.5-83.5T480-360q83 0 154.5 30.5T760-246v-514H200v514Zm280-194q58 0 99-41t41-99q0-58-41-99t-99-41q-58 0-99 41t-41 99q0 58 41 99t99 41ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm69-80h422q-44-39-99.5-59.5T480-280q-56 0-112.5 20.5T269-200Zm211-320q-25 0-42.5-17.5T420-580q0-25 17.5-42.5T480-640q25 0 42.5 17.5T540-580q0 25-17.5 42.5T480-520Zm0 17Z"/></svg></div>
+                        <div class="panel-title">
+                            <h2 data-translate="profile.changeDisplayName.title">Change Display Name</h2>
+                            <p data-translate="profile.changeDisplayName.description">Update your name as it appears across the platform</p>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <form id="usernameForm" class="settings-form">
+                            <div class="form-group">
+                                <label for="currentUsername" data-translate="profile.currentDisplayName">Current Display Name</label>
+                                <input type="text" id="currentUsername" readonly value="Loading...">
+                            </div>
+                            <div class="form-group">
+                                <label for="newUsername" data-translate="profile.newDisplayName">New Display Name</label>
+                                <input type="text" id="newUsername" name="newUsername" data-translate-placeholder="profile.newDisplayNamePlaceholder" placeholder="Enter new display name" required>
+                                <div class="input-hint" data-translate="profile.displayNameHint">Display name must be 3-20 characters long</div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-save" data-translate="profile.updateDisplayName">Update Display Name</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Password Change Panel -->
+                <div class="settings-panel">
+                    <div class="panel-header">
+                        <div class="panel-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z"/></svg></div>
+                        <div class="panel-title">
+                            <h2 data-translate="profile.changePassword.title">Change Password</h2>
+                            <p data-translate="profile.changePassword.description">Secure your account with a new password</p>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <form id="passwordForm" class="settings-form">
+                            <div class="form-group">
+                                <label for="currentPassword" data-translate="profile.currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword" name="currentPassword" data-translate-placeholder="profile.currentPasswordPlaceholder" placeholder="Enter current password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword" data-translate="profile.newPassword">New Password</label>
+                                <input type="password" id="newPassword" name="newPassword" data-translate-placeholder="profile.newPasswordPlaceholder" placeholder="Enter new password" required>
+                                <div class="password-indicator" id="passwordStrength">
+                                    <span class="indicator-text" data-translate="profile.passwordRequirement">Password must be at least 6 characters</span>
+                                    <span class="indicator-icon" id="strengthIcon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword" data-translate="profile.confirmNewPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" data-translate-placeholder="profile.confirmNewPasswordPlaceholder" placeholder="Confirm new password" required>
+                                <div class="password-indicator" id="passwordMatch">
+                                    <span class="indicator-text" data-translate="profile.passwordMatch">Passwords must match</span>
+                                    <span class="indicator-icon" id="matchIcon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></span>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-save" id="updatePasswordBtn" disabled data-translate="profile.updatePassword">Update Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Language Settings Panel -->
+                <div class="settings-panel">
+                    <div class="panel-header">
+                        <div class="panel-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Zm0-82q26-36 45-75t31-83H404q12 44 31 83t45 75Zm-104-16q-18-33-31.5-68.5T322-320H204q29 50 72.5 87t99.5 55Zm208 0q56-18 99.5-55t72.5-87H638q-9 38-22.5 73.5T584-178ZM170-400h136q-3-20-4.5-39.5T300-480q0-21 1.5-40.5T306-560H170q-5 20-7.5 39.5T160-480q0 21 2.5 40.5T170-400Zm216 0h188q3-20 4.5-39.5T580-480q0-21-1.5-40.5T574-560H386q-3 20-4.5 39.5T380-480q0 21 1.5 40.5T386-400Zm268 0h136q5-20 7.5-39.5T800-480q0-21-2.5-40.5T790-560H654q3 20 4.5 39.5T660-480q0 21-1.5 40.5T654-400Zm-16-240h118q-29-50-72.5-87T584-782q18 33 31.5 68.5T638-640Zm-234 0h152q-12-44-31-83t-45-75q-26 36-45 75t-31 83Zm-200 0h118q9-38 22.5-73.5T376-782q-56 18-99.5 55T204-640Z"/></svg></div>
+                        <div class="panel-title">
+                            <h2 data-translate="profile.languageSettings.title">Language Settings</h2>
+                            <p data-translate="profile.languageSettings.description">Choose your preferred language for the interface</p>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <form id="languageForm" class="settings-form">
+                            <div class="form-group">
+                                <label for="languageSelector" data-translate="profile.languageSettings.selectLanguage">Select Language</label>
+                                <select id="languageSelector" name="languageSelector" class="language-select">
+                                    <option value="en">🇺🇸 English</option>
+                                    <option value="ru">🇷🇺 Русский</option>
+                                    <option value="kk">🇰🇿 Қазақша</option>
+                                </select>
+                                <div class="input-hint" data-translate="profile.languageSettings.languageHint">Language preference will be saved and applied across all pages</div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Account Management Panel -->
+                <div class="settings-panel danger-panel">
+                    <div class="panel-header">
+                        <div class="panel-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z"/></svg></div>
+                        <div class="panel-title">
+                            <h2 data-translate="profile.accountManagement.title">Account Management</h2>
+                            <p data-translate="profile.accountManagement.description">Manage your account settings</p>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="danger-actions">
+                            <button class="btn-delete-account" onclick="showDeleteConfirmation()">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                </svg>
+                                <span data-translate="profile.deleteAccount">Delete Account</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div id="deleteModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-icon danger-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z"/></svg></div>
+            <h3 data-translate="modal.deleteAccount.title">Delete Account Forever?</h3>
+            <p data-translate="modal.deleteAccount.message">Are you absolutely sure? This action cannot be undone and all your data will be permanently lost.</p>
+            
+            <div class="warning-details">
+                <div class="warning-message">
+                    <strong data-translate="modal.deleteAccount.warning">Warning:</strong> <span data-translate="modal.deleteAccount.warningText">This action will permanently remove:</span>
+                </div>
+                <ul class="destruction-list">
+                    <li data-translate="modal.deleteAccount.quizzes">All your saved quizzes and questions</li>
+                    <li data-translate="modal.deleteAccount.profile">Your profile information and preferences</li>
+                    <li data-translate="modal.deleteAccount.history">Your account history and statistics</li>
+                    <li data-translate="modal.deleteAccount.data">All associated data and settings</li>
+                </ul>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeDeleteModal()" data-translate="modal.deleteAccount.cancel">Cancel</button>
+                <button class="btn-delete" onclick="confirmDeleteAccount()" data-translate="modal.deleteAccount.confirm">Delete Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></div>
+            <h3 id="successTitle" data-translate="modal.success.title">Success!</h3>
+            <p id="successMessage" data-translate="modal.success.message">Your changes have been saved.</p>
+            <button class="btn-primary" onclick="closeSuccessModal()" data-translate="modal.success.ok">OK</button>
+        </div>
+    </div>
+
+    <!-- Email Verification Modal -->
+    <div id="emailVerificationModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-icon email-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z"/></svg></div>
+            <h3 data-translate="modal.emailVerification.title">Verify Your Email Address</h3>
+            <p data-translate="modal.emailVerification.message">Thank you for signing up! We've sent a verification email to your email address. Please check your inbox and click the verification link to activate your account.</p>
+            
+            <div class="verification-details">
+                <div class="email-info">
+                    <strong data-translate="modal.emailVerification.sentTo">Email sent to:</strong>
+                    <span id="verificationEmail" class="email-address"></span>
+                </div>
+                
+                <div class="verification-tips">
+                    <p data-translate="modal.emailVerification.tipsTitle">Tips:</p>
+                    <ul>
+                        <li data-translate="modal.emailVerification.tip1">Check your spam/junk folder if you don't see the email</li>
+                        <li data-translate="modal.emailVerification.tip2">The verification link expires in 24 hours</li>
+                        <li data-translate="modal.emailVerification.tip3">Make sure to click the link in the email to complete verification</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="resendVerificationEmail()" data-translate="modal.emailVerification.resend">Resend Email</button>
+                <button class="btn-primary" onclick="closeEmailVerificationModal()" data-translate="modal.emailVerification.close">I've Verified</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/language.js"></script>
+    <script src="../js/side-navigation.js"></script>
+    <script src="../js/email-verification.js"></script>
+    <script src="../js/profile-settings.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Matching Interface</title>
+    <link rel="stylesheet" href="css/test-runner.css">
+    <style>
+        body {
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Test Matching Interface</h1>
+        <div id="questionContainer"></div>
+        <div id="actionButtonContainer"></div>
+    </div>
+
+    <script src="js/test-runner.js"></script>
+    <script>
+        // Test data for matching pairs
+        const testQuestion = {
+            type: 'matching',
+            question: 'Match the following items:',
+            pairs: [
+                {
+                    left: 'Apple',
+                    right: 'Fruit'
+                },
+                {
+                    left: 'Carrot',
+                    right: 'Vegetable'
+                },
+                {
+                    left: 'Dog',
+                    right: 'Animal'
+                },
+                {
+                    left: 'Book',
+                    right: 'Reading'
+                }
+            ]
+        };
+
+        // Initialize test
+        testData = { questions: [testQuestion] };
+        currentQuestionIndex = 0;
+        userAnswers = [];
+
+        // Display the matching question
+        displayQuestion();
+    </script>
+</body>
+</html>

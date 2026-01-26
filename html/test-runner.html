@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle" data-translate="page.title">Test</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/test-runner.css">
+</head>
+<body>
+    <div class="test-container">
+        <button class="fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()" data-translate-title="testRunner.toggleFullscreen" title="Toggle Fullscreen">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#6c757d"><path d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z"/></svg>
+        </button>
+
+        <!-- Side Notification Panel -->
+        <div id="notificationPanel" class="notification-panel hidden">
+            <div class="notification-header">
+                <span class="notification-title" data-translate="testRunner.notifications">Notifications</span>
+                <button class="notification-close" onclick="hideNotificationPanel()">×</button>
+            </div>
+            <div id="notificationContent" class="notification-content">
+                <!-- Notifications will be added here -->
+            </div>
+        </div>
+
+        <div class="progress-bar-small">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="question-counter" id="questionCounter">1/1</div>
+
+        <div id="questionContainer" class="question-container">
+            <!-- Question content will be dynamically inserted here -->
+        </div>
+
+        <div class="bottom-navigation">
+            <button class="nav-btn btn-prev" id="prevBtn" onclick="previousQuestion()" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="navy"><path d="M560-280 360-480l200-200v400Z"/></svg>
+            </button>
+            <div id="actionButtonContainer" class="action-button-container"></div>
+            <button class="nav-btn btn-next" id="nextBtn" onclick="nextQuestion()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="navy"><path d="M400-280v-400l200 200-200 200Z"/></svg>
+            </button>
+            <button class="nav-btn btn-finish hidden" id="finishBtn" onclick="finishTest()" data-translate="testRunner.finish">Finish</button>
+        </div>
+
+        <div id="resultsContainer" class="results-container hidden">
+            <h2 class="results-title" data-translate="testRunner.complete">Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay">0%</div>
+            <div class="results-message" id="resultsMessage" data-translate="testRunner.completed">You have completed test.</div>
+            <button class="nav-btn btn-close" onclick="closeTest()" data-translate="testRunner.close">Close Test</button>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/language.js"></script>
+    <script src="../js/fill-in-blank.js"></script>
+    <script src="../js/test-runner.js"></script>
+</body>
+</html>
