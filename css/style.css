@@ -1476,6 +1476,13 @@ input, textarea {
     min-height: 44px;
     max-height: 120px;
     overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+input::-webkit-scrollbar, 
+textarea::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
 }
 
 input:hover, textarea:hover {
@@ -1511,6 +1518,12 @@ input:focus, textarea:focus {
     flex-wrap: wrap;
     align-items: flex-start;
     align-content: flex-start;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.rich-text-input::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
 }
 
 /* Specific styling for answer inputs to ensure they match */
@@ -1694,6 +1707,17 @@ button:hover {
     border: 1px solid var(--border-light);
 }
 
+/* Position question upload button */
+.form-group:has(.question-text) .image-upload-btn {
+    position: absolute;
+    right: 8px;
+    top: 44px;
+    margin-left: 0;
+    z-index: 10;
+    background: rgba(248, 249, 250, 0.9);
+    border: 1px solid var(--border-light);
+}
+
 .answer-input-container .image-upload-btn.small {
     top: 50%;
     right: 6px;
@@ -1748,18 +1772,21 @@ button:hover {
 
 /* Image preview container */
 .image-preview-container {
-    margin-top: 10px;
+    margin-top: 6px;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    max-width: 100%;
-    overflow: hidden;
+    gap: 8px;
     align-items: flex-start;
+    min-height: 0;
+}
+
+.image-preview-container:empty {
+    display: none;
 }
 
 .image-preview-container.small {
-    margin-top: 6px;
-    gap: 6px;
+    margin-top: 4px;
+    gap: 4px;
 }
 
 .image-preview-wrapper {
