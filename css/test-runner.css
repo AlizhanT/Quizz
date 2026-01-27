@@ -564,7 +564,7 @@ body {
     color: var(--primary-color);
     font-weight: bold;
     flex-shrink: 0;
-    width: auto;
+    width: 10%;
     margin: 0;
 }
 
