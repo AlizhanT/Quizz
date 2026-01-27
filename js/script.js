@@ -247,6 +247,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     observer.observe(document.body, { childList: true, subtree: true });
     
+    // Add global click handler for image preview deletion
+    document.addEventListener('click', (e) => {
+        const previewWrapper = e.target.closest('.image-preview-wrapper');
+        if (previewWrapper && !e.target.closest('.rich-text-input')) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Add confirmation for better UX
+            if (confirm('Delete this image?')) {
+                previewWrapper.remove();
+                triggerAutosave();
+            }
+        }
+    });
+    
     // Check for autosave on page load
     setTimeout(() => {
         // Only check for autosave if there's no specific quiz being loaded
@@ -1839,11 +1854,14 @@ function handleImageUpload(button, type, optionElement = null) {
             try {
                 // Show loading indicator
                 const originalButtonText = button.innerHTML;
+                console.log('Starting upload, original button content:', originalButtonText);
                 button.innerHTML = '<div class="loading-spinner"></div>';
                 button.disabled = true;
+                console.log('Button updated with loading spinner');
                 
                 // Upload directly to Supabase Storage
                 const uploadResult = await window.uploadImageToSupabase(file, 'temp');
+                console.log('Upload result:', uploadResult);
                 
                 if (uploadResult.success) {
                     // Display the image preview with storage URL
@@ -1859,8 +1877,10 @@ function handleImageUpload(button, type, optionElement = null) {
                 showNotificationModal('Upload Error', 'Failed to upload image. Please try again.', 'error');
             } finally {
                 // Restore button
+                console.log('Restoring button state');
                 button.innerHTML = originalButtonText;
                 button.disabled = false;
+                console.log('Button state restored');
             }
         }
         
