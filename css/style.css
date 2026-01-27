@@ -1786,6 +1786,278 @@ button:hover {
     max-height: 80px;
 }
 
+/* Drag and Drop Zone Styles */
+.drag-drop-zone {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    cursor: pointer;
+    margin: 10px 0;
+}
+
+.drag-drop-zone:hover {
+    border-color: #007bff;
+    background: #e3f2fd;
+}
+
+.drag-drop-zone.drag-over {
+    border-color: #28a745;
+    background: #d4edda;
+    transform: scale(1.02);
+}
+
+.drag-drop-zone.drag-over::after {
+    content: "Drop image here";
+    color: #28a745;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* Upload Progress Styles */
+.upload-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    z-index: 100;
+}
+
+.upload-progress-bar {
+    width: 80%;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.upload-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #007bff, #28a745);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 3px;
+}
+
+.upload-progress-text {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Image Upload Button Enhancements */
+.image-upload-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.image-upload-btn.uploading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.image-upload-btn .upload-spinner {
+    display: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+.image-upload-btn.uploading .upload-spinner {
+    display: block;
+}
+
+.image-upload-btn.uploading svg {
+    display: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Image Zoom Modal */
+.image-zoom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    cursor: pointer;
+}
+
+.image-zoom-modal.show {
+    display: flex;
+}
+
+.image-zoom-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    position: relative;
+    cursor: default;
+}
+
+.image-zoom-content img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.image-zoom-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.image-zoom-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.image-zoom-info {
+    position: absolute;
+    bottom: -40px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: white;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Enhanced Image Preview Wrapper */
+.image-preview-wrapper {
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+    max-width: 100%;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.image-preview-wrapper:hover .preview-image {
+    filter: brightness(0.7);
+    transform: scale(1.02);
+}
+
+.image-preview-wrapper:hover .image-delete-overlay {
+    opacity: 1;
+}
+
+/* Image Size Validation */
+.image-size-warning {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin: 5px 0;
+    display: none;
+}
+
+.image-size-warning.show {
+    display: block;
+}
+
+.image-size-warning .compress-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background 0.3s ease;
+}
+
+.image-size-warning .compress-btn:hover {
+    background: #0056b3;
+}
+
+/* Rich Text Input Image Styles */
+.rich-text-input img.inline-image {
+    max-width: 150px;
+    max-height: 100px;
+    object-fit: contain;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+    margin: 0 5px;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.rich-text-input img.inline-image:hover {
+    filter: brightness(0.8);
+    transform: scale(1.05);
+}
+
+/* Image Upload Error States */
+.image-upload-error {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin: 5px 0;
+    display: none;
+}
+
+.image-upload-error.show {
+    display: block;
+}
+
+.image-upload-error .retry-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background 0.3s ease;
+}
+
+.image-upload-error .retry-btn:hover {
+    background: #c82333;
+}
+
 .image-delete-overlay {
     position: absolute;
     top: 0;

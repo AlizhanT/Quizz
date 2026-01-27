@@ -77,6 +77,15 @@
         </div>
     </div>
 
+    <!-- Image Zoom Modal -->
+    <div id="imageZoomModal" class="image-zoom-modal" onclick="closeImageZoom(event)">
+        <div class="image-zoom-content" onclick="event.stopPropagation()">
+            <button class="image-zoom-close" onclick="closeImageZoom(event)">&times;</button>
+            <img id="zoomedImage" src="" alt="Zoomed image">
+            <div class="image-zoom-info" id="zoomedImageInfo"></div>
+        </div>
+    </div>
+
     <!-- JS -->
     <script src="../js/loading-manager.js"></script>
     <script src="../js/supabase-config.js"></script>
