@@ -1815,12 +1815,9 @@ function handleImageUpload(button, type, optionElement = null) {
             }
             
             try {
-                // Show loading indicator
-                const originalButtonText = button.innerHTML;
-                console.log('Starting upload, original button content:', originalButtonText);
-                button.innerHTML = '<div class="loading-spinner"></div>';
-                button.disabled = true;
-                console.log('Button updated with loading spinner');
+                // Remove the upload button to prevent multiple uploads
+                console.log('Removing upload button');
+                button.style.display = 'none';
                 
                 // Upload directly to Supabase Storage
                 const uploadResult = await window.uploadImageToSupabase(file, 'temp');
@@ -1834,16 +1831,14 @@ function handleImageUpload(button, type, optionElement = null) {
                     triggerAutosave();
                 } else {
                     showNotificationModal('Upload Error', 'Failed to upload image: ' + uploadResult.error, 'error');
+                    // Restore button on error
+                    button.style.display = '';
                 }
             } catch (error) {
                 console.error('Upload error:', error);
                 showNotificationModal('Upload Error', 'Failed to upload image. Please try again.', 'error');
-            } finally {
-                // Restore button
-                console.log('Restoring button state');
-                button.innerHTML = originalButtonText;
-                button.disabled = false;
-                console.log('Button state restored');
+                // Restore button on error
+                button.style.display = '';
             }
         }
         
