@@ -143,17 +143,18 @@ function setupRichTextInput(element) {
     element.addEventListener('click', (e) => {
         if (e.target.tagName === 'IMG' && e.target.classList.contains('inline-image')) {
             e.preventDefault();
-            e.target.addEventListener('dblclick', (e) => {
-                e.preventDefault();
-                if (confirm(t('modal.removeImage'))) {
-                    e.target.remove();
-                    updatePlaceholder(element);
-                    setTimeout(() => {
-                        element.style.height = 'auto';
-                        element.style.height = Math.max(element.scrollHeight, 44) + 'px';
-                    }, 10);
-                }
-            });
+            e.stopPropagation();
+            
+            // Add confirmation for better UX
+            if (confirm('Delete this image?')) {
+                e.target.remove();
+                updatePlaceholder(element);
+                setTimeout(() => {
+                    element.style.height = 'auto';
+                    element.style.height = Math.max(element.scrollHeight, 44) + 'px';
+                }, 10);
+                triggerAutosave();
+            }
         }
     });
     
@@ -1803,230 +1804,69 @@ function collectTestData() {
     return result;
 }
 
-// Enhanced Image upload handling function with drag-and-drop, progress, and validation
-function handleImageUpload(button, type, optionElement = null, file = null) {
-    // If no file provided, create file input for traditional upload
-    if (!file) {
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*';
-        fileInput.onchange = (e) => {
-            const selectedFile = e.target.files[0];
-            if (selectedFile) {
-                processImageUpload(selectedFile, button, type, optionElement);
+// Image upload handling function
+function handleImageUpload(button, type, optionElement = null) {
+    // Create a hidden file input
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+    
+    // Add the file input to the DOM
+    document.body.appendChild(fileInput);
+    
+    // Handle file selection
+    fileInput.addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showNotificationModal('Invalid File', 'Please select an image file.', 'error');
+                return;
             }
-        };
-        fileInput.click();
-    } else {
-        // File provided from drag-and-drop
-        processImageUpload(file, button, type, optionElement);
-    }
-}
-
-// Process image upload with validation and progress
-async function processImageUpload(file, button, type, optionElement) {
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-        showImageUploadError(button, 'Please select a valid image file.');
-        return;
-    }
-
-    // Validate file size (5MB limit)
-    const maxSize = 5 * 1024 * 1024;
-    if (file.size > maxSize) {
-        showImageSizeWarning(button, file, type, optionElement);
-        return;
-    }
-
-    // Show loading state
-    showUploadProgress(button, 0);
-
-    try {
-        // Compress image if needed
-        const processedFile = await compressImageIfNeeded(file);
-        
-        // Simulate upload progress
-        await simulateUploadProgress(button);
-        
-        // Upload directly to Supabase Storage
-        const uploadResult = await window.uploadImageToSupabase(processedFile, 'temp');
-        
-        if (uploadResult.success) {
-            // Hide progress and display the image preview with storage URL
-            hideUploadProgress(button);
-            displayImagePreview(uploadResult.url, button, type, processedFile.name, optionElement);
             
-            // Trigger autosave if applicable
-            triggerAutosave();
-        } else {
-            showImageUploadError(button, 'Failed to upload image: ' + uploadResult.error);
+            // Validate file size (max 5MB)
+            const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+            if (file.size > maxSize) {
+                showNotificationModal('File Too Large', 'Please select an image smaller than 5MB.', 'error');
+                return;
+            }
+            
+            try {
+                // Show loading indicator
+                const originalButtonText = button.innerHTML;
+                button.innerHTML = '<div class="loading-spinner"></div>';
+                button.disabled = true;
+                
+                // Upload directly to Supabase Storage
+                const uploadResult = await window.uploadImageToSupabase(file, 'temp');
+                
+                if (uploadResult.success) {
+                    // Display the image preview with storage URL
+                    displayImagePreview(uploadResult.url, button, type, file.name, optionElement);
+                    
+                    // Trigger autosave if applicable
+                    triggerAutosave();
+                } else {
+                    showNotificationModal('Upload Error', 'Failed to upload image: ' + uploadResult.error, 'error');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                showNotificationModal('Upload Error', 'Failed to upload image. Please try again.', 'error');
+            } finally {
+                // Restore button
+                button.innerHTML = originalButtonText;
+                button.disabled = false;
+            }
         }
-    } catch (error) {
-        console.error('Upload error:', error);
-        showImageUploadError(button, 'Failed to upload image. Please try again.');
-    } finally {
-        // Restore button
-        hideUploadProgress(button);
-    }
-}
-
-// Show upload progress
-function showUploadProgress(button, progress = 0) {
-    button.classList.add('uploading');
-    
-    // Add spinner if not exists
-    if (!button.querySelector('.upload-spinner')) {
-        const spinner = document.createElement('div');
-        spinner.className = 'upload-spinner';
-        button.appendChild(spinner);
-    }
-    
-    // Create progress overlay
-    let progressOverlay = button.querySelector('.upload-progress');
-    if (!progressOverlay) {
-        progressOverlay = document.createElement('div');
-        progressOverlay.className = 'upload-progress';
-        progressOverlay.innerHTML = `
-            <div class="upload-spinner"></div>
-            <div class="upload-progress-bar">
-                <div class="upload-progress-fill"></div>
-            </div>
-            <div class="upload-progress-text">Uploading... 0%</div>
-        `;
-        button.appendChild(progressOverlay);
-    }
-    
-    const progressFill = progressOverlay.querySelector('.upload-progress-fill');
-    const progressText = progressOverlay.querySelector('.upload-progress-text');
-    progressFill.style.width = progress + '%';
-    progressText.textContent = `Uploading... ${Math.round(progress)}%`;
-}
-
-// Simulate upload progress
-async function simulateUploadProgress(button) {
-    const progressOverlay = button.querySelector('.upload-progress');
-    const progressFill = progressOverlay.querySelector('.upload-progress-fill');
-    const progressText = progressOverlay.querySelector('.upload-progress-text');
-    
-    for (let i = 0; i <= 90; i += 10) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        progressFill.style.width = i + '%';
-        progressText.textContent = `Uploading... ${i}%`;
-    }
-}
-
-// Hide upload progress
-function hideUploadProgress(button) {
-    button.classList.remove('uploading');
-    const progressOverlay = button.querySelector('.upload-progress');
-    if (progressOverlay) {
-        progressOverlay.remove();
-    }
-    const spinner = button.querySelector('.upload-spinner');
-    if (spinner) {
-        spinner.remove();
-    }
-}
-
-// Show image size warning with compression option
-function showImageSizeWarning(button, file, type, optionElement) {
-    let warningElement = button.parentElement.querySelector('.image-size-warning');
-    if (!warningElement) {
-        warningElement = document.createElement('div');
-        warningElement.className = 'image-size-warning';
-        button.parentElement.appendChild(warningElement);
-    }
-    
-    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
-    warningElement.innerHTML = `
-        Image is large (${fileSizeMB}MB). This may slow down uploads.
-        <button class="compress-btn" onclick="compressAndUpload('${btoa(JSON.stringify({file: file.name, size: file.size, type: file.type}))}', '${type}', ${optionElement ? 'this' : 'null'})">
-            Compress & Upload
-        </button>
-    `;
-    warningElement.classList.add('show');
-    
-    setTimeout(() => {
-        warningElement.classList.remove('show');
-    }, 5000);
-}
-
-// Show image upload error
-function showImageUploadError(button, message) {
-    hideUploadProgress(button);
-    
-    let errorElement = button.parentElement.querySelector('.image-upload-error');
-    if (!errorElement) {
-        errorElement = document.createElement('div');
-        errorElement.className = 'image-upload-error';
-        button.parentElement.appendChild(errorElement);
-    }
-    
-    errorElement.innerHTML = `
-        ${message}
-        <button class="retry-btn" onclick="this.parentElement.remove()">Dismiss</button>
-    `;
-    errorElement.classList.add('show');
-    
-    setTimeout(() => {
-        errorElement.classList.remove('show');
-    }, 5000);
-}
-
-// Compress image if needed
-async function compressImageIfNeeded(file) {
-    // If file is smaller than 1MB, no compression needed
-    if (file.size < 1024 * 1024) {
-        return file;
-    }
-    
-    return new Promise((resolve) => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const img = new Image();
         
-        img.onload = () => {
-            // Calculate new dimensions (max 1200px width/height)
-            let { width, height } = img;
-            const maxSize = 1200;
-            
-            if (width > height && width > maxSize) {
-                height = (height * maxSize) / width;
-                width = maxSize;
-            } else if (height > maxSize) {
-                width = (width * maxSize) / height;
-                height = maxSize;
-            }
-            
-            canvas.width = width;
-            canvas.height = height;
-            
-            // Draw and compress
-            ctx.drawImage(img, 0, 0, width, height);
-            
-            canvas.toBlob((blob) => {
-                const compressedFile = new File([blob], file.name, {
-                    type: 'image/jpeg',
-                    lastModified: Date.now()
-                });
-                resolve(compressedFile);
-            }, 'image/jpeg', 0.8);
-        };
-        img.src = URL.createObjectURL(file);
+        // Remove the file input from DOM
+        document.body.removeChild(fileInput);
     });
+    
+    // Trigger the file selection dialog
+    fileInput.click();
 }
-
-// Global function for compress and upload
-window.compressAndUpload = function(fileData, type, optionElement) {
-    try {
-        const data = JSON.parse(atob(fileData));
-        // Note: In a real implementation, you'd need to reconstruct the File object
-        // For now, we'll just show a message
-        showSubtleNotification('Image compression would be applied here', 'info');
-    } catch (error) {
-        console.error('Error parsing file data:', error);
-    }
-};
 
 function displayImagePreview(imageData, button, type, fileName, optionElement = null) {
     let targetElement;
@@ -2097,22 +1937,14 @@ function createImagePreviewWrapper(imageData, fileName) {
     img.src = imageData;
     img.dataset.name = fileName;
     img.className = 'preview-image';
-    
-    // Add click handler for zoom
-    img.onclick = (e) => {
-        e.stopPropagation();
-        openImageZoom(img);
-    };
 
     // Create delete overlay with bucket icon
     const deleteOverlay = document.createElement('div');
     deleteOverlay.className = 'image-delete-overlay';
     deleteOverlay.innerHTML = getBucketSVG();
 
-    // Make entire wrapper clickable for deletion (but not when clicking the image for zoom)
+    // Make entire wrapper clickable for deletion
     previewWrapper.onclick = (e) => {
-        if (e.target === img) return; // Don't delete if clicking the image itself
-        
         e.preventDefault();
         e.stopPropagation();
         
@@ -2140,7 +1972,7 @@ function insertImageAtCursor(element, imageData, fileName) {
     // Check if there's already an image in this element
     const existingImage = element.querySelector('img.inline-image');
     if (existingImage) {
-        showSubtleNotification('Only one image is allowed per input field. Please remove the existing image first.', 'warning');
+        alert('Only one image is allowed per input field. Please remove the existing image first.');
         return;
     }
     
@@ -2154,12 +1986,6 @@ function insertImageAtCursor(element, imageData, fileName) {
     img.className = 'inline-image';
     img.contentEditable = false;
     img.draggable = false;
-    
-    // Add click handler for zoom
-    img.onclick = (e) => {
-        e.stopPropagation();
-        openImageZoom(img);
-    };
     
     // Load image to get its dimensions
     img.onload = function() {
@@ -2192,143 +2018,6 @@ function insertImageAtCursor(element, imageData, fileName) {
     // Update any placeholder behavior
     updatePlaceholder(element);
 }
-
-// Drag and Drop functionality
-function setupDragAndDrop() {
-    // Add drag and drop listeners to all rich text inputs and image containers
-    const dropZones = document.querySelectorAll('.rich-text-input, .image-preview-container');
-    
-    dropZones.forEach(zone => {
-        zone.addEventListener('dragover', handleDragOver);
-        zone.addEventListener('drop', handleDrop);
-        zone.addEventListener('dragleave', handleDragLeave);
-        zone.addEventListener('dragenter', handleDragEnter);
-    });
-}
-
-function handleDragOver(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.classList.add('drag-over');
-}
-
-function handleDragEnter(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.classList.add('drag-over');
-}
-
-function handleDragLeave(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.classList.remove('drag-over');
-}
-
-function handleDrop(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.classList.remove('drag-over');
-    
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-        const file = files[0];
-        
-        // Determine the type and button based on the drop zone
-        let type = 'question';
-        let button = null;
-        let optionElement = null;
-        
-        if (this.classList.contains('rich-text-input')) {
-            if (this.classList.contains('question-text')) {
-                type = 'question';
-                button = this.parentElement.querySelector('.image-upload-btn');
-            } else if (this.classList.contains('answer-input')) {
-                type = 'answer';
-                optionElement = this.closest('.answer-option');
-                button = optionElement.querySelector('.image-upload-btn');
-            } else if (this.classList.contains('typing-answer')) {
-                type = 'typing';
-                button = this.parentElement.querySelector('.image-upload-btn');
-            } else if (this.classList.contains('matching-left')) {
-                type = 'matching-left';
-                optionElement = this.closest('.matching-row');
-                button = optionElement.querySelector('.image-upload-btn');
-            } else if (this.classList.contains('matching-right')) {
-                type = 'matching-right';
-                optionElement = this.closest('.matching-row');
-                button = optionElement.querySelector('.image-upload-btn');
-            }
-        } else if (this.classList.contains('image-preview-container')) {
-            // For preview containers, find the associated upload button
-            const questionBlock = this.closest('.question-block');
-            if (this.id && this.id.includes('fill-preview')) {
-                type = 'fill';
-                button = questionBlock.querySelector('.image-upload-btn');
-            }
-        }
-        
-        if (button) {
-            handleImageUpload(button, type, optionElement, file);
-        }
-    }
-}
-
-// Image Zoom functionality
-function setupImageZoom() {
-    // Add click listeners to all images
-    document.addEventListener('click', (e) => {
-        if (e.target.tagName === 'IMG' && (e.target.classList.contains('preview-image') || e.target.classList.contains('inline-image'))) {
-            openImageZoom(e.target);
-        }
-    });
-    
-    // Close modal on escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeImageZoom(e);
-        }
-    });
-}
-
-function openImageZoom(imgElement) {
-    const modal = document.getElementById('imageZoomModal');
-    const zoomedImage = document.getElementById('zoomedImage');
-    const imageInfo = document.getElementById('zoomedImageInfo');
-    
-    if (modal && zoomedImage && imageInfo) {
-        zoomedImage.src = imgElement.src;
-        zoomedImage.alt = imgElement.dataset.name || 'Image';
-        
-        // Show image info
-        const fileName = imgElement.dataset.name || 'Unknown';
-        imageInfo.textContent = fileName;
-        
-        modal.classList.add('show');
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
-    }
-}
-
-function closeImageZoom(e) {
-    if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-    
-    const modal = document.getElementById('imageZoomModal');
-    if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = ''; // Restore scrolling
-    }
-}
-
-// Initialize drag and drop and image zoom when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    // Setup drag and drop after a short delay to ensure all elements are loaded
-    setTimeout(() => {
-        setupDragAndDrop();
-        setupImageZoom();
-    }, 1000);
-});
 
 // Validation functions for runTest
 function validateMultipleChoiceQuestions(testData) {
