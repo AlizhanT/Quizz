@@ -1925,26 +1925,28 @@ function createImagePreviewWrapper(imageData, fileName) {
     img.dataset.name = fileName;
     img.className = 'preview-image';
 
-    // Create delete overlay with bucket icon
-    const deleteOverlay = document.createElement('div');
-    deleteOverlay.className = 'image-delete-overlay';
-    deleteOverlay.innerHTML = getBucketSVG();
+// Create delete overlay with bucket icon
+const deleteOverlay = document.createElement('div');
+deleteOverlay.className = 'image-delete-overlay';
+deleteOverlay.innerHTML = getBucketSVG();
 
-    // Make entire wrapper clickable for deletion
-    previewWrapper.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Add confirmation for better UX
-        if (confirm('Delete this image?')) {
-            previewWrapper.remove();
-            triggerAutosave();
-        }
-    };
+// Make entire wrapper clickable for deletion
+previewWrapper.onclick = (e) => {
+    console.log('Preview wrapper clicked - this should NOT happen for answer options');
+    e.preventDefault();
+    e.stopPropagation();
 
-    previewWrapper.appendChild(img);
-    previewWrapper.appendChild(deleteOverlay);
+    // Add confirmation for better UX
+    if (confirm('Delete this image?')) {
+        previewWrapper.remove();
+        triggerAutosave();
+    }
+};
 
+previewWrapper.appendChild(img);
+previewWrapper.appendChild(deleteOverlay);
+
+return previewWrapper;
     return previewWrapper;
 }
 
@@ -2015,6 +2017,7 @@ function insertImageAtCursor(element, imageData, fileName) {
     
     // Add click handler to remove image
     imageWrapper.addEventListener('click', (e) => {
+        console.log('Inline image wrapper clicked');
         e.preventDefault();
         e.stopPropagation();
         
