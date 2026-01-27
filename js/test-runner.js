@@ -1229,43 +1229,46 @@ function previousQuestion() {
     }
 }
 
-function updateNavigationButtons() {
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const finishBtn = document.getElementById('finishBtn');
-
-    // Re-enable all buttons first (in case they were disabled during confirmation wait)
-    if (prevBtn) prevBtn.disabled = false;
-    if (nextBtn) nextBtn.disabled = false;
-    if (finishBtn) finishBtn.disabled = false;
-
-    // Update previous button - disabled only on first question
-    prevBtn.disabled = currentQuestionIndex === 0;
-
-    // Update next/finish button visibility and state
-    if (currentQuestionIndex === testData.questions.length - 1) {
-        nextBtn.classList.add('hidden');
-        finishBtn.classList.remove('hidden');
-    } else {
-        nextBtn.classList.remove('hidden');
-        finishBtn.classList.add('hidden');
+function restartTest() {
+    // Reset all test state
+    currentQuestionIndex = 0;
+    userAnswers = new Array(testData.questions.length).fill(null);
+    confirmedQuestions.clear();
+    validationErrors = [];
+    
+    // Hide results container if visible
+    const resultsContainer = document.getElementById('resultsContainer');
+    if (resultsContainer) {
+        resultsContainer.classList.add('hidden');
     }
+    
+    // Show question container
+    const questionContainer = document.getElementById('questionContainer');
+    if (questionContainer) {
+        questionContainer.classList.remove('hidden');
+    }
+    
+    // Reset and display first question
+    displayQuestion();
+    updateProgress();
+}
+
+function updateNavigationButtons() {
+    // No navigation buttons to update since they were removed
+    // This function is kept for compatibility but does nothing
 }
 
 function disableNavigationButtons() {
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const finishBtn = document.getElementById('finishBtn');
-    
-    // Disable all navigation buttons during confirmation wait
-    if (prevBtn) prevBtn.disabled = true;
-    if (nextBtn) nextBtn.disabled = true;
-    if (finishBtn) finishBtn.disabled = true;
+    // No navigation buttons to disable since they were removed
+    // This function is kept for compatibility but does nothing
 }
 
 function updateProgress() {
-    const progress = ((currentQuestionIndex + 1) / testData.questions.length) * 100;
-    document.getElementById('progressFill').style.width = progress + '%';
+    // Update question counter
+    const questionCounter = document.getElementById('questionCounter');
+    if (questionCounter) {
+        questionCounter.textContent = `${currentQuestionIndex + 1}/${testData.questions.length}`;
+    }
 }
 
 function finishTest() {
@@ -1315,10 +1318,9 @@ function calculateResults() {
 }
 
 function displayResults(percentage, correctCount, totalQuestions, customMessage = null) {
-    // Hide question container and navigation
+    // Hide question container and bottom controls
     document.getElementById('questionContainer').classList.add('hidden');
-    document.querySelector('.bottom-navigation').classList.add('hidden');
-    document.querySelector('.question-counter').classList.add('hidden');
+    document.querySelector('.bottom-controls').classList.add('hidden');
 
     // Show results
     const resultsContainer = document.getElementById('resultsContainer');

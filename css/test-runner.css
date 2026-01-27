@@ -495,16 +495,45 @@ body {
     position: relative;
 }
 
-.fullscreen-btn {
+/* Top Controls */
+.top-controls {
     position: absolute;
     top: 10px;
-    right: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    z-index: 1000;
+}
+
+.restart-btn {
     background: transparent;
     border: none;
     border-radius: var(--border-radius-sm);
     padding: 8px;
     cursor: pointer;
-    z-index: 1000;
+    transition: var(--transition-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.restart-btn:hover {
+    transform: scale(1.1);
+}
+
+.restart-btn:active {
+    transform: scale(0.95);
+}
+
+.fullscreen-btn {
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: 8px;
+    cursor: pointer;
     transition: var(--transition-medium);
     display: flex;
     align-items: center;
@@ -517,6 +546,26 @@ body {
 
 .fullscreen-btn:active {
     transform: scale(0.95);
+}
+
+/* Bottom Controls */
+.bottom-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+}
+
+.question-counter {
+    text-align: left;
+    font-size: 12px;
+    color: var(--primary-color);
+    font-weight: bold;
+    flex-shrink: 0;
+    width: auto;
+    margin: 0;
 }
 
 .test-container:fullscreen,
@@ -556,33 +605,6 @@ body {
     white-space: normal;
 }
 
-.progress-bar-small {
-    width: 120px;
-    height: 6px;
-    background: #e9ecef;
-    border-radius: 2px;
-    overflow: hidden;
-    border: 2px solid var(--primary-color);
-    align-self: center;
-    flex-shrink: 0;
-    margin-bottom: 10px;
-}
-
-.progress-fill {
-    height: 100%;
-    background: var(--primary-color);
-    transition: var(--transition-medium);
-}
-
-.question-counter {
-    text-align: center;
-    font-size: 12px;
-    color: var(--primary-color);
-    font-weight: bold;
-    flex-shrink: 0;
-    width: 120px;
-    margin: 0 auto 10px auto;
-}
 
 .question-container {
     background: var(--background-light);
@@ -716,93 +738,6 @@ body {
     transition: font-size 0.3s ease;
 }
 
-.bottom-navigation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0;
-    margin-top: auto;
-    margin-bottom: 10px;
-    flex-shrink: 0;
-}
-
-.bottom-navigation .nav-btn {
-    position: absolute;
-}
-
-.bottom-navigation .btn-prev {
-    right: calc(50% + 100px);
-}
-
-.bottom-navigation .action-button-container {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: center;
-}
-
-.action-btn {
-    padding: 12px 24px;
-    border: 2px solid var(--success-color);
-    border-radius: 25px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: var(--transition-fast);
-    font-weight: bold;
-    background: var(--success-color);
-    color: white;
-    margin: 0 5px;
-    min-width: 150px;
-}
-
-.action-btn:hover:not(:disabled) {
-    filter: brightness(0.9);
-}
-
-.action-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.bottom-navigation .btn-next,
-.bottom-navigation .btn-finish {
-    left: calc(50% + 100px);
-}
-
-.nav-btn {
-    padding: 4px 8px;
-    border: 2px solid var(--primary-color);
-    border-radius: var(--border-radius-lg);
-    font-size: 12px;
-    cursor: pointer;
-    transition: var(--transition-fast);
-    font-weight: bold;
-    background: transparent;
-}
-
-.nav-btn:disabled {
-    display: none;
-}
-
-.nav-btn:hover:not(:disabled) {
-    filter: brightness(0.9);
-}
-
-.bottom-navigation .btn-finish {
-    padding: 12px 24px !important;
-    font-size: 16px !important;
-    border-radius: 25px !important;
-    background: var(--success-color) !important;
-    color: white !important;
-    border-color: var(--success-color) !important;
-    min-width: 150px !important;
-}
-
-.btn-finish:hover:not(:disabled) {
-    background: var(--success-hover);
-    border-color: var(--success-hover);
-}
 
 .btn-close {
     background: var(--danger-color);
