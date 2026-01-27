@@ -1514,6 +1514,13 @@ input:focus, textarea:focus {
     align-content: flex-start;
 }
 
+/* Specific styling for answer inputs to ensure they match */
+.rich-text-input.answer-input {
+    padding: 10px;
+    border: 1px solid #d0d0d0;
+    border-radius: var(--border-radius-sm);
+}
+
 /* Dynamic height adjustment for inputs with images */
 .rich-text-input:has(.inline-image) {
     min-height: 80px;
