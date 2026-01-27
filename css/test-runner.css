@@ -557,6 +557,9 @@ body {
     color: var(--primary-color);
     font-weight: bold;
     z-index: 1000;
+    width: auto;
+    min-width: 50px;
+    max-width: 100px;
 }
 
 .test-container:fullscreen,
