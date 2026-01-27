@@ -1985,8 +1985,8 @@ button:active {
 
 .answer-input {
     padding: 10px;
-    border: 2px solid var(--primary-color);
-    border-radius: var(--border-radius-lg);
+    border: 1px solid #d0d0d0;
+    border-radius: var(--border-radius-sm);
 }
 
 .add-option-btn, .add-pair-btn {
