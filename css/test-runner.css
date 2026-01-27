@@ -556,6 +556,7 @@ body {
     display: flex;
     align-items: center;
     z-index: 1000;
+    background-color: transparent;
 }
 
 .question-counter {
@@ -564,7 +565,7 @@ body {
     color: var(--primary-color);
     font-weight: bold;
     flex-shrink: 0;
-    width: 10%;
+    width: auto;
     margin: 0;
 }
 
