@@ -1254,13 +1254,27 @@ function restartTest() {
 }
 
 function updateNavigationButtons() {
-    // No navigation buttons to update since they were removed
-    // This function is kept for compatibility but does nothing
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Re-enable all buttons first (in case they were disabled during confirmation wait)
+    if (prevBtn) prevBtn.disabled = false;
+    if (nextBtn) nextBtn.disabled = false;
+
+    // Update previous button - disabled only on first question
+    if (prevBtn) prevBtn.disabled = currentQuestionIndex === 0;
+
+    // Update next button - disabled on last question since we auto-advance
+    if (nextBtn) nextBtn.disabled = currentQuestionIndex === testData.questions.length - 1;
 }
 
 function disableNavigationButtons() {
-    // No navigation buttons to disable since they were removed
-    // This function is kept for compatibility but does nothing
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    // Disable all navigation buttons during confirmation wait
+    if (prevBtn) prevBtn.disabled = true;
+    if (nextBtn) nextBtn.disabled = true;
 }
 
 function updateProgress() {
@@ -1318,9 +1332,10 @@ function calculateResults() {
 }
 
 function displayResults(percentage, correctCount, totalQuestions, customMessage = null) {
-    // Hide question container and question counter
+    // Hide question container, question counter and navigation buttons
     document.getElementById('questionContainer').classList.add('hidden');
     document.querySelector('.question-counter').classList.add('hidden');
+    document.querySelector('.navigation-buttons').classList.add('hidden');
 
     // Show results
     const resultsContainer = document.getElementById('resultsContainer');

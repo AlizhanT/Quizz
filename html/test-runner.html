@@ -39,6 +39,12 @@
 
         <div class="question-counter" id="questionCounter">1/1</div>
 
+        <!-- Navigation Buttons -->
+        <div class="navigation-buttons">
+            <button class="nav-btn btn-prev" id="prevBtn" onclick="previousQuestion()" data-translate="testRunner.previous" title="Previous">Previous</button>
+            <button class="nav-btn btn-next" id="nextBtn" onclick="nextQuestion()" data-translate="testRunner.next" title="Next">Next</button>
+        </div>
+
         <div id="resultsContainer" class="results-container hidden">
             <h2 class="results-title" data-translate="testRunner.complete">Test Complete!</h2>
             <div class="score-display" id="scoreDisplay">0%</div>
