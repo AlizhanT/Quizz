@@ -1531,13 +1531,12 @@ input, textarea {
     max-width: 150px;
     max-height: none; /* Remove max-height constraint */
     display: inline-block;
-    vertical-align: middle;
-    margin: 4px 8px;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
+    position: relative;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    height: auto; /* Allow natural height */
+    transition: var(--transition-fast);
+    vertical-align: middle;
+    margin: 0 4px;
+    border-radius: 4px;
 }
 
 /* Constrain images within answer options to prevent layout issues */
@@ -1586,10 +1585,6 @@ input, textarea {
     vertical-align: middle;
 }
 
-.inline-image:hover {
-    filter: brightness(0.5);
-    cursor: pointer;
-}
 
 .inline-image:active {
     transform: scale(0.98);

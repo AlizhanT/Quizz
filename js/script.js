@@ -141,13 +141,17 @@ function setupRichTextInput(element) {
     ['focus', 'blur'].forEach(event => element.addEventListener(event, updatePlaceholder));
     
     element.addEventListener('click', (e) => {
-        if (e.target.tagName === 'IMG' && e.target.classList.contains('inline-image')) {
+        // Check if clicked on an inline image or its wrapper
+        const imageWrapper = e.target.closest('span');
+        const inlineImage = imageWrapper?.querySelector('img.inline-image');
+        
+        if (inlineImage && imageWrapper) {
             e.preventDefault();
             e.stopPropagation();
             
             // Add confirmation for better UX
             if (confirm('Delete this image?')) {
-                e.target.remove();
+                imageWrapper.remove();
                 updatePlaceholder(element);
                 setTimeout(() => {
                     element.style.height = 'auto';
@@ -1987,26 +1991,70 @@ function insertImageAtCursor(element, imageData, fileName) {
     img.contentEditable = false;
     img.draggable = false;
     
-    // Load image to get its dimensions
-    img.onload = function() {
-        // Resize the container to fit the image
-        setTimeout(() => {
-            element.style.height = 'auto';
-            const newHeight = Math.max(element.scrollHeight, img.height + 30); // Add padding
-            element.style.height = newHeight + 'px';
-        }, 10);
-    };
+    // Create delete overlay for inline image
+    const deleteOverlay = document.createElement('div');
+    deleteOverlay.className = 'inline-image-delete-overlay';
+    deleteOverlay.innerHTML = getBucketSVG();
+    deleteOverlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+        border-radius: 4px;
+    `;
+    
+    // Create wrapper for image and overlay
+    const imageWrapper = document.createElement('span');
+    imageWrapper.style.cssText = `
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    `;
+    
+    // Add hover effect to show/hide delete overlay
+    imageWrapper.addEventListener('mouseenter', () => {
+        deleteOverlay.style.opacity = '1';
+        img.style.filter = 'brightness(0.5)';
+    });
+    
+    imageWrapper.addEventListener('mouseleave', () => {
+        deleteOverlay.style.opacity = '0';
+        img.style.filter = 'brightness(1)';
+    });
+    
+    // Add click handler to remove image
+    imageWrapper.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (confirm('Delete this image?')) {
+            imageWrapper.remove();
+            updatePlaceholder(element);
+            triggerAutosave();
+        }
+    });
+    
+    imageWrapper.appendChild(img);
+    imageWrapper.appendChild(deleteOverlay);
     
     // Get current selection
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
     
-    // Insert image at cursor position
+    // Insert image wrapper at cursor position
     range.deleteContents();
-    range.insertNode(img);
+    range.insertNode(imageWrapper);
     
-    // Move cursor after the image
-    range.setStartAfter(img);
+    // Move cursor after the image wrapper
+    range.setStartAfter(imageWrapper);
     range.collapse(true);
     selection.removeAllRanges();
     selection.addRange(range);
