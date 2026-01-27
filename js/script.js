@@ -140,28 +140,6 @@ function setupRichTextInput(element) {
     
     ['focus', 'blur'].forEach(event => element.addEventListener(event, updatePlaceholder));
     
-    element.addEventListener('click', (e) => {
-        // Check if clicked on an inline image or its wrapper
-        const imageWrapper = e.target.closest('span');
-        const inlineImage = imageWrapper?.querySelector('img.inline-image');
-        
-        if (inlineImage && imageWrapper) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Add confirmation for better UX
-            if (confirm('Delete this image?')) {
-                imageWrapper.remove();
-                updatePlaceholder(element);
-                setTimeout(() => {
-                    element.style.height = 'auto';
-                    element.style.height = Math.max(element.scrollHeight, 44) + 'px';
-                }, 10);
-                triggerAutosave();
-            }
-        }
-    });
-    
     setTimeout(() => {
         element.style.height = Math.max(element.scrollHeight, 44) + 'px';
     }, 10);
@@ -246,21 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     observer.observe(document.body, { childList: true, subtree: true });
-    
-    // Add global click handler for image preview deletion
-    document.addEventListener('click', (e) => {
-        const previewWrapper = e.target.closest('.image-preview-wrapper');
-        if (previewWrapper && !e.target.closest('.rich-text-input')) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Add confirmation for better UX
-            if (confirm('Delete this image?')) {
-                previewWrapper.remove();
-                triggerAutosave();
-            }
-        }
-    });
     
     // Check for autosave on page load
     setTimeout(() => {
