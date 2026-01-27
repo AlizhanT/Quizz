@@ -1466,15 +1466,27 @@ input, textarea {
     width: 100%;
     max-width: 100%;
     padding: 12px;
-    border: 2px solid var(--primary-color);
-    border-radius: var(--border-radius-md);
-    font-size: 16px;
+    border: 1px solid #d0d0d0;
+    border-radius: 0;
+    background: white;
+    font-size: 14px;
+    font-family: inherit;
     resize: none;
-    transition: var(--transition-medium);
-    cursor: text;
     box-sizing: border-box;
-    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     min-height: 44px;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+input:hover, textarea:hover {
+    border-color: #b0b0b0;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--primary-focus);
+    box-shadow: 0 0 8px rgba(100, 149, 237, 0.3);
+    outline: none;
 }
 
 /* Rich text input styles */
@@ -1482,23 +1494,30 @@ input, textarea {
     width: 100%;
     max-width: 100%;
     padding: 12px;
-    border: 2px solid var(--primary-color);
-    border-radius: var(--border-radius-lg);
+    border: 1px solid #d0d0d0;
+    border-radius: 0;
     background-color: white;
-    transition: var(--transition-medium);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     cursor: text;
     box-sizing: border-box;
     overflow: hidden;
     min-height: 44px;
-    max-height: 200px;
+    max-height: 120px;
+    overflow-y: auto;
     line-height: 1.4;
     outline: none;
     position: relative;
-    resize: vertical;
+    resize: none;
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
     align-content: flex-start;
+}
+
+/* Dynamic height adjustment for inputs with images */
+.rich-text-input:has(.inline-image) {
+    min-height: 80px;
+    max-height: 160px;
 }
 
 .rich-text-input.empty::before {
@@ -1518,12 +1537,11 @@ input, textarea {
 
 .rich-text-input:focus {
     border-color: var(--primary-focus);
-    box-shadow: 0 0 12px rgba(100, 149, 237, 0.4);
+    box-shadow: 0 0 8px rgba(100, 149, 237, 0.3);
 }
 
 .rich-text-input:hover {
-    border-color: var(--primary-hover);
-    box-shadow: 0 0 8px rgba(65, 105, 225, 0.3);
+    border-color: #b0b0b0;
 }
 
 /* Inline image styles */
@@ -1590,16 +1608,6 @@ input, textarea {
     transform: scale(0.98);
 }
 
-input:hover, textarea:hover {
-    border-color: var(--primary-hover);
-    box-shadow: 0 0 8px rgba(65, 105, 225, 0.3);
-}
-
-input:focus, textarea:focus {
-    border-color: var(--primary-focus);
-    box-shadow: 0 0 12px rgba(100, 149, 237, 0.4);
-    outline: none;
-}
 
 button {
     cursor: pointer;
