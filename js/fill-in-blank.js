@@ -185,8 +185,6 @@ function displayFillInBlank(question, container) {
     
     // Restore previous answers if any
     restoreFillAnswers();
-    
-    addConfirmButton(container, confirmFillBlank);
 }
 
 // Fill-in-the-blank drag and drop handlers for option chips
@@ -309,7 +307,7 @@ function handleFillDrop(e) {
     userAnswers[currentQuestionIndex].blanks[blankIndex] = optionText;
     
     // Check if all blanks are filled
-    checkAllBlanksFilled();
+    checkAllFillBlanksFilled();
 }
 
 function restoreFillAnswers() {
@@ -338,7 +336,7 @@ function restoreFillAnswers() {
         }
     });
     
-    checkAllBlanksFilled();
+    checkAllFillBlanksFilled();
 }
 
 function swapBlankContents(blank1, blank2) {
@@ -364,7 +362,7 @@ function swapBlankContents(blank1, blank2) {
     }
     
     // Check if all blanks are filled
-    checkAllBlanksFilled();
+    checkAllFillBlanksFilled();
 }
 
 function moveOptionBetweenBlanks(sourceBlank, targetBlank) {
@@ -396,7 +394,7 @@ function moveOptionBetweenBlanks(sourceBlank, targetBlank) {
     }
     
     // Check if all blanks are filled
-    checkAllBlanksFilled();
+    checkAllFillBlanksFilled();
 }
 
 function handleBlankClick(e) {
@@ -433,18 +431,16 @@ function removeOptionFromBlank(dropZone) {
     }
     
     // Check if all blanks are filled
-    checkAllBlanksFilled();
+    checkAllFillBlanksFilled();
 }
 
-function checkAllBlanksFilled() {
+function checkAllFillBlanksFilled() {
     const dropZones = document.querySelectorAll('.blank-drop-zone');
     const allFilled = Array.from(dropZones).every(zone => zone.dataset.occupied === 'true');
     
-    // Enable/disable confirm button based on whether all blanks are filled
-    const confirmBtn = document.querySelector('.action-btn');
-    if (confirmBtn) {
-        confirmBtn.disabled = !allFilled;
-        confirmBtn.textContent = allFilled ? 'Confirm Answer' : 'Fill all blanks first';
+    // If all blanks are filled, check the answer immediately
+    if (allFilled) {
+        confirmFillBlank();
     }
 }
 
@@ -453,15 +449,42 @@ function confirmFillBlank() {
     const allFilled = Array.from(dropZones).every(zone => zone.dataset.occupied === 'true');
     
     if (!allFilled) {
-        const confirmBtn = document.querySelector('.action-btn');
-        if (confirmBtn) {
-            confirmBtn.textContent = 'Please fill all blanks first';
-            setTimeout(() => {
-                confirmBtn.textContent = 'Please fill all blanks first';
-            }, 2000);
-        }
         return;
     }
+    
+    // Check answers and provide feedback
+    dropZones.forEach((zone) => {
+        const correctWord = zone.dataset.correctWord ? zone.dataset.correctWord.toLowerCase().trim() : '';
+        const droppedWord = zone.dataset.optionText ? zone.dataset.optionText.toLowerCase().trim() : '';
+        
+        // Remove existing status indicators
+        const existingStatus = zone.querySelector('.word-status');
+        if (existingStatus) {
+            existingStatus.remove();
+        }
+        
+        // Add status indicator
+        const status = document.createElement('div');
+        status.className = 'word-status';
+        
+        if (correctWord === droppedWord) {
+            // Correct answer
+            zone.classList.add('correct');
+            zone.classList.remove('incorrect');
+            status.classList.add('correct');
+            status.classList.remove('incorrect');
+            status.textContent = '✓';
+        } else {
+            // Incorrect answer
+            zone.classList.add('incorrect');
+            zone.classList.remove('correct');
+            status.classList.add('incorrect');
+            status.classList.remove('correct');
+            status.textContent = '✗';
+        }
+        
+        zone.appendChild(status);
+    });
     
     // Mark question as completed
     userAnswers[currentQuestionIndex].completed = true;
@@ -471,36 +494,6 @@ function confirmFillBlank() {
     if (typeof disableNavigationButtons === 'function') {
         disableNavigationButtons();
     }
-    
-    // Check each drop zone and show feedback
-    dropZones.forEach((zone) => {
-        const correctWord = zone.dataset.correctWord;
-        const userWord = zone.textContent;
-        const isCorrect = userWord.toLowerCase().trim() === correctWord.toLowerCase().trim();
-        
-        if (isCorrect) {
-            zone.classList.add('correct');
-            zone.classList.remove('incorrect');
-        } else {
-            zone.classList.add('incorrect');
-            zone.classList.remove('correct');
-        }
-    });
-    
-    // Show feedback on options
-    document.querySelectorAll('.fill-option-chip').forEach(chip => {
-        const optionText = chip.dataset.optionText;
-        const dropZoneWithOption = Array.from(dropZones).find(zone => zone.textContent === optionText);
-        const isCorrectOption = dropZoneWithOption && dropZoneWithOption.classList.contains('correct');
-        
-        if (isCorrectOption) {
-            chip.classList.add('correct-feedback');
-            chip.classList.remove('incorrect-feedback');
-        } else {
-            chip.classList.add('incorrect-feedback');
-            chip.classList.remove('correct-feedback');
-        }
-    });
     
     // Disable all drag and drop
     document.querySelectorAll('.fill-option-chip').forEach(chip => {
@@ -512,14 +505,6 @@ function confirmFillBlank() {
         zone.style.cursor = 'default';
         zone.classList.add('confirmed');
     });
-    
-    // Disable confirm button
-    const confirmBtn = document.querySelector('.action-btn');
-    if (confirmBtn) {
-        confirmBtn.disabled = true;
-        confirmBtn.textContent = 'Answer Confirmed';
-        confirmBtn.style.background = '#6c757d';
-    }
     
     // Auto-advance to next question after showing feedback
     setTimeout(() => {

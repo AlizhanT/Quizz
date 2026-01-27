@@ -290,12 +290,6 @@ function displayQuestion() {
     // Clear previous content and validation errors
     container.innerHTML = '';
     clearValidationErrors();
-    
-    // Clear action buttons
-    const actionButtonContainer = document.getElementById('actionButtonContainer');
-    if (actionButtonContainer) {
-        actionButtonContainer.innerHTML = '';
-    }
 
     // Validate current question
     const errors = validateCurrentQuestion();
@@ -389,18 +383,6 @@ function createAnswerOption(option, index) {
     return optionDiv;
 }
 
-function addConfirmButton(container, confirmHandler) {
-    const actionButtonContainer = document.getElementById('actionButtonContainer');
-    if (actionButtonContainer) {
-        actionButtonContainer.innerHTML = ''; // Clear previous buttons
-        const confirmBtn = document.createElement('button');
-        confirmBtn.className = 'action-btn';
-        confirmBtn.setAttribute('data-translate', 'js.testRunner.confirmAnswer');
-        confirmBtn.textContent = t('js.testRunner.confirmAnswer');
-        confirmBtn.onclick = confirmHandler;
-        actionButtonContainer.appendChild(confirmBtn);
-    }
-}
 
 function createMatchingContainer(question) {
     const matchingContainer = document.createElement('div');
@@ -543,7 +525,6 @@ function displayMultipleChoice(question, container) {
     });
 
     container.appendChild(optionsContainer);
-    addConfirmButton(container, confirmMultipleChoice);
 }
 
 
@@ -553,18 +534,6 @@ function displayMatching(question, container) {
 
     const matchingContainer = createMatchingContainer(question);
     container.appendChild(matchingContainer);
-
-    // Add check button to action button container
-    const actionButtonContainer = document.getElementById('actionButtonContainer');
-    if (actionButtonContainer) {
-        actionButtonContainer.innerHTML = ''; // Clear previous buttons
-        const checkButton = document.createElement('button');
-        checkButton.className = 'action-btn';
-        checkButton.setAttribute('data-translate', 'js.testRunner.checkPairs');
-        checkButton.textContent = t('js.testRunner.checkPairs');
-        checkButton.onclick = () => checkNewPairs(question);
-        actionButtonContainer.appendChild(checkButton);
-    }
 
     // Initialize matching answers
     if (!userAnswers[currentQuestionIndex]) {
@@ -853,14 +822,6 @@ function checkNewPairs(question) {
     // Disable navigation buttons during confirmation wait
     disableNavigationButtons();
     
-    // Disable check button
-    const checkButton = document.querySelector('#actionButtonContainer .action-btn');
-    if (checkButton) {
-        checkButton.disabled = true;
-        const totalPairs = question.pairs.length;
-        checkButton.textContent = `Checked: ${correctPairs}/${totalPairs} correct pairs`;
-    }
-    
     // Auto-advance to next question after showing feedback
     setTimeout(() => {
         if (currentQuestionIndex < testData.questions.length - 1) {
@@ -876,11 +837,10 @@ function checkAllMatchingDropZonesFilled() {
     const dropZones = document.querySelectorAll('.matching-drop-zone');
     const allFilled = Array.from(dropZones).every(zone => zone.dataset.occupied === 'true');
     
-    // Enable/disable check button based on whether all drop zones are filled
-    const checkBtn = document.querySelector('#actionButtonContainer .action-btn');
-    if (checkBtn) {
-        checkBtn.disabled = !allFilled;
-        checkBtn.textContent = allFilled ? t('js.testRunner.checkPairs') : 'Fill all matches first';
+    // If all drop zones are filled, check the pairs immediately
+    if (allFilled) {
+        const question = testData.questions[currentQuestionIndex];
+        checkNewPairs(question);
     }
 }
 
@@ -1178,54 +1138,43 @@ function selectAnswer(index) {
             option.classList.remove('selected');
         }
     });
+    
+    // Check answer immediately
+    checkMultipleChoiceAnswer();
 }
 
-function confirmMultipleChoice() {
-    // Check if an answer is selected
-    if (userAnswers[currentQuestionIndex] !== null && userAnswers[currentQuestionIndex] !== undefined) {
-        const question = testData.questions[currentQuestionIndex];
-        const isCorrect = userAnswers[currentQuestionIndex] === question.correctAnswer;
+function checkMultipleChoiceAnswer() {
+    const question = testData.questions[currentQuestionIndex];
+    const isCorrect = userAnswers[currentQuestionIndex] === question.correctAnswer;
+    
+    // Mark this question as confirmed
+    confirmedQuestions.add(currentQuestionIndex);
+    
+    // Disable navigation buttons during confirmation wait
+    disableNavigationButtons();
+    
+    // Disable all answer options
+    document.querySelectorAll('.answer-option').forEach((option, index) => {
+        option.style.pointerEvents = 'none';
+        option.style.cursor = 'default';
         
-        // Mark this question as confirmed
-        confirmedQuestions.add(currentQuestionIndex);
-        
-        // Disable navigation buttons during confirmation wait
-        disableNavigationButtons();
-        
-        // Disable all answer options
-        document.querySelectorAll('.answer-option').forEach((option, index) => {
-            option.style.pointerEvents = 'none';
-            option.style.cursor = 'default';
-            
-            // Show feedback
-            if (index === question.correctAnswer) {
-                option.classList.add('correct');
-            } else if (index === userAnswers[currentQuestionIndex] && !isCorrect) {
-                option.classList.add('incorrect');
-            }
-        });
-        
-        // Disable confirm button
-        const confirmBtn = document.querySelector('.action-btn');
-        if (confirmBtn) {
-            confirmBtn.disabled = true;
-            confirmBtn.textContent = t('js.testRunner.answerConfirmed');
-            confirmBtn.style.background = '#6c757d';
+        // Show feedback
+        if (index === question.correctAnswer) {
+            option.classList.add('correct');
+        } else if (index === userAnswers[currentQuestionIndex] && !isCorrect) {
+            option.classList.add('incorrect');
         }
-        
-        // Auto-advance to next question after showing feedback
-        setTimeout(() => {
-            if (currentQuestionIndex < testData.questions.length - 1) {
-                nextQuestion();
-            } else {
-                // If this is the last question, finish the test
-                finishTest();
-            }
-        }, 1500);
-    } else {
-        // Show notification instead of modal
-        addNotification('Please select an answer first', 'warning');
-    }
+    });
+    
+    // Auto-advance to next question after showing feedback
+    setTimeout(() => {
+        if (currentQuestionIndex < testData.questions.length - 1) {
+            nextQuestion();
+        } else {
+            // If this is the last question, finish the test
+            finishTest();
+        }
+    }, 1500);
 }
 
 function lockConfirmedQuestion() {
@@ -1246,14 +1195,6 @@ function lockConfirmedQuestion() {
                     option.classList.add('incorrect');
                 }
             });
-            
-            // Disable confirm button
-            const confirmBtn = document.querySelector('.confirm-btn');
-            if (confirmBtn) {
-                confirmBtn.disabled = true;
-                confirmBtn.textContent = t('js.testRunner.answerConfirmed');
-                confirmBtn.style.background = '#6c757d';
-            }
         } else if (question.type === 'fill') {
             // Lock fill-in-the-blank question
             restoreFillAnswers();
@@ -1268,14 +1209,6 @@ function lockConfirmedQuestion() {
                 zone.style.cursor = 'default';
                 zone.classList.add('confirmed');
             });
-            
-            // Disable confirm button
-            const confirmBtn = document.querySelector('.action-btn');
-            if (confirmBtn) {
-                confirmBtn.disabled = true;
-                confirmBtn.textContent = t('js.testRunner.answerConfirmed');
-                confirmBtn.style.background = '#6c757d';
-            }
         }
     }
 }
