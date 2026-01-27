@@ -485,7 +485,7 @@ body {
     margin: 0 auto;
     width: 100%;
     background: white;
-    border-radius: var(--border-radius-md);
+    border: none;
     padding: 20px;
     box-shadow: var(--shadow-md);
     height: calc(100vh - 20px);
@@ -977,53 +977,6 @@ body {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-5px); }
     75% { transform: translateX(5px); }
-}
-
-.check-matches-btn {
-    background: #28a745;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    margin: 20px auto;
-    display: block;
-    transition: all 0.3s ease;
-}
-
-.check-matches-btn:hover {
-    background: #218838;
-}
-
-.check-matches-btn:disabled {
-    background: #6c757d;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.confirm-btn {
-    background: #28a745;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    margin: 20px auto;
-    display: block;
-    transition: all 0.3s ease;
-    min-width: 150px;
-}
-
-.confirm-btn:hover {
-    background: #218838;
-}
-
-.confirm-btn:active {
-    transform: translateY(0);
 }
 
 .hidden {
