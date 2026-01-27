@@ -1278,7 +1278,11 @@ function disableNavigationButtons() {
 }
 
 function updateProgress() {
-    // No progress updates needed since question counter was removed
+    // Update question counter
+    const questionCounter = document.getElementById('questionCounter');
+    if (questionCounter) {
+        questionCounter.textContent = `${currentQuestionIndex + 1}/${testData.questions.length}`;
+    }
 }
 
 function finishTest() {
@@ -1328,8 +1332,9 @@ function calculateResults() {
 }
 
 function displayResults(percentage, correctCount, totalQuestions, customMessage = null) {
-    // Hide question container and navigation buttons
+    // Hide question container, question counter and navigation buttons
     document.getElementById('questionContainer').classList.add('hidden');
+    document.querySelector('.question-counter').classList.add('hidden');
     document.querySelector('.navigation-buttons').classList.add('hidden');
 
     // Show results

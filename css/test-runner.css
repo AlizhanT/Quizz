@@ -548,6 +548,20 @@ body {
     transform: scale(0.95);
 }
 
+.question-counter {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    text-align: left;
+    font-size: 12px;
+    color: var(--primary-color);
+    font-weight: bold;
+    z-index: 1000;
+    width: auto;
+    min-width: 50px;
+    max-width: 100px;
+}
+
 /* Navigation Buttons */
 .navigation-buttons {
     position: absolute;
