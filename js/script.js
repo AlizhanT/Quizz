@@ -1257,11 +1257,7 @@ function renderQuestionContent(type, container) {
         container.innerHTML = `
             <div class="form-group">
                 <label data-translate="quiz.sentenceWithBlanks">Sentence with blanks</label>
-                <div class="input-with-image">
-                    <textarea class="fill-sentence" data-translate-placeholder="quiz.sentencePlaceholder" placeholder="Enter the sentence that should have hidden words here" rows="3" oninput="updateBlanks(this)"></textarea>
-                    <button class="image-upload-btn" onclick="handleImageUpload(this, 'fill')" data-translate-title="quiz.addImage" title="Add image">${getSVGIcon('image')}</button>
-                </div>
-                <div class="image-preview-container" id="fill-preview-${questionCount}"></div>
+                <textarea class="fill-sentence" data-translate-placeholder="quiz.sentencePlaceholder" placeholder="Enter the sentence that should have hidden words here" rows="3" oninput="updateBlanks(this)"></textarea>
             </div>
             <div class="form-group">
                 <label data-translate="quiz.fillOptions">Fill Options</label>
@@ -1878,16 +1874,6 @@ function displayImagePreview(imageData, button, type, fileName, optionElement = 
         if (targetElement) {
             // Insert image at cursor position or at the end
             insertImageAtCursor(targetElement, imageData, fileName);
-        }
-    } else if (type === 'fill') {
-        // For fill-in-the-blank questions, find the preview container
-        const questionBlock = button.closest('.question-block');
-        const previewContainer = questionBlock.querySelector('.image-preview-container[id^="fill-preview-"]');
-
-        if (previewContainer) {
-            // Create preview wrapper with delete functionality
-            const previewWrapper = createImagePreviewWrapper(imageData, fileName);
-            previewContainer.appendChild(previewWrapper);
         }
     } else if (type === 'matching-left') {
         // For matching left side, find the rich text input
