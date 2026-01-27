@@ -1318,9 +1318,9 @@ function calculateResults() {
 }
 
 function displayResults(percentage, correctCount, totalQuestions, customMessage = null) {
-    // Hide question container and bottom controls
+    // Hide question container and question counter
     document.getElementById('questionContainer').classList.add('hidden');
-    document.querySelector('.bottom-controls').classList.add('hidden');
+    document.querySelector('.question-counter').classList.add('hidden');
 
     // Show results
     const resultsContainer = document.getElementById('resultsContainer');

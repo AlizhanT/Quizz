@@ -548,25 +548,15 @@ body {
     transform: scale(0.95);
 }
 
-/* Bottom Controls */
-.bottom-controls {
+.question-counter {
     position: absolute;
     bottom: 10px;
     left: 10px;
-    display: flex;
-    align-items: center;
-    z-index: 1000;
-    background-color: transparent;
-}
-
-.question-counter {
     text-align: left;
     font-size: 12px;
     color: var(--primary-color);
     font-weight: bold;
-    flex-shrink: 0;
-    width: auto;
-    margin: 0;
+    z-index: 1000;
 }
 
 .test-container:fullscreen,
