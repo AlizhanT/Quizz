@@ -79,22 +79,19 @@
             <div class="settings-container">
                 <!-- Username Change Panel -->
                 <div class="settings-panel">
-                    <div class="panel-header">
-                        <div class="panel-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-246q54-53 125.5-83.5T480-360q83 0 154.5 30.5T760-246v-514H200v514Zm280-194q58 0 99-41t41-99q0-58-41-99t-99-41q-58 0-99 41t-41 99q0 58 41 99t99 41ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm69-80h422q-44-39-99.5-59.5T480-280q-56 0-112.5 20.5T269-200Zm211-320q-25 0-42.5-17.5T420-580q0-25 17.5-42.5T480-640q25 0 42.5 17.5T540-580q0 25-17.5 42.5T480-520Zm0 17Z"/></svg></div>
-                        <div class="panel-title">
-                            <h2 data-translate="profile.changeDisplayName.title">Change Display Name</h2>
-                            <p data-translate="profile.changeDisplayName.description">Update your name as it appears across the platform</p>
-                        </div>
-                    </div>
                     <div class="panel-content">
                         <form id="usernameForm" class="settings-form">
                             <div class="form-group">
-                                <label for="currentUsername" data-translate="profile.currentDisplayName">Current Display Name</label>
-                                <input type="text" id="currentUsername" readonly value="Loading...">
+                                <div class="label-input-row">
+                                    <label for="currentUsername" data-translate="profile.currentDisplayName">Current Display Name</label>
+                                    <input type="text" id="currentUsername" readonly value="Loading...">
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label for="newUsername" data-translate="profile.newDisplayName">New Display Name</label>
-                                <input type="text" id="newUsername" name="newUsername" data-translate-placeholder="profile.newDisplayNamePlaceholder" placeholder="Enter new display name" required>
+                                <div class="label-input-row">
+                                    <label for="newUsername" data-translate="profile.newDisplayName">New Display Name</label>
+                                    <input type="text" id="newUsername" name="newUsername" data-translate-placeholder="profile.newDisplayNamePlaceholder" placeholder="Enter new display name" required>
+                                </div>
                                 <div class="input-hint" data-translate="profile.displayNameHint">Display name must be 3-20 characters long</div>
                             </div>
                             <div class="form-actions">
@@ -106,30 +103,29 @@
 
                 <!-- Password Change Panel -->
                 <div class="settings-panel">
-                    <div class="panel-header">
-                        <div class="panel-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z"/></svg></div>
-                        <div class="panel-title">
-                            <h2 data-translate="profile.changePassword.title">Change Password</h2>
-                            <p data-translate="profile.changePassword.description">Secure your account with a new password</p>
-                        </div>
-                    </div>
                     <div class="panel-content">
                         <form id="passwordForm" class="settings-form">
                             <div class="form-group">
-                                <label for="currentPassword" data-translate="profile.currentPassword">Current Password</label>
-                                <input type="password" id="currentPassword" name="currentPassword" data-translate-placeholder="profile.currentPasswordPlaceholder" placeholder="Enter current password" required>
+                                <div class="label-input-row">
+                                    <label for="currentPassword" data-translate="profile.currentPassword">Current Password</label>
+                                    <input type="password" id="currentPassword" name="currentPassword" data-translate-placeholder="profile.currentPasswordPlaceholder" placeholder="Enter current password" required>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label for="newPassword" data-translate="profile.newPassword">New Password</label>
-                                <input type="password" id="newPassword" name="newPassword" data-translate-placeholder="profile.newPasswordPlaceholder" placeholder="Enter new password" required>
+                                <div class="label-input-row">
+                                    <label for="newPassword" data-translate="profile.newPassword">New Password</label>
+                                    <input type="password" id="newPassword" name="newPassword" data-translate-placeholder="profile.newPasswordPlaceholder" placeholder="Enter new password" required>
+                                </div>
                                 <div class="password-indicator" id="passwordStrength">
                                     <span class="indicator-text" data-translate="profile.passwordRequirement">Password must be at least 6 characters</span>
                                     <span class="indicator-icon" id="strengthIcon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></span>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="confirmPassword" data-translate="profile.confirmNewPassword">Confirm New Password</label>
-                                <input type="password" id="confirmPassword" name="confirmPassword" data-translate-placeholder="profile.confirmNewPasswordPlaceholder" placeholder="Confirm new password" required>
+                                <div class="label-input-row">
+                                    <label for="confirmPassword" data-translate="profile.confirmNewPassword">Confirm New Password</label>
+                                    <input type="password" id="confirmPassword" name="confirmPassword" data-translate-placeholder="profile.confirmNewPasswordPlaceholder" placeholder="Confirm new password" required>
+                                </div>
                                 <div class="password-indicator" id="passwordMatch">
                                     <span class="indicator-text" data-translate="profile.passwordMatch">Passwords must match</span>
                                     <span class="indicator-icon" id="matchIcon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></span>
@@ -144,22 +140,17 @@
 
                 <!-- Language Settings Panel -->
                 <div class="settings-panel">
-                    <div class="panel-header">
-                        <div class="panel-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Zm0-82q26-36 45-75t31-83H404q12 44 31 83t45 75Zm-104-16q-18-33-31.5-68.5T322-320H204q29 50 72.5 87t99.5 55Zm208 0q56-18 99.5-55t72.5-87H638q-9 38-22.5 73.5T584-178ZM170-400h136q-3-20-4.5-39.5T300-480q0-21 1.5-40.5T306-560H170q-5 20-7.5 39.5T160-480q0 21 2.5 40.5T170-400Zm216 0h188q3-20 4.5-39.5T580-480q0-21-1.5-40.5T574-560H386q-3 20-4.5 39.5T380-480q0 21 1.5 40.5T386-400Zm268 0h136q5-20 7.5-39.5T800-480q0-21-2.5-40.5T790-560H654q3 20 4.5 39.5T660-480q0 21-1.5 40.5T654-400Zm-16-240h118q-29-50-72.5-87T584-782q18 33 31.5 68.5T638-640Zm-234 0h152q-12-44-31-83t-45-75q-26 36-45 75t-31 83Zm-200 0h118q9-38 22.5-73.5T376-782q-56 18-99.5 55T204-640Z"/></svg></div>
-                        <div class="panel-title">
-                            <h2 data-translate="profile.languageSettings.title">Language Settings</h2>
-                            <p data-translate="profile.languageSettings.description">Choose your preferred language for the interface</p>
-                        </div>
-                    </div>
                     <div class="panel-content">
                         <form id="languageForm" class="settings-form">
                             <div class="form-group">
-                                <label for="languageSelector" data-translate="profile.languageSettings.selectLanguage">Select Language</label>
-                                <select id="languageSelector" name="languageSelector" class="language-select">
-                                    <option value="en">🇺🇸 English</option>
-                                    <option value="ru">🇷🇺 Русский</option>
-                                    <option value="kk">🇰🇿 Қазақша</option>
-                                </select>
+                                <div class="label-input-row">
+                                    <label for="languageSelector" data-translate="profile.languageSettings.selectLanguage">Select Language</label>
+                                    <select id="languageSelector" name="languageSelector" class="language-select">
+                                        <option value="en">🇺🇸 English</option>
+                                        <option value="ru">🇷🇺 Русский</option>
+                                        <option value="kk">🇰🇿 Қазақша</option>
+                                    </select>
+                                </div>
                                 <div class="input-hint" data-translate="profile.languageSettings.languageHint">Language preference will be saved and applied across all pages</div>
                             </div>
                         </form>
@@ -168,13 +159,6 @@
 
                 <!-- Account Management Panel -->
                 <div class="settings-panel danger-panel">
-                    <div class="panel-header">
-                        <div class="panel-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z"/></svg></div>
-                        <div class="panel-title">
-                            <h2 data-translate="profile.accountManagement.title">Account Management</h2>
-                            <p data-translate="profile.accountManagement.description">Manage your account settings</p>
-                        </div>
-                    </div>
                     <div class="panel-content">
                         <div class="danger-actions">
                             <button class="btn-delete-account" onclick="showDeleteConfirmation()">
