@@ -56,13 +56,13 @@ function logout() {
     // Clear session/storage
     if (typeof supabase !== 'undefined') {
         supabase.auth.signOut().then(() => {
-            window.location.href = 'welcome.html';
+            // window.location.href = 'welcome.html'; // Temporarily disabled
         }).catch(error => {
             console.error('Error signing out:', error);
-            window.location.href = 'welcome.html';
+            // window.location.href = 'welcome.html'; // Temporarily disabled
         });
     } else {
-        window.location.href = 'welcome.html';
+        // window.location.href = 'welcome.html'; // Temporarily disabled
     }
 }
 

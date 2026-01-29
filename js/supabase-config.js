@@ -43,7 +43,7 @@ async function requireAuth() {
   const user = await getCurrentUser();
   if (!user) {
     // Redirect to welcome page if not authenticated
-    window.location.href = 'welcome.html';
+    // window.location.href = 'welcome.html'; // Temporarily disabled
     return false;
   }
   return true;
@@ -53,7 +53,7 @@ async function logout() {
   try {
     const { error } = await supabaseClient.auth.signOut();
     if (error) throw error;
-    window.location.href = 'welcome.html';
+    // window.location.href = 'welcome.html'; // Temporarily disabled
   } catch (error) {
     console.error('Error logging out:', error);
   }
@@ -65,7 +65,7 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
   
   if (event === 'SIGNED_OUT') {
     console.log('User signed out, redirecting to welcome page');
-    window.location.href = 'welcome.html';
+    // window.location.href = 'welcome.html'; // Temporarily disabled
   } else if (event === 'SIGNED_IN') {
     console.log('User signed in:', session.user);
     console.log('Session established:', session);
