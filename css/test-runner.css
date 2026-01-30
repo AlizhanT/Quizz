@@ -74,6 +74,10 @@
     transition: var(--transition-fast);
     cursor: pointer;
     position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .matching-drop-zone:hover {
@@ -142,6 +146,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .matching-right-item:hover {
@@ -169,15 +177,6 @@
     transform: scale(1.05);
     box-shadow: 0 6px 20px rgba(65, 105, 225, 0.3);
     transition: none;
-}
-
-/* Prevent text selection during pointer drag */
-.matching-right-item.pointer-dragging,
-.matching-drop-zone.pointer-dragging {
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
 }
 
 /* Touch feedback for better mobile experience */
