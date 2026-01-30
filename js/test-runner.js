@@ -458,6 +458,9 @@ function createMatchingContainer(question) {
         dropZone.addEventListener('dragstart', handleMatchingDropZoneDragStart, { passive: false });
         dropZone.addEventListener('dragend', handleMatchingDropZoneDragEnd, { passive: false });
         
+        // Add touch event listeners for drop zones
+        dropZone.addEventListener('touchstart', handleDropZoneTouchStart, { passive: false });
+        
         // Assemble left group: left item + drop zone
         leftGroup.appendChild(leftItem);
         leftGroup.appendChild(dropZone);
@@ -491,6 +494,9 @@ function createMatchingContainer(question) {
         // Add drag event listeners for right items
         rightItem.addEventListener('dragstart', handleMatchingRightDragStart, { passive: false });
         rightItem.addEventListener('dragend', handleMatchingRightDragEnd, { passive: false });
+        
+        // Add touch event listeners for immediate touch response
+        rightItem.addEventListener('touchstart', handleTouchStart, { passive: false });
         
         rightItems.push(rightItem);
     });
@@ -1431,12 +1437,12 @@ let isDragging = false;
 
 // Touch event handlers for matching right items
 function handleTouchStart(e) {
-    e.preventDefault();
     const touch = e.touches[0];
     const target = e.target.closest('.matching-right-item, .fill-option-chip');
     
     if (!target) return;
     
+    e.preventDefault();
     touchItem = target;
     const rect = target.getBoundingClientRect();
     touchOffset.x = touch.clientX - rect.left;
@@ -1699,7 +1705,6 @@ function handleDropZoneTouchEnd(e) {
 
 // Add touch event listeners when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    // Add touch event listeners to draggable elements
-    document.addEventListener('touchstart', handleTouchStart, { passive: false });
-    document.addEventListener('touchstart', handleDropZoneTouchStart, { passive: false });
+    // Add touch event listeners to draggable elements only
+    // Don't add global touchstart listener to avoid interfering with clicks
 });

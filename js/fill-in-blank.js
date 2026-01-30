@@ -115,6 +115,9 @@ function displayFillInBlank(question, container) {
         dropZone.addEventListener('dragstart', handleBlankDragStart);
         dropZone.addEventListener('dragend', handleBlankDragEnd);
         
+        // Add touch event listeners for drop zones
+        dropZone.addEventListener('touchstart', handleDropZoneTouchStart, { passive: false });
+        
         sentenceContainer.appendChild(dropZone);
         
         // Add trailing punctuation after the blank if it exists
@@ -166,6 +169,9 @@ function displayFillInBlank(question, container) {
                 // Add drag event listeners
                 optionChip.addEventListener('dragstart', handleFillDragStart);
                 optionChip.addEventListener('dragend', handleFillDragEnd);
+                
+                // Add touch event listeners for immediate touch response
+                optionChip.addEventListener('touchstart', handleTouchStart, { passive: false });
                 
                 optionsContainer.appendChild(optionChip);
             }
