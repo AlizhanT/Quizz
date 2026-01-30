@@ -156,24 +156,24 @@
     cursor: grabbing;
 }
 
-/* Touch-specific styles */
-.matching-right-item.dragging.touch-dragging {
+/* Pointer-specific styles */
+.matching-right-item.dragging.pointer-dragging {
     opacity: 0.8;
     transform: scale(1.1) rotate(3deg);
     box-shadow: 0 8px 25px rgba(65, 105, 225, 0.4);
     transition: none;
 }
 
-.matching-drop-zone.dragging.touch-dragging {
+.matching-drop-zone.dragging.pointer-dragging {
     opacity: 0.7;
     transform: scale(1.05);
     box-shadow: 0 6px 20px rgba(65, 105, 225, 0.3);
     transition: none;
 }
 
-/* Prevent text selection during touch drag */
-.matching-right-item.touch-dragging,
-.matching-drop-zone.touch-dragging {
+/* Prevent text selection during pointer drag */
+.matching-right-item.pointer-dragging,
+.matching-drop-zone.pointer-dragging {
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;

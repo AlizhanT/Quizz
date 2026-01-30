@@ -202,6 +202,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Add window resize listener for dynamic font scaling
     window.addEventListener('resize', debounceFitContent);
+    
+    // Add global pointer event listeners
+    document.addEventListener('pointermove', handleMatchingRightPointerMove);
+    document.addEventListener('pointerup', handleMatchingRightPointerUp);
+    document.addEventListener('pointermove', handleMatchingDropZonePointerMove);
+    document.addEventListener('pointerup', handleMatchingDropZonePointerUp);
 });
 
 function loadTestData() {
@@ -437,15 +443,9 @@ function createMatchingContainer(question) {
         dropZone.dataset.occupied = 'false';
         dropZone.dataset.droppedIndex = '';
         
-        // Add drop event listeners
-        dropZone.addEventListener('dragover', handleMatchingDragOver);
-        dropZone.addEventListener('drop', handleMatchingDrop);
-        dropZone.addEventListener('dragleave', handleMatchingDragLeave);
-        
-        // Add touch event listeners for drop zones
-        dropZone.addEventListener('touchstart', handleMatchingDropZoneTouchStart, { passive: false });
-        dropZone.addEventListener('touchmove', handleMatchingDropZoneTouchMove, { passive: false });
-        dropZone.addEventListener('touchend', handleMatchingDropZoneTouchEnd, { passive: false });
+        // Add pointer event listeners for drop zones (replaces drag + touch events)
+        dropZone.addEventListener('pointerdown', handleMatchingDropZonePointerDown);
+        dropZone.classList.add('drop-target');
         
         // Add event listener to clear validation errors when user interacts
         dropZone.addEventListener('click', () => {
@@ -453,15 +453,11 @@ function createMatchingContainer(question) {
                 clearValidationErrors();
             }
         });
-        dropZone.addEventListener('dragover', () => {
+        dropZone.addEventListener('pointerover', () => {
             if (typeof clearValidationErrors === 'function') {
                 clearValidationErrors();
             }
         });
-        
-        // Add drag event listeners for removing options
-        dropZone.addEventListener('dragstart', handleMatchingDropZoneDragStart);
-        dropZone.addEventListener('dragend', handleMatchingDropZoneDragEnd);
         
         // Assemble left group: left item + drop zone
         leftGroup.appendChild(leftItem);
@@ -472,7 +468,6 @@ function createMatchingContainer(question) {
         const rightItem = document.createElement('div');
         rightItem.className = 'matching-right-item';
         rightItem.dataset.originalIndex = index;
-        rightItem.draggable = true;
         
         const rightContent = document.createElement('div');
         
@@ -493,14 +488,9 @@ function createMatchingContainer(question) {
         
         rightItem.appendChild(rightContent);
         
-        // Add drag event listeners for right items
-        rightItem.addEventListener('dragstart', handleMatchingRightDragStart);
-        rightItem.addEventListener('dragend', handleMatchingRightDragEnd);
-        
-        // Add touch event listeners for immediate touch response
-        rightItem.addEventListener('touchstart', handleMatchingRightTouchStart, { passive: false });
-        rightItem.addEventListener('touchmove', handleMatchingRightTouchMove, { passive: false });
-        rightItem.addEventListener('touchend', handleMatchingRightTouchEnd, { passive: false });
+        // Add pointer event listeners for right items (replaces drag + touch events)
+        rightItem.addEventListener('pointerdown', handleMatchingRightPointerDown);
+        rightItem.classList.add('draggable');
         
         rightItems.push(rightItem);
     });
@@ -556,9 +546,12 @@ function displayMatching(question, container) {
 // New matching drag and drop handlers
 let draggedMatchingRightElement = null;
 let draggedMatchingDropZone = null;
-let touchItem = null;
-let touchOffset = { x: 0, y: 0 };
-let isDragging = false;
+
+// Pointer-based drag state
+let activePointerItem = null;
+let pointerOffsetX = 0;
+let pointerOffsetY = 0;
+let activePointerId = null;
 
 function handleMatchingRightDragStart(e) {
     draggedMatchingRightElement = e.target;
@@ -571,41 +564,34 @@ function handleMatchingRightDragEnd(e) {
     e.target.classList.remove('dragging');
 }
 
-// Touch event handlers for right items
-function handleMatchingRightTouchStart(e) {
+// Pointer event handlers for right items
+function handleMatchingRightPointerDown(e) {
     e.preventDefault();
-    touchItem = e.currentTarget;
-    isDragging = false;
+    activePointerItem = e.currentTarget;
+    activePointerId = e.pointerId;
     
-    const touch = e.touches[0];
-    const rect = touchItem.getBoundingClientRect();
-    touchOffset.x = touch.clientX - rect.left;
-    touchOffset.y = touch.clientY - rect.top;
+    const rect = activePointerItem.getBoundingClientRect();
+    pointerOffsetX = e.clientX - rect.left;
+    pointerOffsetY = e.clientY - rect.top;
     
     // Add visual feedback immediately
-    touchItem.classList.add('dragging', 'touch-dragging');
-    touchItem.style.position = 'fixed';
-    touchItem.style.zIndex = '1000';
-    touchItem.style.pointerEvents = 'none';
+    activePointerItem.classList.add('dragging', 'pointer-dragging');
+    activePointerItem.style.position = 'fixed';
+    activePointerItem.style.zIndex = '1000';
+    activePointerItem.style.pointerEvents = 'none';
     
-    // Start a short timer to distinguish between tap and drag
-    setTimeout(() => {
-        if (touchItem) {
-            isDragging = true;
-        }
-    }, 100);
+    // Capture the pointer to ensure we get all events for it
+    activePointerItem.setPointerCapture(e.pointerId);
 }
 
-function handleMatchingRightTouchMove(e) {
-    e.preventDefault();
-    if (!touchItem) return;
+function handleMatchingRightPointerMove(e) {
+    if (!activePointerItem || e.pointerId !== activePointerId) return;
     
-    const touch = e.touches[0];
-    touchItem.style.left = (touch.clientX - touchOffset.x) + 'px';
-    touchItem.style.top = (touch.clientY - touchOffset.y) + 'px';
+    activePointerItem.style.left = `${e.clientX - pointerOffsetX}px`;
+    activePointerItem.style.top = `${e.clientY - pointerOffsetY}px`;
     
     // Check if we're over a drop zone
-    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
     const dropZone = elementBelow?.closest('.matching-drop-zone');
     
     // Remove drag-over from all drop zones
@@ -619,21 +605,19 @@ function handleMatchingRightTouchMove(e) {
     }
 }
 
-function handleMatchingRightTouchEnd(e) {
-    e.preventDefault();
-    if (!touchItem) return;
+function handleMatchingRightPointerUp(e) {
+    if (!activePointerItem || e.pointerId !== activePointerId) return;
     
-    const touch = e.changedTouches[0];
-    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
     const dropZone = elementBelow?.closest('.matching-drop-zone');
     
     // Remove visual feedback
-    touchItem.classList.remove('dragging', 'touch-dragging');
-    touchItem.style.position = '';
-    touchItem.style.zIndex = '';
-    touchItem.style.pointerEvents = '';
-    touchItem.style.left = '';
-    touchItem.style.top = '';
+    activePointerItem.classList.remove('dragging', 'pointer-dragging');
+    activePointerItem.style.position = '';
+    activePointerItem.style.zIndex = '';
+    activePointerItem.style.pointerEvents = '';
+    activePointerItem.style.left = '';
+    activePointerItem.style.top = '';
     
     // Remove drag-over from all drop zones
     document.querySelectorAll('.matching-drop-zone').forEach(zone => {
@@ -641,21 +625,21 @@ function handleMatchingRightTouchEnd(e) {
     });
     
     // If we're over a drop zone, handle the drop
-    if (dropZone && isDragging) {
-        // Simulate the drop behavior
+    if (dropZone) {
+        // If the drop zone is already occupied, remove the existing option first
         if (dropZone.dataset.occupied === 'true') {
             removeMatchingOptionFromDropZone(dropZone);
         }
         
-        const originalIndex = touchItem.dataset.originalIndex;
-        dropZone.textContent = touchItem.textContent;
+        const originalIndex = activePointerItem.dataset.originalIndex;
+        dropZone.textContent = activePointerItem.textContent;
         dropZone.dataset.originalIndex = originalIndex;
         dropZone.dataset.occupied = 'true';
         dropZone.classList.add('filled');
         
         // Hide the dragged right item
-        touchItem.style.display = 'none';
-        touchItem.classList.add('used');
+        activePointerItem.style.display = 'none';
+        activePointerItem.classList.add('used');
         
         // Update user answers
         const correctIndex = parseInt(dropZone.dataset.correctIndex);
@@ -671,162 +655,50 @@ function handleMatchingRightTouchEnd(e) {
         checkAllMatchingDropZonesFilled();
     }
     
-    // Reset touch variables
-    touchItem = null;
-    isDragging = false;
+    // Release pointer capture and reset
+    activePointerItem.releasePointerCapture(e.pointerId);
+    activePointerItem = null;
+    activePointerId = null;
 }
 
-function handleMatchingDropZoneDragStart(e) {
+// Pointer event handlers for drop zones
+let activeDropZoneItem = null;
+let dropZonePointerOffsetX = 0;
+let dropZonePointerOffsetY = 0;
+let activeDropZonePointerId = null;
+
+function handleMatchingDropZonePointerDown(e) {
     const dropZone = e.currentTarget;
     
     // Only allow dragging if the drop zone is filled and not confirmed
     if (dropZone.dataset.occupied === 'true' && !dropZone.classList.contains('confirmed')) {
-        draggedMatchingDropZone = dropZone;
-        dropZone.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', dropZone.textContent);
-        
-        // Create a ghost image showing the option being removed
-        const ghostImage = document.createElement('div');
-        ghostImage.textContent = dropZone.textContent;
-        ghostImage.style.cssText = 'position: absolute; top: -1000px; left: -1000px; padding: 8px 12px; background: #f8f9fa; border: 2px solid #6c757d; border-radius: 8px; font-weight: 600;';
-        document.body.appendChild(ghostImage);
-        e.dataTransfer.setDragImage(ghostImage, 0, 0);
-        setTimeout(() => ghostImage.remove(), 0);
-    } else {
         e.preventDefault();
-    }
-}
-
-function handleMatchingDropZoneDragEnd(e) {
-    const dropZone = e.currentTarget;
-    dropZone.classList.remove('dragging');
-    
-    // If the drop zone was dragged and dropped outside, remove the option
-    if (draggedMatchingDropZone === dropZone) {
-        // Check if we're outside any valid drop zone
-        setTimeout(() => {
-            if (draggedMatchingDropZone) {
-                removeMatchingOptionFromDropZone(dropZone);
-                draggedMatchingDropZone = null;
-            }
-        }, 10);
-    }
-}
-
-function handleMatchingDragOver(e) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    
-    const dropZone = e.currentTarget;
-    // Always show drag-over effect, regardless of occupation status
-    if (dropZone.classList.contains('matching-drop-zone')) {
-        dropZone.classList.add('drag-over');
-    }
-}
-
-function handleMatchingDragLeave(e) {
-    const dropZone = e.currentTarget;
-    dropZone.classList.remove('drag-over');
-}
-
-function handleMatchingDrop(e) {
-    e.preventDefault();
-    
-    const dropZone = e.currentTarget;
-    dropZone.classList.remove('drag-over');
-    
-    // Handle dropping a drop zone onto another drop zone (swap or remove)
-    if (draggedMatchingDropZone && draggedMatchingDropZone !== dropZone) {
-        // If both drop zones are filled, swap their contents
-        if (draggedMatchingDropZone.dataset.occupied === 'true' && dropZone.dataset.occupied === 'true') {
-            swapMatchingDropZoneContents(draggedMatchingDropZone, dropZone);
-        }
-        // If dragging a filled drop zone onto an empty one, move the option
-        else if (draggedMatchingDropZone.dataset.occupied === 'true' && dropZone.dataset.occupied === 'false') {
-            moveMatchingOptionBetweenDropZones(draggedMatchingDropZone, dropZone);
-        }
-        draggedMatchingDropZone = null;
-        return;
-    }
-    
-    if (!draggedMatchingRightElement) return;
-    
-    // If the drop zone is already occupied, remove the existing option first
-    if (dropZone.dataset.occupied === 'true') {
-        removeMatchingOptionFromDropZone(dropZone);
-    }
-    
-    // Place the option in the drop zone
-    const originalIndex = draggedMatchingRightElement.dataset.originalIndex;
-    
-    dropZone.textContent = draggedMatchingRightElement.textContent;
-    dropZone.dataset.originalIndex = originalIndex;
-    dropZone.dataset.occupied = 'true';
-    dropZone.classList.add('filled');
-    
-    // Hide the dragged right item
-    draggedMatchingRightElement.style.display = 'none';
-    draggedMatchingRightElement.classList.add('used');
-    
-    // Update user answers
-    const correctIndex = parseInt(dropZone.dataset.correctIndex);
-    if (!userAnswers[currentQuestionIndex]) {
-        userAnswers[currentQuestionIndex] = {
-            matches: {},
-            checked: false
-        };
-    }
-    userAnswers[currentQuestionIndex].matches[correctIndex] = parseInt(originalIndex);
-    
-    // Check if all drop zones are filled
-    checkAllMatchingDropZonesFilled();
-}
-
-// Touch event handlers for drop zones
-let touchDropZone = null;
-let touchDropZoneOffset = { x: 0, y: 0 };
-let isDraggingDropZone = false;
-
-function handleMatchingDropZoneTouchStart(e) {
-    e.preventDefault();
-    const dropZone = e.currentTarget;
-    
-    // Only allow dragging if the drop zone is filled and not confirmed
-    if (dropZone.dataset.occupied === 'true' && !dropZone.classList.contains('confirmed')) {
-        touchDropZone = dropZone;
-        isDraggingDropZone = false;
+        activeDropZoneItem = dropZone;
+        activeDropZonePointerId = e.pointerId;
         
-        const touch = e.touches[0];
         const rect = dropZone.getBoundingClientRect();
-        touchDropZoneOffset.x = touch.clientX - rect.left;
-        touchDropZoneOffset.y = touch.clientY - rect.top;
+        dropZonePointerOffsetX = e.clientX - rect.left;
+        dropZonePointerOffsetY = e.clientY - rect.top;
         
         // Add visual feedback immediately
-        dropZone.classList.add('dragging', 'touch-dragging');
+        dropZone.classList.add('dragging', 'pointer-dragging');
         dropZone.style.position = 'fixed';
         dropZone.style.zIndex = '1000';
         dropZone.style.pointerEvents = 'none';
         
-        // Start a short timer to distinguish between tap and drag
-        setTimeout(() => {
-            if (touchDropZone) {
-                isDraggingDropZone = true;
-            }
-        }, 100);
+        // Capture the pointer to ensure we get all events for it
+        dropZone.setPointerCapture(e.pointerId);
     }
 }
 
-function handleMatchingDropZoneTouchMove(e) {
-    e.preventDefault();
-    if (!touchDropZone) return;
+function handleMatchingDropZonePointerMove(e) {
+    if (!activeDropZoneItem || e.pointerId !== activeDropZonePointerId) return;
     
-    const touch = e.touches[0];
-    touchDropZone.style.left = (touch.clientX - touchDropZoneOffset.x) + 'px';
-    touchDropZone.style.top = (touch.clientY - touchDropZoneOffset.y) + 'px';
+    activeDropZoneItem.style.left = `${e.clientX - dropZonePointerOffsetX}px`;
+    activeDropZoneItem.style.top = `${e.clientY - dropZonePointerOffsetY}px`;
     
     // Check if we're over another drop zone
-    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
     const targetDropZone = elementBelow?.closest('.matching-drop-zone');
     
     // Remove drag-over from all drop zones
@@ -835,26 +707,24 @@ function handleMatchingDropZoneTouchMove(e) {
     });
     
     // Add drag-over to the target drop zone (if it's different)
-    if (targetDropZone && targetDropZone !== touchDropZone) {
+    if (targetDropZone && targetDropZone !== activeDropZoneItem) {
         targetDropZone.classList.add('drag-over');
     }
 }
 
-function handleMatchingDropZoneTouchEnd(e) {
-    e.preventDefault();
-    if (!touchDropZone) return;
+function handleMatchingDropZonePointerUp(e) {
+    if (!activeDropZoneItem || e.pointerId !== activeDropZonePointerId) return;
     
-    const touch = e.changedTouches[0];
-    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
     const targetDropZone = elementBelow?.closest('.matching-drop-zone');
     
     // Remove visual feedback
-    touchDropZone.classList.remove('dragging', 'touch-dragging');
-    touchDropZone.style.position = '';
-    touchDropZone.style.zIndex = '';
-    touchDropZone.style.pointerEvents = '';
-    touchDropZone.style.left = '';
-    touchDropZone.style.top = '';
+    activeDropZoneItem.classList.remove('dragging', 'pointer-dragging');
+    activeDropZoneItem.style.position = '';
+    activeDropZoneItem.style.zIndex = '';
+    activeDropZoneItem.style.pointerEvents = '';
+    activeDropZoneItem.style.left = '';
+    activeDropZoneItem.style.top = '';
     
     // Remove drag-over from all drop zones
     document.querySelectorAll('.matching-drop-zone').forEach(zone => {
@@ -862,21 +732,24 @@ function handleMatchingDropZoneTouchEnd(e) {
     });
     
     // If we're over another drop zone, handle the swap/move
-    if (targetDropZone && targetDropZone !== touchDropZone && isDraggingDropZone) {
+    if (targetDropZone && targetDropZone !== activeDropZoneItem) {
         // If both drop zones are filled, swap their contents
-        if (touchDropZone.dataset.occupied === 'true' && targetDropZone.dataset.occupied === 'true') {
-            swapMatchingDropZoneContents(touchDropZone, targetDropZone);
+        if (activeDropZoneItem.dataset.occupied === 'true' && targetDropZone.dataset.occupied === 'true') {
+            swapMatchingDropZoneContents(activeDropZoneItem, targetDropZone);
         }
         // If dragging a filled drop zone onto an empty one, move the option
-        else if (touchDropZone.dataset.occupied === 'true' && targetDropZone.dataset.occupied === 'false') {
-            moveMatchingOptionBetweenDropZones(touchDropZone, targetDropZone);
+        else if (activeDropZoneItem.dataset.occupied === 'true' && targetDropZone.dataset.occupied === 'false') {
+            moveMatchingOptionBetweenDropZones(activeDropZoneItem, targetDropZone);
         }
     }
     
-    // Reset touch variables
-    touchDropZone = null;
-    isDraggingDropZone = false;
+    // Release pointer capture and reset
+    activeDropZoneItem.releasePointerCapture(e.pointerId);
+    activeDropZoneItem = null;
+    activeDropZonePointerId = null;
 }
+
+// Helper functions for drop zone operations
 
 function removeMatchingOptionFromDropZone(dropZone) {
     const optionText = dropZone.textContent;
