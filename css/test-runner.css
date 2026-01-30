@@ -1,3 +1,12 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+}
+
 /* New Matching Layout Styles */
 .matching-container-new {
     display: flex;
@@ -1270,4 +1279,10 @@ body {
 .blank-drop-zone:not(.validation-error),
 .matching-stack:not(.validation-error) {
     animation: none;
+}
+
+.draggable {
+  touch-action: none !important;
+  user-select: none;
+  -webkit-user-select: none;
 }

@@ -457,7 +457,7 @@ function createMatchingContainer(question) {
         dropZone.addEventListener('pointerdown', handleMatchingDropZonePointerDown);
         dropZone.classList.add('draggable', 'drop-target');
         
-        // Disable native HTML5 drag behavior
+        // Add ondragstart = () => false after element creation
         dropZone.ondragstart = () => false;
         
         // Add event listener to clear validation errors when user interacts
@@ -505,7 +505,7 @@ function createMatchingContainer(question) {
         rightItem.addEventListener('pointerdown', handleMatchingRightPointerDown);
         rightItem.classList.add('draggable');
         
-        // Disable native HTML5 drag behavior
+        // Add ondragstart = () => false after element creation
         rightItem.ondragstart = () => false;
         
         rightItems.push(rightItem);
@@ -582,23 +582,21 @@ function handleMatchingRightDragEnd(e) {
 
 // Pointer event handlers for right items
 function handleMatchingRightPointerDown(e) {
-    e.preventDefault(); // REQUIRED to cancel long-press delay
-    
-    activePointerItem = e.currentTarget;
-    activePointerId = e.pointerId;
-    
-    const rect = activePointerItem.getBoundingClientRect();
-    pointerOffsetX = e.clientX - rect.left;
-    pointerOffsetY = e.clientY - rect.top;
-    
-    // Add visual feedback immediately
-    activePointerItem.classList.add('dragging', 'pointer-dragging');
-    activePointerItem.style.position = 'fixed';
-    activePointerItem.style.zIndex = '1000';
-    activePointerItem.style.pointerEvents = 'none';
-    
-    // Capture the pointer to ensure we get all events for it
-    activePointerItem.setPointerCapture(e.pointerId);
+  e.preventDefault();
+  activePointerItem.setPointerCapture(e.pointerId);
+  
+  activePointerItem = e.currentTarget;
+  activePointerId = e.pointerId;
+  
+  const rect = activePointerItem.getBoundingClientRect();
+  pointerOffsetX = e.clientX - rect.left;
+  pointerOffsetY = e.clientY - rect.top;
+  
+  // Add visual feedback immediately
+  activePointerItem.classList.add('dragging', 'pointer-dragging');
+  activePointerItem.style.position = 'fixed';
+  activePointerItem.style.zIndex = '1000';
+  activePointerItem.style.pointerEvents = 'none';
 }
 
 function handleMatchingRightPointerMove(e) {
@@ -685,28 +683,26 @@ let dropZonePointerOffsetY = 0;
 let activeDropZonePointerId = null;
 
 function handleMatchingDropZonePointerDown(e) {
-    e.preventDefault(); // REQUIRED to cancel long-press delay
+  e.preventDefault();
+  
+  const dropZone = e.currentTarget;
+  dropZone.setPointerCapture(e.pointerId);
+  
+  // Only allow dragging if the drop zone is filled and not confirmed
+  if (dropZone.dataset.occupied === 'true' && !dropZone.classList.contains('confirmed')) {
+    activeDropZoneItem = dropZone;
+    activeDropZonePointerId = e.pointerId;
     
-    const dropZone = e.currentTarget;
+    const rect = dropZone.getBoundingClientRect();
+    dropZonePointerOffsetX = e.clientX - rect.left;
+    dropZonePointerOffsetY = e.clientY - rect.top;
     
-    // Only allow dragging if the drop zone is filled and not confirmed
-    if (dropZone.dataset.occupied === 'true' && !dropZone.classList.contains('confirmed')) {
-        activeDropZoneItem = dropZone;
-        activeDropZonePointerId = e.pointerId;
-        
-        const rect = dropZone.getBoundingClientRect();
-        dropZonePointerOffsetX = e.clientX - rect.left;
-        dropZonePointerOffsetY = e.clientY - rect.top;
-        
-        // Add visual feedback immediately
-        dropZone.classList.add('dragging', 'pointer-dragging');
-        dropZone.style.position = 'fixed';
-        dropZone.style.zIndex = '1000';
-        dropZone.style.pointerEvents = 'none';
-        
-        // Capture the pointer to ensure we get all events for it
-        dropZone.setPointerCapture(e.pointerId);
-    }
+    // Add visual feedback immediately
+    dropZone.classList.add('dragging', 'pointer-dragging');
+    dropZone.style.position = 'fixed';
+    dropZone.style.zIndex = '1000';
+    dropZone.style.pointerEvents = 'none';
+  }
 }
 
 function handleMatchingDropZonePointerMove(e) {
