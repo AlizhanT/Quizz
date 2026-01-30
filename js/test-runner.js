@@ -208,7 +208,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('pointerup', handleMatchingRightPointerUp);
     document.addEventListener('pointermove', handleMatchingDropZonePointerMove);
     document.addEventListener('pointerup', handleMatchingDropZonePointerUp);
+    
+    // Disable native HTML5 drag behavior globally
+    disableNativeDragBehavior();
 });
+
+// Function to disable native HTML5 drag behavior on all draggable elements
+function disableNativeDragBehavior() {
+    document.querySelectorAll('.draggable, .matching-right-item, .matching-drop-zone').forEach(element => {
+        element.ondragstart = () => false;
+    });
+}
 
 function loadTestData() {
     console.log('loadTestData() called');
@@ -445,7 +455,10 @@ function createMatchingContainer(question) {
         
         // Add pointer event listeners for drop zones (replaces drag + touch events)
         dropZone.addEventListener('pointerdown', handleMatchingDropZonePointerDown);
-        dropZone.classList.add('drop-target');
+        dropZone.classList.add('draggable', 'drop-target');
+        
+        // Disable native HTML5 drag behavior
+        dropZone.ondragstart = () => false;
         
         // Add event listener to clear validation errors when user interacts
         dropZone.addEventListener('click', () => {
@@ -491,6 +504,9 @@ function createMatchingContainer(question) {
         // Add pointer event listeners for right items (replaces drag + touch events)
         rightItem.addEventListener('pointerdown', handleMatchingRightPointerDown);
         rightItem.classList.add('draggable');
+        
+        // Disable native HTML5 drag behavior
+        rightItem.ondragstart = () => false;
         
         rightItems.push(rightItem);
     });
@@ -566,7 +582,8 @@ function handleMatchingRightDragEnd(e) {
 
 // Pointer event handlers for right items
 function handleMatchingRightPointerDown(e) {
-    e.preventDefault();
+    e.preventDefault(); // REQUIRED to cancel long-press delay
+    
     activePointerItem = e.currentTarget;
     activePointerId = e.pointerId;
     
@@ -668,11 +685,12 @@ let dropZonePointerOffsetY = 0;
 let activeDropZonePointerId = null;
 
 function handleMatchingDropZonePointerDown(e) {
+    e.preventDefault(); // REQUIRED to cancel long-press delay
+    
     const dropZone = e.currentTarget;
     
     // Only allow dragging if the drop zone is filled and not confirmed
     if (dropZone.dataset.occupied === 'true' && !dropZone.classList.contains('confirmed')) {
-        e.preventDefault();
         activeDropZoneItem = dropZone;
         activeDropZonePointerId = e.pointerId;
         

@@ -510,10 +510,19 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden !important;
-    overscroll-behavior: none !important;
-    -webkit-overflow-scrolling: touch !important;
-    touch-action: manipulation !important;
+    overflow: hidden;
+    touch-action: none;
+}
+
+/* Global draggable element styles */
+.draggable,
+.answer-item,
+.question-item {
+    touch-action: none !important;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 body {
