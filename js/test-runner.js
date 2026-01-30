@@ -202,23 +202,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Add window resize listener for dynamic font scaling
     window.addEventListener('resize', debounceFitContent);
-    
-    // Add global pointer event listeners
-    document.addEventListener('pointermove', handleMatchingRightPointerMove);
-    document.addEventListener('pointerup', handleMatchingRightPointerUp);
-    document.addEventListener('pointermove', handleMatchingDropZonePointerMove);
-    document.addEventListener('pointerup', handleMatchingDropZonePointerUp);
-    
-    // Disable native HTML5 drag behavior globally
-    disableNativeDragBehavior();
 });
-
-// Function to disable native HTML5 drag behavior on all draggable elements
-function disableNativeDragBehavior() {
-    document.querySelectorAll('.draggable, .matching-right-item, .matching-drop-zone').forEach(element => {
-        element.ondragstart = () => false;
-    });
-}
 
 function loadTestData() {
     console.log('loadTestData() called');
@@ -453,12 +437,13 @@ function createMatchingContainer(question) {
         dropZone.dataset.occupied = 'false';
         dropZone.dataset.droppedIndex = '';
         
-        // Add pointer event listeners for drop zones (replaces drag + touch events)
-        dropZone.addEventListener('pointerdown', handleMatchingDropZonePointerDown);
-        dropZone.classList.add('draggable', 'drop-target');
+        // Add drop event listeners
+        dropZone.addEventListener('dragover', handleMatchingDragOver);
+        dropZone.addEventListener('drop', handleMatchingDrop);
+        dropZone.addEventListener('dragleave', handleMatchingDragLeave);
         
-        // Add ondragstart = () => false after element creation
-        dropZone.ondragstart = () => false;
+        // ADD TOUCH SUPPORT FOR DROP ZONES
+        addTouchSupportToMatching(dropZone, false);
         
         // Add event listener to clear validation errors when user interacts
         dropZone.addEventListener('click', () => {
@@ -466,11 +451,15 @@ function createMatchingContainer(question) {
                 clearValidationErrors();
             }
         });
-        dropZone.addEventListener('pointerover', () => {
+        dropZone.addEventListener('dragover', () => {
             if (typeof clearValidationErrors === 'function') {
                 clearValidationErrors();
             }
         });
+        
+        // Add drag event listeners for removing options
+        dropZone.addEventListener('dragstart', handleMatchingDropZoneDragStart);
+        dropZone.addEventListener('dragend', handleMatchingDropZoneDragEnd);
         
         // Assemble left group: left item + drop zone
         leftGroup.appendChild(leftItem);
@@ -481,6 +470,7 @@ function createMatchingContainer(question) {
         const rightItem = document.createElement('div');
         rightItem.className = 'matching-right-item';
         rightItem.dataset.originalIndex = index;
+        rightItem.draggable = true;
         
         const rightContent = document.createElement('div');
         
@@ -501,13 +491,13 @@ function createMatchingContainer(question) {
         
         rightItem.appendChild(rightContent);
         
-        // Add pointer event listeners for right items (replaces drag + touch events)
-        rightItem.addEventListener('pointerdown', handleMatchingRightPointerDown);
-        rightItem.classList.add('draggable');
+        // Add drag event listeners for right items
+        rightItem.addEventListener('dragstart', handleMatchingRightDragStart);
+        rightItem.addEventListener('dragend', handleMatchingRightDragEnd);
         
-        // Add ondragstart = () => false after element creation
-        rightItem.ondragstart = () => false;
-        
+        // ADD TOUCH SUPPORT FOR RIGHT ITEMS
+        addTouchSupportToMatching(rightItem, true);
+
         rightItems.push(rightItem);
     });
     
@@ -563,12 +553,6 @@ function displayMatching(question, container) {
 let draggedMatchingRightElement = null;
 let draggedMatchingDropZone = null;
 
-// Pointer-based drag state
-let activePointerItem = null;
-let pointerOffsetX = 0;
-let pointerOffsetY = 0;
-let activePointerId = null;
-
 function handleMatchingRightDragStart(e) {
     draggedMatchingRightElement = e.target;
     e.target.classList.add('dragging');
@@ -580,190 +564,112 @@ function handleMatchingRightDragEnd(e) {
     e.target.classList.remove('dragging');
 }
 
-// Pointer event handlers for right items
-function handleMatchingRightPointerDown(e) {
-  e.preventDefault();
-  activePointerItem.setPointerCapture(e.pointerId);
-  
-  activePointerItem = e.currentTarget;
-  activePointerId = e.pointerId;
-  
-  const rect = activePointerItem.getBoundingClientRect();
-  pointerOffsetX = e.clientX - rect.left;
-  pointerOffsetY = e.clientY - rect.top;
-  
-  // Add visual feedback immediately
-  activePointerItem.classList.add('dragging', 'pointer-dragging');
-  activePointerItem.style.position = 'fixed';
-  activePointerItem.style.zIndex = '1000';
-  activePointerItem.style.pointerEvents = 'none';
+function handleMatchingDropZoneDragStart(e) {
+    const dropZone = e.currentTarget;
+    
+    // Only allow dragging if the drop zone is filled and not confirmed
+    if (dropZone.dataset.occupied === 'true' && !dropZone.classList.contains('confirmed')) {
+        draggedMatchingDropZone = dropZone;
+        dropZone.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', dropZone.textContent);
+        
+        // Create a ghost image showing the option being removed
+        const ghostImage = document.createElement('div');
+        ghostImage.textContent = dropZone.textContent;
+        ghostImage.style.cssText = 'position: absolute; top: -1000px; left: -1000px; padding: 8px 12px; background: #f8f9fa; border: 2px solid #6c757d; border-radius: 8px; font-weight: 600;';
+        document.body.appendChild(ghostImage);
+        e.dataTransfer.setDragImage(ghostImage, 0, 0);
+        setTimeout(() => ghostImage.remove(), 0);
+    } else {
+        e.preventDefault();
+    }
 }
 
-function handleMatchingRightPointerMove(e) {
-    if (!activePointerItem || e.pointerId !== activePointerId) return;
+function handleMatchingDropZoneDragEnd(e) {
+    const dropZone = e.currentTarget;
+    dropZone.classList.remove('dragging');
     
-    activePointerItem.style.left = `${e.clientX - pointerOffsetX}px`;
-    activePointerItem.style.top = `${e.clientY - pointerOffsetY}px`;
+    // If the drop zone was dragged and dropped outside, remove the option
+    if (draggedMatchingDropZone === dropZone) {
+        // Check if we're outside any valid drop zone
+        setTimeout(() => {
+            if (draggedMatchingDropZone) {
+                removeMatchingOptionFromDropZone(dropZone);
+                draggedMatchingDropZone = null;
+            }
+        }, 10);
+    }
+}
+
+function handleMatchingDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
     
-    // Check if we're over a drop zone
-    const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
-    const dropZone = elementBelow?.closest('.matching-drop-zone');
-    
-    // Remove drag-over from all drop zones
-    document.querySelectorAll('.matching-drop-zone').forEach(zone => {
-        zone.classList.remove('drag-over');
-    });
-    
-    // Add drag-over to the current drop zone
-    if (dropZone) {
+    const dropZone = e.currentTarget;
+    // Always show drag-over effect, regardless of occupation status
+    if (dropZone.classList.contains('matching-drop-zone')) {
         dropZone.classList.add('drag-over');
     }
 }
 
-function handleMatchingRightPointerUp(e) {
-    if (!activePointerItem || e.pointerId !== activePointerId) return;
-    
-    const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
-    const dropZone = elementBelow?.closest('.matching-drop-zone');
-    
-    // Remove visual feedback
-    activePointerItem.classList.remove('dragging', 'pointer-dragging');
-    activePointerItem.style.position = '';
-    activePointerItem.style.zIndex = '';
-    activePointerItem.style.pointerEvents = '';
-    activePointerItem.style.left = '';
-    activePointerItem.style.top = '';
-    
-    // Remove drag-over from all drop zones
-    document.querySelectorAll('.matching-drop-zone').forEach(zone => {
-        zone.classList.remove('drag-over');
-    });
-    
-    // If we're over a drop zone, handle the drop
-    if (dropZone) {
-        // If the drop zone is already occupied, remove the existing option first
-        if (dropZone.dataset.occupied === 'true') {
-            removeMatchingOptionFromDropZone(dropZone);
-        }
-        
-        const originalIndex = activePointerItem.dataset.originalIndex;
-        dropZone.textContent = activePointerItem.textContent;
-        dropZone.dataset.originalIndex = originalIndex;
-        dropZone.dataset.occupied = 'true';
-        dropZone.classList.add('filled');
-        
-        // Hide the dragged right item
-        activePointerItem.style.display = 'none';
-        activePointerItem.classList.add('used');
-        
-        // Update user answers
-        const correctIndex = parseInt(dropZone.dataset.correctIndex);
-        if (!userAnswers[currentQuestionIndex]) {
-            userAnswers[currentQuestionIndex] = {
-                matches: {},
-                checked: false
-            };
-        }
-        userAnswers[currentQuestionIndex].matches[correctIndex] = parseInt(originalIndex);
-        
-        // Check if all drop zones are filled
-        checkAllMatchingDropZonesFilled();
-    }
-    
-    // Release pointer capture and reset
-    activePointerItem.releasePointerCapture(e.pointerId);
-    activePointerItem = null;
-    activePointerId = null;
+function handleMatchingDragLeave(e) {
+    const dropZone = e.currentTarget;
+    dropZone.classList.remove('drag-over');
 }
 
-// Pointer event handlers for drop zones
-let activeDropZoneItem = null;
-let dropZonePointerOffsetX = 0;
-let dropZonePointerOffsetY = 0;
-let activeDropZonePointerId = null;
-
-function handleMatchingDropZonePointerDown(e) {
-  e.preventDefault();
-  
-  const dropZone = e.currentTarget;
-  dropZone.setPointerCapture(e.pointerId);
-  
-  // Only allow dragging if the drop zone is filled and not confirmed
-  if (dropZone.dataset.occupied === 'true' && !dropZone.classList.contains('confirmed')) {
-    activeDropZoneItem = dropZone;
-    activeDropZonePointerId = e.pointerId;
+function handleMatchingDrop(e) {
+    e.preventDefault();
     
-    const rect = dropZone.getBoundingClientRect();
-    dropZonePointerOffsetX = e.clientX - rect.left;
-    dropZonePointerOffsetY = e.clientY - rect.top;
+    const dropZone = e.currentTarget;
+    dropZone.classList.remove('drag-over');
     
-    // Add visual feedback immediately
-    dropZone.classList.add('dragging', 'pointer-dragging');
-    dropZone.style.position = 'fixed';
-    dropZone.style.zIndex = '1000';
-    dropZone.style.pointerEvents = 'none';
-  }
-}
-
-function handleMatchingDropZonePointerMove(e) {
-    if (!activeDropZoneItem || e.pointerId !== activeDropZonePointerId) return;
-    
-    activeDropZoneItem.style.left = `${e.clientX - dropZonePointerOffsetX}px`;
-    activeDropZoneItem.style.top = `${e.clientY - dropZonePointerOffsetY}px`;
-    
-    // Check if we're over another drop zone
-    const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
-    const targetDropZone = elementBelow?.closest('.matching-drop-zone');
-    
-    // Remove drag-over from all drop zones
-    document.querySelectorAll('.matching-drop-zone').forEach(zone => {
-        zone.classList.remove('drag-over');
-    });
-    
-    // Add drag-over to the target drop zone (if it's different)
-    if (targetDropZone && targetDropZone !== activeDropZoneItem) {
-        targetDropZone.classList.add('drag-over');
-    }
-}
-
-function handleMatchingDropZonePointerUp(e) {
-    if (!activeDropZoneItem || e.pointerId !== activeDropZonePointerId) return;
-    
-    const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
-    const targetDropZone = elementBelow?.closest('.matching-drop-zone');
-    
-    // Remove visual feedback
-    activeDropZoneItem.classList.remove('dragging', 'pointer-dragging');
-    activeDropZoneItem.style.position = '';
-    activeDropZoneItem.style.zIndex = '';
-    activeDropZoneItem.style.pointerEvents = '';
-    activeDropZoneItem.style.left = '';
-    activeDropZoneItem.style.top = '';
-    
-    // Remove drag-over from all drop zones
-    document.querySelectorAll('.matching-drop-zone').forEach(zone => {
-        zone.classList.remove('drag-over');
-    });
-    
-    // If we're over another drop zone, handle the swap/move
-    if (targetDropZone && targetDropZone !== activeDropZoneItem) {
+    // Handle dropping a drop zone onto another drop zone (swap or remove)
+    if (draggedMatchingDropZone && draggedMatchingDropZone !== dropZone) {
         // If both drop zones are filled, swap their contents
-        if (activeDropZoneItem.dataset.occupied === 'true' && targetDropZone.dataset.occupied === 'true') {
-            swapMatchingDropZoneContents(activeDropZoneItem, targetDropZone);
+        if (draggedMatchingDropZone.dataset.occupied === 'true' && dropZone.dataset.occupied === 'true') {
+            swapMatchingDropZoneContents(draggedMatchingDropZone, dropZone);
         }
         // If dragging a filled drop zone onto an empty one, move the option
-        else if (activeDropZoneItem.dataset.occupied === 'true' && targetDropZone.dataset.occupied === 'false') {
-            moveMatchingOptionBetweenDropZones(activeDropZoneItem, targetDropZone);
+        else if (draggedMatchingDropZone.dataset.occupied === 'true' && dropZone.dataset.occupied === 'false') {
+            moveMatchingOptionBetweenDropZones(draggedMatchingDropZone, dropZone);
         }
+        draggedMatchingDropZone = null;
+        return;
     }
     
-    // Release pointer capture and reset
-    activeDropZoneItem.releasePointerCapture(e.pointerId);
-    activeDropZoneItem = null;
-    activeDropZonePointerId = null;
+    if (!draggedMatchingRightElement) return;
+    
+    // If the drop zone is already occupied, remove the existing option first
+    if (dropZone.dataset.occupied === 'true') {
+        removeMatchingOptionFromDropZone(dropZone);
+    }
+    
+    // Place the option in the drop zone
+    const originalIndex = draggedMatchingRightElement.dataset.originalIndex;
+    
+    dropZone.textContent = draggedMatchingRightElement.textContent;
+    dropZone.dataset.originalIndex = originalIndex;
+    dropZone.dataset.occupied = 'true';
+    dropZone.classList.add('filled');
+    
+    // Hide the dragged right item
+    draggedMatchingRightElement.style.display = 'none';
+    draggedMatchingRightElement.classList.add('used');
+    
+    // Update user answers
+    const correctIndex = parseInt(dropZone.dataset.correctIndex);
+    if (!userAnswers[currentQuestionIndex]) {
+        userAnswers[currentQuestionIndex] = {
+            matches: {},
+            checked: false
+        };
+    }
+    userAnswers[currentQuestionIndex].matches[correctIndex] = parseInt(originalIndex);
+    
+    // Check if all drop zones are filled
+    checkAllMatchingDropZonesFilled();
 }
-
-// Helper functions for drop zone operations
 
 function removeMatchingOptionFromDropZone(dropZone) {
     const optionText = dropZone.textContent;
@@ -946,6 +852,111 @@ function checkAllMatchingDropZonesFilled() {
 
 let draggedElement = null;
 let draggedData = null;
+
+// Touch support variables for matching
+let touchStartX = 0;
+let touchStartY = 0;
+let isTouchDragging = false;
+let touchDragElement = null;
+
+// Add touch event handlers for mobile support (matching)
+function addTouchSupportToMatching(element, isDraggable) {
+    if (isDraggable) {
+        element.addEventListener('touchstart', handleMatchingTouchStart, { passive: false });
+        element.addEventListener('touchmove', handleMatchingTouchMove, { passive: false });
+        element.addEventListener('touchend', handleMatchingTouchEnd, { passive: false });
+    } else {
+        // For drop zones
+        element.addEventListener('touchmove', handleMatchingDropZoneTouchMove, { passive: false });
+    }
+}
+
+function handleMatchingTouchStart(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    isTouchDragging = true;
+    touchDragElement = e.currentTarget;
+    
+    // Trigger visual feedback immediately
+    e.currentTarget.classList.add('dragging');
+    
+    // Simulate dragstart for compatibility
+    if (e.currentTarget.classList.contains('matching-right-item')) {
+        handleMatchingRightDragStart({ target: e.currentTarget, dataTransfer: { effectAllowed: 'move', setData: () => {} } });
+    } else if (e.currentTarget.classList.contains('matching-drop-zone')) {
+        handleMatchingDropZoneDragStart({ currentTarget: e.currentTarget, dataTransfer: { effectAllowed: 'move', setData: () => {} } });
+    }
+}
+
+function handleMatchingTouchMove(e) {
+    if (!isTouchDragging || !touchDragElement) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const touch = e.touches[0];
+    
+    // Move element visually
+    touchDragElement.style.position = 'fixed';
+    touchDragElement.style.left = touch.clientX - 50 + 'px';
+    touchDragElement.style.top = touch.clientY - 20 + 'px';
+    touchDragElement.style.zIndex = '10000';
+    touchDragElement.style.pointerEvents = 'none';
+    
+    // Check for drop zones under touch
+    const dropZone = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (dropZone && dropZone.classList.contains('matching-drop-zone')) {
+        dropZone.classList.add('drag-over');
+    }
+}
+
+function handleMatchingTouchEnd(e) {
+    if (!isTouchDragging || !touchDragElement) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const touch = e.changedTouches[0];
+    const dropZone = document.elementFromPoint(touch.clientX, touch.clientY);
+    
+    // Reset visual state
+    touchDragElement.style.position = '';
+    touchDragElement.style.left = '';
+    touchDragElement.style.top = '';
+    touchDragElement.style.zIndex = '';
+    touchDragElement.style.pointerEvents = '';
+    touchDragElement.classList.remove('dragging');
+    
+    // Handle drop
+    if (dropZone && dropZone.classList.contains('matching-drop-zone')) {
+        dropZone.classList.remove('drag-over');
+        
+        if (touchDragElement.classList.contains('matching-right-item')) {
+            draggedMatchingRightElement = touchDragElement;
+            handleMatchingDrop({ 
+                target: dropZone, 
+                preventDefault: () => {},
+                dataTransfer: { getData: () => touchDragElement.textContent }
+            });
+            draggedMatchingRightElement = null;
+        }
+    }
+    
+    handleMatchingRightDragEnd({ target: touchDragElement });
+    
+    isTouchDragging = false;
+    touchDragElement = null;
+}
+
+function handleMatchingDropZoneTouchMove(e) {
+    // Remove drag-over from all zones first
+    document.querySelectorAll('.matching-drop-zone.drag-over').forEach(zone => {
+        zone.classList.remove('drag-over');
+    });
+}
 
 function handleDragStart(e) {
     draggedElement = e.target;

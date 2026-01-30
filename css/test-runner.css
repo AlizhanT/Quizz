@@ -1,10 +1,33 @@
+/* Touch support for mobile devices */
 html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  touch-action: none;
+    touch-action: none;
+    overscroll-behavior: none;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+.test-container {
+    touch-action: none;
+    overflow: hidden;
+}
+
+/* For all draggable elements */
+.fill-option-chip,
+.blank-drop-zone.filled,
+.matching-item,
+.matching-right-item,
+.matching-drop-zone.filled {
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* For drop zones */
+.blank-drop-zone,
+.matching-drop-zone,
+.matching-stack {
+    touch-action: none;
 }
 
 /* New Matching Layout Styles */
@@ -83,10 +106,6 @@ html, body {
     transition: var(--transition-fast);
     cursor: pointer;
     position: relative;
-    user-select: none !important;
-    -webkit-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
 }
 
 .matching-drop-zone:hover {
@@ -155,10 +174,6 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    user-select: none !important;
-    -webkit-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
 }
 
 .matching-right-item:hover {
@@ -171,34 +186,6 @@ html, body {
     transform: rotate(5deg);
     z-index: 1000;
     cursor: grabbing;
-}
-
-/* Pointer-specific styles */
-.matching-right-item.dragging.pointer-dragging {
-    opacity: 0.8;
-    transform: scale(1.1) rotate(3deg);
-    box-shadow: 0 8px 25px rgba(65, 105, 225, 0.4);
-    transition: none;
-}
-
-.matching-drop-zone.dragging.pointer-dragging {
-    opacity: 0.7;
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(65, 105, 225, 0.3);
-    transition: none;
-}
-
-/* Touch feedback for better mobile experience */
-@media (pointer: coarse) {
-    .matching-right-item {
-        min-height: 44px;
-        touch-action: none !important;
-    }
-    
-    .matching-drop-zone {
-        min-height: 44px;
-        touch-action: none !important;
-    }
 }
 
 .matching-right-item.used {
@@ -515,53 +502,30 @@ html, body {
     }
 }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-    touch-action: none;
-}
-
-/* Global draggable element styles */
-.draggable,
-.answer-item,
-.question-item {
-    touch-action: none !important;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
 body {
     background: white;
     height: 100vh;
     font-family: system-ui, -apple-system, BlinkMacSystemFont;
     padding: 10px;
+    margin: 0;
+    overflow: hidden;
     box-sizing: border-box;
-    position: fixed;
-    width: 100%;
-    height: 100%;
 }
 
 .test-container {
     max-width: 100%;
     margin: 0 auto;
-    width: 100vw !important;
-    height: 100vh !important;
+    width: fit-content !important;
     min-width: 600px;
     background: white;
     border: none;
     padding: 20px;
     box-shadow: var(--shadow-md);
+    height: calc(100vh - 20px);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
     position: relative;
-    overflow: hidden !important;
-    touch-action: none !important;
-    overscroll-behavior: none !important;
 }
 
 /* Top Controls */
@@ -1279,10 +1243,4 @@ body {
 .blank-drop-zone:not(.validation-error),
 .matching-stack:not(.validation-error) {
     animation: none;
-}
-
-.draggable {
-  touch-action: none !important;
-  user-select: none;
-  -webkit-user-select: none;
 }
