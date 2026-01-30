@@ -483,7 +483,8 @@ body {
 .test-container {
     max-width: 100%;
     margin: 0 auto;
-    width: 100%;
+    width: fit-content !important;
+    min-width: 600px;
     background: white;
     border: none;
     padding: 20px;
@@ -551,8 +552,9 @@ body {
 .question-counter {
     position: absolute;
     bottom: 10px;
-    left: 10px;
-    text-align: left;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
     font-size: 12px;
     color: var(--primary-color);
     font-weight: bold;
@@ -682,13 +684,13 @@ body {
     background: white;
     border: 2px solid var(--primary-color);
     border-radius: var(--border-radius-lg);
-    padding: calc(60px * var(--options-scale)) calc(40px * var(--options-scale));
+    padding: calc(40px * var(--options-scale)) calc(30px * var(--options-scale));
     cursor: pointer;
     transition: var(--transition-fast);
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: calc(160px * var(--options-scale));
+    min-height: calc(120px * var(--options-scale));
     width: 100%;
     box-sizing: border-box;
     text-align: center;
@@ -1014,6 +1016,7 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 12px;
     font-size: calc(var(--answer-font-size) * var(--options-scale));
     color: #2c3e50;
@@ -1022,14 +1025,20 @@ body {
     white-space: normal;
     flex: 1;
     font-weight: 500;
-    text-align: left;
+    text-align: center;
     transition: font-size 0.3s ease;
+    min-width: 0;
 }
 
 .option-text {
     flex: 1;
     min-width: 0;
     line-height: 1.4;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    display: inline-block;
 }
 
 .option-images {
