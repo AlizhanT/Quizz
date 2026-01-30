@@ -4,104 +4,6 @@
 let draggedFillElement = null;
 let draggedBlankElement = null;
 
-// Touch support variables
-let touchStartX = 0;
-let touchStartY = 0;
-let isTouchDragging = false;
-let touchDragElement = null;
-
-// Add touch event handlers for mobile support
-function addTouchSupport(element, isDraggable) {
-    if (isDraggable) {
-        element.addEventListener('touchstart', handleTouchStart, { passive: false });
-        element.addEventListener('touchmove', handleTouchMove, { passive: false });
-        element.addEventListener('touchend', handleTouchEnd, { passive: false });
-    } else {
-        // For drop zones
-        element.addEventListener('touchmove', handleDropZoneTouchMove, { passive: false });
-    }
-}
-
-function handleTouchStart(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-    isTouchDragging = true;
-    touchDragElement = e.currentTarget;
-    
-    // Trigger visual feedback immediately
-    e.currentTarget.classList.add('dragging');
-    
-    // Simulate dragstart for compatibility
-    handleFillDragStart({ target: e.currentTarget, dataTransfer: { effectAllowed: 'move', setData: () => {} } });
-}
-
-function handleTouchMove(e) {
-    if (!isTouchDragging || !touchDragElement) return;
-    
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const touch = e.touches[0];
-    const deltaX = touch.clientX - touchStartX;
-    const deltaY = touch.clientY - touchStartY;
-    
-    // Move element visually
-    touchDragElement.style.position = 'fixed';
-    touchDragElement.style.left = touch.clientX - 50 + 'px';
-    touchDragElement.style.top = touch.clientY - 20 + 'px';
-    touchDragElement.style.zIndex = '10000';
-    touchDragElement.style.pointerEvents = 'none';
-    
-    // Check for drop zones under touch
-    const dropZone = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (dropZone && dropZone.classList.contains('blank-drop-zone')) {
-        dropZone.classList.add('drag-over');
-    }
-}
-
-function handleTouchEnd(e) {
-    if (!isTouchDragging || !touchDragElement) return;
-    
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const touch = e.changedTouches[0];
-    const dropZone = document.elementFromPoint(touch.clientX, touch.clientY);
-    
-    // Reset visual state
-    touchDragElement.style.position = '';
-    touchDragElement.style.left = '';
-    touchDragElement.style.top = '';
-    touchDragElement.style.zIndex = '';
-    touchDragElement.style.pointerEvents = '';
-    touchDragElement.classList.remove('dragging');
-    
-    // Handle drop
-    if (dropZone && dropZone.classList.contains('blank-drop-zone')) {
-        dropZone.classList.remove('drag-over');
-        handleFillDrop({ 
-            target: dropZone, 
-            preventDefault: () => {},
-            dataTransfer: { getData: () => touchDragElement.textContent }
-        });
-    }
-    
-    handleFillDragEnd({ target: touchDragElement });
-    
-    isTouchDragging = false;
-    touchDragElement = null;
-}
-
-function handleDropZoneTouchMove(e) {
-    // Remove drag-over from all zones first
-    document.querySelectorAll('.blank-drop-zone.drag-over').forEach(zone => {
-        zone.classList.remove('drag-over');
-    });
-}
-
 // Main display function for fill-in-the-blank questions
 function displayFillInBlank(question, container) {
     // Removed question text display - only show sentence and words
@@ -197,9 +99,6 @@ function displayFillInBlank(question, container) {
         dropZone.addEventListener('drop', handleFillDrop);
         dropZone.addEventListener('dragleave', handleFillDragLeave);
         
-        // ADD TOUCH SUPPORT FOR DROP ZONES
-        addTouchSupport(dropZone, false);
-        
         // Add event listener to clear validation errors when user interacts
         dropZone.addEventListener('click', () => {
             if (typeof clearValidationErrors === 'function') {
@@ -268,9 +167,6 @@ function displayFillInBlank(question, container) {
                 optionChip.addEventListener('dragstart', handleFillDragStart);
                 optionChip.addEventListener('dragend', handleFillDragEnd);
                 
-                // ADD TOUCH SUPPORT
-                addTouchSupport(optionChip, true);
-
                 optionsContainer.appendChild(optionChip);
             }
         });

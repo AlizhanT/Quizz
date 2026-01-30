@@ -1,35 +1,3 @@
-/* Touch support for mobile devices */
-html, body {
-    touch-action: none;
-    overscroll-behavior: none;
-    overflow: hidden;
-    height: 100%;
-    width: 100%;
-}
-
-.test-container {
-    touch-action: none;
-    overflow: hidden;
-}
-
-/* For all draggable elements */
-.fill-option-chip,
-.blank-drop-zone.filled,
-.matching-item,
-.matching-right-item,
-.matching-drop-zone.filled {
-    touch-action: none;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-/* For drop zones */
-.blank-drop-zone,
-.matching-drop-zone,
-.matching-stack {
-    touch-action: none;
-}
-
 /* New Matching Layout Styles */
 .matching-container-new {
     display: flex;
@@ -106,6 +74,10 @@ html, body {
     transition: var(--transition-fast);
     cursor: pointer;
     position: relative;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .matching-drop-zone:hover {
@@ -174,6 +146,10 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .matching-right-item:hover {
@@ -337,6 +313,10 @@ html, body {
     transition: var(--transition-fast);
     cursor: pointer;
     position: relative;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .blank-drop-zone:hover {
@@ -423,6 +403,10 @@ html, body {
     position: relative;
     cursor: grab;
     transition: var(--transition-fast);
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .fill-option-chip:hover {
@@ -510,6 +494,10 @@ body {
     margin: 0;
     overflow: hidden;
     box-sizing: border-box;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .test-container {
