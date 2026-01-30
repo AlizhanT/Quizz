@@ -4,6 +4,10 @@
 let draggedFillElement = null;
 let draggedBlankElement = null;
 
+// Expose variables globally for touch event handling
+window.draggedFillElement = draggedFillElement;
+window.draggedBlankElement = draggedBlankElement;
+
 // Main display function for fill-in-the-blank questions
 function displayFillInBlank(question, container) {
     // Removed question text display - only show sentence and words
@@ -195,7 +199,7 @@ function displayFillInBlank(question, container) {
 
 // Fill-in-the-blank drag and drop handlers for option chips
 function handleFillDragStart(e) {
-    draggedFillElement = e.target;
+    window.draggedFillElement = e.target;
     e.target.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/html', e.target.textContent);
@@ -203,6 +207,7 @@ function handleFillDragStart(e) {
 
 function handleFillDragEnd(e) {
     e.target.classList.remove('dragging');
+    window.draggedFillElement = null;
 }
 
 // Fill-in-the-blank drag and drop handlers for blanks (to remove options)
@@ -211,7 +216,7 @@ function handleBlankDragStart(e) {
     
     // Only allow dragging if the blank is filled and not confirmed
     if (dropZone.dataset.occupied === 'true' && !dropZone.classList.contains('confirmed')) {
-        draggedBlankElement = dropZone;
+        window.draggedBlankElement = dropZone;
         dropZone.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/html', dropZone.textContent);
@@ -233,12 +238,12 @@ function handleBlankDragEnd(e) {
     dropZone.classList.remove('dragging');
     
     // If the blank was dragged and dropped outside, remove the option
-    if (draggedBlankElement === dropZone) {
+    if (window.draggedBlankElement === dropZone) {
         // Check if we're outside any valid drop zone
         setTimeout(() => {
-            if (draggedBlankElement) {
+            if (window.draggedBlankElement) {
                 removeOptionFromBlank(dropZone);
-                draggedBlankElement = null;
+                window.draggedBlankElement = null;
             }
         }, 10);
     }
@@ -267,20 +272,20 @@ function handleFillDrop(e) {
     dropZone.classList.remove('drag-over');
     
     // Handle dropping a blank onto another blank (swap or remove)
-    if (draggedBlankElement && draggedBlankElement !== dropZone) {
+    if (window.draggedBlankElement && window.draggedBlankElement !== dropZone) {
         // If both blanks are filled, swap their contents
-        if (draggedBlankElement.dataset.occupied === 'true' && dropZone.dataset.occupied === 'true') {
-            swapBlankContents(draggedBlankElement, dropZone);
+        if (window.draggedBlankElement.dataset.occupied === 'true' && dropZone.dataset.occupied === 'true') {
+            swapBlankContents(window.draggedBlankElement, dropZone);
         }
         // If dragging a filled blank onto an empty one, move the option
-        else if (draggedBlankElement.dataset.occupied === 'true' && dropZone.dataset.occupied === 'false') {
-            moveOptionBetweenBlanks(draggedBlankElement, dropZone);
+        else if (window.draggedBlankElement.dataset.occupied === 'true' && dropZone.dataset.occupied === 'false') {
+            moveOptionBetweenBlanks(window.draggedBlankElement, dropZone);
         }
-        draggedBlankElement = null;
+        window.draggedBlankElement = null;
         return;
     }
     
-    if (!draggedFillElement) return;
+    if (!window.draggedFillElement) return;
     
     // If the drop zone is already occupied, remove the existing option first
     if (dropZone.dataset.occupied === 'true') {
@@ -288,8 +293,8 @@ function handleFillDrop(e) {
     }
     
     // Place the option in the blank
-    const optionText = draggedFillElement.dataset.optionText;
-    const originalIndex = draggedFillElement.dataset.originalIndex;
+    const optionText = window.draggedFillElement.dataset.optionText;
+    const originalIndex = window.draggedFillElement.dataset.originalIndex;
     
     dropZone.textContent = optionText;
     dropZone.dataset.optionText = optionText;
@@ -298,8 +303,8 @@ function handleFillDrop(e) {
     dropZone.classList.add('filled');
     
     // Hide the dragged option
-    draggedFillElement.style.display = 'none';
-    draggedFillElement.classList.add('used');
+    window.draggedFillElement.style.display = 'none';
+    window.draggedFillElement.classList.add('used');
     
     // Update user answers
     const blankIndex = parseInt(dropZone.dataset.blankIndex);

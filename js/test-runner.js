@@ -1568,6 +1568,11 @@ function handleTouchDrop(item, dropZone) {
     }
     // Handle fill-in-the-blank drop zones
     else if (dropZone.classList.contains('blank-drop-zone')) {
+        // Set the draggedFillElement for the fill-in-blank functionality
+        if (typeof window.draggedFillElement !== 'undefined') {
+            window.draggedFillElement = item;
+        }
+        
         // Use existing fill-in-blank functionality
         if (window.handleFillDrop) {
             const mockEvent = {
