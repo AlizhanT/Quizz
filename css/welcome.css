@@ -1253,11 +1253,23 @@ section {
     }
     
     .nav-buttons {
-        display: none;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .language-selector {
+        margin: 0;
+        width: 100%;
+        text-align: center;
     }
     
     .auth-buttons {
-        display: none;
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        width: 100%;
+        justify-content: center;
     }
     
     .preview-mockup {
