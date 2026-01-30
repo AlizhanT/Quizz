@@ -1473,6 +1473,16 @@ function handleTouchMove(e) {
         touchClone.style.pointerEvents = 'none';
         touchClone.style.opacity = '0.8';
         touchClone.style.transform = 'rotate(5deg)';
+        
+        // Copy the original element's dimensions
+        const rect = touchItem.getBoundingClientRect();
+        touchClone.style.width = rect.width + 'px';
+        touchClone.style.height = rect.height + 'px';
+        touchClone.style.minWidth = rect.width + 'px';
+        touchClone.style.minHeight = rect.height + 'px';
+        touchClone.style.maxWidth = rect.width + 'px';
+        touchClone.style.maxHeight = rect.height + 'px';
+        
         document.body.appendChild(touchClone);
     }
     
@@ -1632,6 +1642,19 @@ function handleDropZoneTouchMove(e) {
         touchClone.style.border = '2px solid #6c757d';
         touchClone.style.borderRadius = '8px';
         touchClone.style.fontWeight = '600';
+        
+        // Copy the original element's dimensions and styling
+        const rect = touchItem.getBoundingClientRect();
+        touchClone.style.width = rect.width + 'px';
+        touchClone.style.height = rect.height + 'px';
+        touchClone.style.minWidth = rect.width + 'px';
+        touchClone.style.minHeight = rect.height + 'px';
+        touchClone.style.display = 'flex';
+        touchClone.style.alignItems = 'center';
+        touchClone.style.justifyContent = 'center';
+        touchClone.style.fontSize = window.getComputedStyle(touchItem).fontSize;
+        touchClone.style.fontFamily = window.getComputedStyle(touchItem).fontFamily;
+        
         document.body.appendChild(touchClone);
     }
     
