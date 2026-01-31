@@ -11,8 +11,8 @@
     --border-light: #dee2e6;
     --text-muted: #666;
     --border-radius-sm: 2px;
-    --border-radius-md: 3px;
-    --border-radius-lg: 5px;
+    --border-radius-md: 5px;
+    --border-radius-lg: 10px;
     --transition-fast: 0.2s ease;
     --transition-medium: 0.3s ease;
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
