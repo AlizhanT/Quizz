@@ -545,6 +545,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    display: none; /* Hide restart button from top controls */
 }
 
 .restart-btn:hover {
@@ -844,11 +845,21 @@ body {
     background: var(--primary-color);
     color: white;
     border-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    min-width: 44px;
 }
 
 .btn-restart:hover {
     background: var(--primary-hover);
     border-color: var(--primary-hover);
+}
+
+.btn-restart svg {
+    width: 20px;
+    height: 20px;
 }
 
 .score-display {
