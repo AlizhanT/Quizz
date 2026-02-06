@@ -41,7 +41,10 @@
             <h2 class="results-title" data-translate="testRunner.complete">Test Complete!</h2>
             <div class="score-display" id="scoreDisplay">0%</div>
             <div class="results-message" id="resultsMessage" data-translate="testRunner.completed">You have completed test.</div>
-            <button class="nav-btn btn-close" onclick="closeTest()" data-translate="testRunner.close">Close Test</button>
+            <div class="results-buttons">
+                <button class="nav-btn btn-restart" onclick="restartTest()" data-translate="testRunner.restart">Restart Test</button>
+                <button class="nav-btn btn-close" onclick="closeTest()" data-translate="testRunner.close">Close Test</button>
+            </div>
         </div>
     </div>
 

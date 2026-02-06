@@ -832,6 +832,25 @@ body {
     font-weight: bold;
 }
 
+.results-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.btn-restart {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.btn-restart:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
 .score-display {
     font-size: 48px;
     font-weight: bold;
