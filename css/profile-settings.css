@@ -1,4 +1,15 @@
 /* Profile Settings Page Styles */
+
+/* CSS Custom Properties */
+:root {
+    --action-color: #F9D949;
+    --action-hover: #F5C542;
+    --success-color: #28a745;
+    --success-hover: #218838;
+    --danger-color: #F45050;
+    --danger-hover: #E63946;
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -189,7 +200,7 @@ body {
 }
 
 .btn-save {
-    background: var(--success-color);
+    background: var(--action-color);
     color: white;
     padding: 15px 30px;
     border-radius: 10px;
@@ -201,7 +212,7 @@ body {
 }
 
 .btn-save:hover:not(:disabled) {
-    background: var(--success-hover);
+    background: var(--action-hover);
     box-shadow: var(--shadow-md);
 }
 

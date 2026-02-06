@@ -44,8 +44,8 @@
 .matching-left-item {
     flex: 1;
     padding: 12px 16px;
-    background: white;
-    border: 2px solid navy;
+    background: #F0F0F0;
+    border: 2px solid #3C486B;
     border-radius: 30px;
     font-weight: 500;
     text-align: center;
@@ -63,7 +63,7 @@
     min-height: 25px;
     border: 2px dashed #ccc;
     border-radius: 30px;
-    background: white;
+    background: #F0F0F0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -93,7 +93,7 @@
 }
 
 .matching-drop-zone.filled {
-    border: 2px solid navy;
+    border: 2px solid #3C486B;
     background: #f0f8ff;
     color: var(--primary-color);
     cursor: grab;
@@ -243,13 +243,15 @@
 
 /* CSS Custom Properties for Test Runner */
 :root {
-    --primary-color: navy;
+    --primary-color: #3C486B;
     --primary-hover: #4169E1;
     --primary-focus: #6495ED;
+    --action-color: #F9D949;
+    --action-hover: #F5C542;
     --success-color: #28a745;
     --success-hover: #218838;
-    --danger-color: darkred;
-    --danger-hover: #8b0000;
+    --danger-color: #F45050;
+    --danger-hover: #E63946;
     --background-light: #f8f9fa;
     --border-light: #dee2e6;
     --text-muted: #666;
@@ -307,7 +309,7 @@
     min-height: 40px;
     border: 2px dashed #ccc;
     border-radius: var(--border-radius-sm);
-    background: white;
+    background: #F0F0F0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -338,7 +340,7 @@
 }
 
 .blank-drop-zone.filled {
-    border: 2px solid navy;
+    border: 2px solid #3C486B;
     background: #f0f8ff;
     color: var(--primary-color);
     cursor: grab;
@@ -385,7 +387,7 @@
 .fill-options-container {
     margin-top: 30px;
     padding: 20px;
-    background: white;
+    background: #F0F0F0;
     border: 2px solid var(--border-light);
     border-radius: var(--border-radius-md);
     display: flex;
@@ -493,7 +495,7 @@
 }
 
 body {
-    background: white;
+    background: #F0F0F0;
     height: 100vh;
     font-family: system-ui, -apple-system, BlinkMacSystemFont;
     padding: 10px;
@@ -514,7 +516,7 @@ body {
     bottom: 0;
     width: 100vw;
     height: 100vh;
-    background: white;
+    background: #F0F0F0;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -706,7 +708,7 @@ body {
 }
 
 .answer-option {
-    background: white;
+    background: #F0F0F0;
     border: 2px solid var(--primary-color);
     border-radius: var(--border-radius-lg);
     padding: calc(40px * var(--options-scale)) calc(30px * var(--options-scale));
@@ -747,9 +749,9 @@ body {
 .answer-radio {
     width: 24px;
     height: 24px;
-    border: 2px solid navy;
+    border: 2px solid #3C486B;
     border-radius: 50%;
-    background: white;
+    background: #F0F0F0;
     position: relative;
     flex-shrink: 0;
     display: none;
@@ -814,9 +816,9 @@ body {
 .results-container {
     text-align: center;
     padding: 40px;
-    background: white;
+    background: #F0F0F0;
     border-radius: 25px;
-    border: 2px solid navy;
+    border: 2px solid #3C486B;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -827,7 +829,7 @@ body {
 
 .results-title {
     font-size: 28px;
-    color: navy;
+    color: #3C486B;
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -858,7 +860,7 @@ body {
 .score-display {
     font-size: 48px;
     font-weight: bold;
-    color: navy;
+    color: #3C486B;
     margin-bottom: 20px;
 }
 
@@ -874,11 +876,11 @@ body {
 
 .fill-blank-input {
     border: none;
-    border-bottom: 2px solid navy;
+    border-bottom: 2px solid #3C486B;
     background: transparent;
     padding: 4px 8px;
     font-size: 16px;
-    color: navy;
+    color: #3C486B;
     outline: none;
     width: 120px;
     text-align: center;
@@ -904,7 +906,7 @@ body {
 .typing-input {
     width: 100%;
     padding: 12px;
-    border: 2px solid navy;
+    border: 2px solid #3C486B;
     border-radius: 25px;
     font-size: 16px;
     outline: none;
@@ -932,7 +934,7 @@ body {
     background: #f8f9fa;
     padding: 20px;
     border-radius: 25px;
-    border: 2px solid navy;
+    border: 2px solid #3C486B;
     min-width: 200px;
     position: relative;
 }
@@ -946,8 +948,8 @@ body {
 
 .matching-item {
     padding: calc(12px * var(--font-scale)) calc(16px * var(--font-scale));
-    background: white;
-    border: 2px solid navy;
+    background: #F0F0F0;
+    border: 2px solid #3C486B;
     border-radius: 20px;
     cursor: grab;
     transition: all 0.3s ease;
@@ -1155,7 +1157,7 @@ body {
     right: 20px;
     width: 300px;
     max-height: 400px;
-    background: white;
+    background: #F0F0F0;
     border: 2px solid #e74c3c;
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-lg);

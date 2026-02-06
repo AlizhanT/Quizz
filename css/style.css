@@ -1,12 +1,14 @@
 /* CSS Custom Properties */
 :root {
-    --primary-color: navy;
+    --primary-color: #3C486B;
     --primary-hover: #4169E1;
     --primary-focus: #6495ED;
+    --action-color: #F9D949;
+    --action-hover: #F5C542;
     --success-color: #28a745;
     --success-hover: #218838;
-    --danger-color: darkred;
-    --danger-hover: #8b0000;
+    --danger-color: #F45050;
+    --danger-hover: #E63946;
     --background-light: #f8f9fa;
     --border-light: #dee2e6;
     --text-muted: #666;
@@ -47,7 +49,7 @@
 }
 
 .simple-nav .nav-btn:hover {
-    background: white;
+    background: #F0F0F0;
     color: var(--primary-color);
     border-color: var(--primary-color);
     box-shadow: var(--shadow-md);
@@ -196,7 +198,7 @@
     padding: 8px 12px;
     border: 1px solid var(--border-light);
     border-radius: var(--border-radius-sm);
-    background: white;
+    background: #F0F0F0;
     font-size: 14px;
     cursor: pointer;
 }
@@ -211,7 +213,7 @@
     padding: 8px 12px;
     border: 1px solid var(--border-light);
     border-radius: var(--border-radius-sm);
-    background: white;
+    background: #F0F0F0;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -328,7 +330,7 @@
 }
 
 .menu-toggle:hover {
-    background: white;
+    background: #F0F0F0;
     box-shadow: var(--shadow-md);
 }
 
@@ -480,7 +482,7 @@
     top: 100%;
     right: 0;
     margin-top: 8px;
-    background: white;
+    background: #F0F0F0;
     border: 1px solid var(--border-light);
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-md);
@@ -587,7 +589,7 @@
 }
 
 .quiz-card {
-    background: white;
+    background: #F0F0F0;
     border-radius: var(--border-radius-md);
     padding: 25px;
     box-shadow: var(--shadow-sm);
@@ -723,7 +725,7 @@
 }
 
 .btn-run {
-    background: var(--success-color);
+    background: var(--action-color);
     color: white;
 }
 
@@ -753,7 +755,7 @@ border: 2px solid var(--border-light);
 border-radius: var(--border-radius-md);
 font-size: 16px;
 transition: all 0.3s ease;
-background: white;
+background: #F0F0F0;
 }
 
 .search-bar input:focus {
@@ -775,7 +777,7 @@ padding: 10px 40px 10px 15px;
 border: 1px solid var(--border-light);
 border-radius: var(--border-radius-sm);
 font-size: 14px;
-background: white;
+background: #F0F0F0;
 }
 
 .header-buttons .search-bar input:focus {
@@ -942,7 +944,7 @@ transition: var(--transition-fast);
     top: 100%;
     right: 0;
     margin-top: 8px;
-    background: white;
+    background: #F0F0F0;
     border: 1px solid var(--border-light);
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-md);
@@ -1031,7 +1033,7 @@ transition: var(--transition-fast);
 }
 
 .header-buttons .btn-save {
-    background: var(--success-color);
+    background: var(--action-color);
     color: white;
 }
 
@@ -1051,7 +1053,7 @@ transition: var(--transition-fast);
 }
 
 .header-buttons .btn-run {
-    background: var(--success-color);
+    background: var(--action-color);
     color: white;
 }
 
@@ -1114,7 +1116,7 @@ transition: var(--transition-fast);
 }
 
 .modal-content {
-    background: white;
+    background: #F0F0F0;
     padding: 30px;
     border-radius: var(--border-radius-md);
     max-width: 400px;
@@ -1172,7 +1174,7 @@ transition: var(--transition-fast);
 
 /* Save Button */
 .btn-save {
-    background: var(--success-color);
+    background: var(--action-color);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -1254,7 +1256,7 @@ transition: var(--transition-fast);
     transition: var(--transition-fast);
 }
 
-/* Override any valid/invalid option styling to keep all options navy blue */
+/* Override any valid/invalid option styling to keep all options #3C486B blue */
 .fill-option-chip.valid-option,
 .fill-option-chip.invalid-option {
     background: var(--primary-color) !important;
@@ -1268,7 +1270,7 @@ transition: var(--transition-fast);
 }
 
 .fill-option-chip.correct-answer {
-    background: var(--success-color);
+    background: var(--action-color);
     border: 2px solid #218838;
 }
 
@@ -1319,7 +1321,7 @@ transition: var(--transition-fast);
 .answer-slot {
     min-height: 50px;
     padding: 10px;
-    background: white;
+    background: #F0F0F0;
     border: 2px solid var(--border-light);
     border-radius: var(--border-radius-sm);
     display: flex;
@@ -1375,7 +1377,7 @@ html, body {
 }
 
 body {
-    background: white;
+    background: #F0F0F0;
     font-family: system-ui, -apple-system, BlinkMacSystemFont;
     height: 100vh;
     padding: 0;
@@ -1450,7 +1452,7 @@ h1 {
     font-size: 13px;
     font-weight: 500;
     color: var(--text-muted);
-    background: white;
+    background: #F0F0F0;
     padding: 2px 6px;
     border-radius: 12px;
     pointer-events: none;
@@ -1470,7 +1472,7 @@ input, textarea {
     padding: 12px;
     border: 1px solid #d0d0d0;
     border-radius: var(--border-radius-sm);
-    background: white;
+    background: #F0F0F0;
     font-size: 14px;
     font-family: inherit;
     resize: none;
@@ -2134,7 +2136,7 @@ body.dragging {
 
 .btn-run {
     padding: 12px 20px;
-    background: var(--success-color);
+    background: var(--action-color);
     color: white;
     border: none;
     border-radius: var(--border-radius-lg);
@@ -2183,7 +2185,7 @@ body.dragging {
     padding: 10px 40px 10px 15px;
     border: 2px solid var(--border-light);
     border-radius: var(--border-radius-sm);
-    background: white;
+    background: #F0F0F0;
     font-size: 16px;
     appearance: none;
     -webkit-appearance: none;
@@ -2220,7 +2222,7 @@ body.dragging {
     height: 36px;
     flex-shrink: 0;
     padding: 0 12px;
-    background: white;
+    background: #F0F0F0;
     border: 2px solid var(--success-color);
     color: var(--success-color);
     cursor: pointer;
@@ -2231,13 +2233,13 @@ body.dragging {
 }
 
 .correct-answer-btn:hover {
-    background: var(--success-color);
+    background: var(--action-color);
     color: white;
     border-color: var(--success-color);
 }
 
 .correct-answer-btn.selected {
-    background: var(--success-color);
+    background: var(--action-color);
     color: white;
     border-color: var(--success-color);
 }
@@ -2246,7 +2248,7 @@ body.dragging {
     width: 36px;
     height: 36px;
     flex-shrink: 0;
-    background: white;
+    background: #F0F0F0;
     border: 2px solid var(--danger-color);
     color: var(--danger-color);
     cursor: pointer;
@@ -2261,7 +2263,7 @@ body.dragging {
 }
 
 .question-type option {
-    background: white;
+    background: #F0F0F0;
     color: var(--primary-color);
     padding: 10px;
     border: none;
@@ -2291,7 +2293,7 @@ body.dragging {
     min-height: 297mm;
     padding: 15mm;
     margin: 0;
-    background: white;
+    background: #F0F0F0;
     border: 1px solid #ccc;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     box-sizing: border-box;

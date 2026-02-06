@@ -1,4 +1,15 @@
 /* Welcome Page Specific Styles */
+
+/* CSS Custom Properties */
+:root {
+    --action-color: #F9D949;
+    --action-hover: #F5C542;
+    --success-color: #28a745;
+    --success-hover: #218838;
+    --danger-color: #F45050;
+    --danger-hover: #E63946;
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -35,7 +46,7 @@ body {
 }
 
 .required-auth-modal .modal-content {
-    background: white;
+    background: #F0F0F0;
     padding: 40px;
     border-radius: 20px;
     text-align: center;
@@ -263,7 +274,7 @@ section {
 }
 
 .btn-primary {
-    background: white;
+    background: #F0F0F0;
     color: var(--primary-color);
     border: none;
     padding: 15px 30px;
@@ -293,7 +304,7 @@ section {
 }
 
 .btn-secondary:hover {
-    background: white;
+    background: #F0F0F0;
     color: var(--primary-color);
     transform: translateY(-3px);
 }
@@ -315,7 +326,7 @@ section {
 }
 
 .preview-mockup {
-    background: white;
+    background: #F0F0F0;
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
@@ -406,7 +417,7 @@ section {
 
 /* Features Section */
 .features {
-    background: white;
+    background: #F0F0F0;
     padding: 100px 20px;
 }
 
@@ -437,7 +448,7 @@ section {
 }
 
 .feature-card {
-    background: white;
+    background: #F0F0F0;
     padding: 40px 30px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -506,7 +517,7 @@ section {
 }
 
 .classroom-card {
-    background: white;
+    background: #F0F0F0;
     padding: 40px 30px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -559,7 +570,7 @@ section {
 
 .classroom-cta {
     text-align: center;
-    background: white;
+    background: #F0F0F0;
     padding: 50px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -627,7 +638,7 @@ section {
 }
 
 .testimonial-card {
-    background: white;
+    background: #F0F0F0;
     border-radius: 20px;
     padding: 40px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
@@ -667,7 +678,7 @@ section {
 
 /* Registration Section */
 .register {
-    background: white;
+    background: #F0F0F0;
     padding: 100px 20px;
 }
 
@@ -693,7 +704,7 @@ section {
 }
 
 .register-form {
-    background: white;
+    background: #F0F0F0;
     padding: 40px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -875,7 +886,7 @@ section {
 }
 
 .modal-content {
-    background: white;
+    background: #F0F0F0;
     padding: 30px;
     border-radius: 20px;
     max-width: 600px;
@@ -1026,7 +1037,7 @@ section {
 }
 
 .auth-modal .modal-content {
-    background: white;
+    background: #F0F0F0;
     padding: 40px;
     border-radius: 20px;
     text-align: center;
