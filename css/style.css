@@ -501,7 +501,7 @@
 /* Adjust main container for side navigation */
 .container.with-side-nav {
     padding-left: 0;
-    padding-top: 80px;
+    padding-top: 40px;
 }
 
 .container.with-side-nav .simple-nav {
@@ -583,7 +583,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 25px;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 .quiz-card {
@@ -1391,7 +1391,7 @@ body {
     height: 100vh;
     overflow-y: auto;
     box-sizing: border-box;
-    padding: 90px 10px 10px 10px;
+    padding: 20px 10px 10px 10px;
 }
 
 .content-wrapper {
