@@ -503,12 +503,9 @@ body {
 .test-container {
     max-width: 100%;
     margin: 0 auto;
-    width: fit-content !important;
     min-width: 600px;
     background: white;
-    border: none;
     padding: 20px;
-    box-shadow: var(--shadow-md);
     height: calc(100vh - 20px);
     display: flex;
     flex-direction: column;
@@ -628,8 +625,6 @@ body {
 .test-container:-webkit-full-screen,
 .test-container:-moz-full-screen,
 .test-container:-ms-fullscreen {
-    border-radius: 0;
-    border: none;
     height: 100vh;
     padding: 20px;
 }

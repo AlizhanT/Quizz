@@ -830,85 +830,87 @@ function populateMatching(block, questionData) {
     }
 }
 
-// Drag and drop functionality
+// Pointer-based drag and drop functionality
+const container = document.getElementById('questionsContainer');
+
+let startY = 0;
+let offsetY = 0;
+let originalWidth = 0;
+let containerTop = 0;
+
 function initializeDragAndDrop(block) {
     const dragHandle = block.querySelector('.drag-handle');
-    dragHandle.draggable = true;
     
-    dragHandle.addEventListener('dragstart', handleDragStart);
-    dragHandle.addEventListener('dragend', handleDragEnd);
-    
-    block.addEventListener('dragover', handleDragOver);
-    block.addEventListener('drop', handleDrop);
-    block.addEventListener('dragenter', handleDragEnter);
-    block.addEventListener('dragleave', handleDragLeave);
+    dragHandle.addEventListener('pointerdown', handlePointerDown);
 }
 
-function handleDragStart(e) {
-    draggedElement = this.closest('.question-block');
+function handlePointerDown(e) {
+    const handle = e.target.closest('.drag-handle');
+    if (!handle) return;
+
+    draggedElement = handle.closest('.question-block');
+    const rect = draggedElement.getBoundingClientRect();
+
+    containerTop = container.getBoundingClientRect().top;
+    startY = e.clientY - containerTop - 42;
+    offsetY = startY - rect.top;
+    originalWidth = rect.width;
+
     draggedElement.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/html', draggedElement.innerHTML);
+    draggedElement.style.width = container.getBoundingClientRect().width + 'px';
     
-    const randomRotation = Math.random() * 10 - 5;
-    draggedElement.style.transform = `rotate(${randomRotation}deg) scale(1.05)`;
-    
-    document.querySelectorAll('.question-block').forEach(block => {
-        if (block !== draggedElement) {
-            block.classList.add('drag-over');
-            const targetRotation = Math.random() * 6 - 3;
-            block.style.transform = `rotate(${targetRotation}deg) scale(1.02)`;
+    // Position element so its top aligns with cursor
+    draggedElement.style.top = (e.clientY - containerTop - 42) + 'px';
+
+    document.body.classList.add('dragging');
+
+    document.addEventListener('pointermove', handlePointerMove);
+    document.addEventListener('pointerup', handlePointerUp);
+}
+
+function handlePointerMove(e) {
+    if (!draggedElement) return;
+
+    draggedElement.style.top = (e.clientY - containerTop) + 'px';
+
+    const blocks = [...container.querySelectorAll('.question-block:not(.dragging)')];
+
+    let insertBefore = null;
+
+    for (const block of blocks) {
+        const rect = block.getBoundingClientRect();
+        const middle = rect.top + rect.height / 2;
+
+        if (e.clientY < middle) {
+            insertBefore = block;
+            break;
         }
-    });
-}
+    }
 
-function handleDragEnd(e) {
-    const block = this.closest('.question-block');
-    block.classList.remove('dragging');
-    block.style.transform = '';
-    
-    document.querySelectorAll('.question-block').forEach(questionBlock => {
-        questionBlock.classList.remove('drag-over');
-        questionBlock.style.transform = '';
-    });
-}
-
-function handleDragOver(e) {
-    if (e.preventDefault) e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    return false;
-}
-
-function handleDragEnter(e) {
-    if (this !== draggedElement) {
-        this.classList.add('drag-over');
-        const targetRotation = Math.random() * 6 - 3;
-        this.style.transform = `rotate(${targetRotation}deg) scale(1.02)`;
+    if (insertBefore) {
+        container.insertBefore(draggedElement, insertBefore);
+    } else {
+        container.appendChild(draggedElement);
     }
 }
 
-function handleDragLeave(e) {
-    // Don't remove drag-over effect during drag
-}
+function handlePointerUp() {
+    if (!draggedElement) return;
 
-function handleDrop(e) {
-    if (e.stopPropagation) e.stopPropagation();
-    
-    if (draggedElement !== this) {
-        const container = document.getElementById('questionsContainer');
-        const allBlocks = Array.from(container.children);
-        const draggedIndex = allBlocks.indexOf(draggedElement);
-        const targetIndex = allBlocks.indexOf(this);
-        
-        if (draggedIndex < targetIndex) {
-            container.insertBefore(draggedElement, this.nextSibling);
-        } else {
-            container.insertBefore(draggedElement, this);
-        }
-        
-        renumberQuestions();
-        triggerAutosave(); // Trigger autosave after reordering questions
-    }
+    draggedElement.classList.remove('dragging');
+    draggedElement.style.top = '';
+    draggedElement.style.width = '';
+
+    document.body.classList.remove('dragging');
+
+    document.removeEventListener('pointermove', handlePointerMove);
+    document.removeEventListener('pointerup', handlePointerUp);
+
+    // Renumber questions and trigger autosave after reordering
+    renumberQuestions();
+    triggerAutosave();
+
+    draggedElement = null;
 }
 
 // Wrapper function for addQuestion with loading state
