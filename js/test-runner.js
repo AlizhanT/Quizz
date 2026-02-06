@@ -1254,6 +1254,16 @@ function restartTest() {
         questionContainer.classList.remove('hidden');
     }
     
+    // Show independent navigation elements
+    const questionCounter = document.querySelector('.question-counter');
+    const navigationButtons = document.querySelector('.navigation-buttons');
+    if (questionCounter) {
+        questionCounter.classList.remove('hidden');
+    }
+    if (navigationButtons) {
+        navigationButtons.classList.remove('hidden');
+    }
+    
     // Reset and display first question
     displayQuestion();
     updateProgress();

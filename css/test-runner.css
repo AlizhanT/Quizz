@@ -503,16 +503,13 @@ body {
     max-width: 100%;
     margin: 0 auto;
     min-width: 600px;
-    background: transparent;      /* Invisible background */
+    background: white;
     padding: 20px;
     height: calc(100vh - 20px);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
     position: relative;
-    border: none;                 /* Remove any borders */
-    outline: none;                /* Remove any outlines */
-    box-shadow: none;             /* Remove any shadows */
 }
 
 /* Top Controls */
@@ -569,7 +566,7 @@ body {
 }
 
 .question-counter {
-    position: absolute;
+    position: fixed;
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
@@ -578,24 +575,19 @@ body {
     color: var(--primary-color);
     font-weight: bold;
     z-index: 1000;
-    background: rgba(255, 255, 255, 0.9);  /* Semi-transparent background */
-    padding: 4px 8px;                      /* Add padding for visibility */
-    border-radius: 4px;                    /* Rounded corners */
-    border: 1px solid var(--primary-color); /* Visible border */
+    width: auto;
+    min-width: 50px;
+    max-width: 100px;
 }
 
 /* Navigation Buttons */
 .navigation-buttons {
-    position: absolute;
+    position: fixed;
     bottom: 10px;
     right: 10px;
     display: flex;
     gap: 10px;
     z-index: 1000;
-    background: rgba(255, 255, 255, 0.9);  /* Semi-transparent background */
-    padding: 4px;                          /* Add padding */
-    border-radius: 4px;                    /* Rounded corners */
-    border: 1px solid var(--primary-color); /* Visible border */
 }
 
 .nav-btn {

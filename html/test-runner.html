@@ -37,20 +37,21 @@
             <!-- Question content will be dynamically inserted here -->
         </div>
 
-        <div class="question-counter" id="questionCounter">1/1</div>
-
-        <!-- Navigation Buttons -->
-        <div class="navigation-buttons">
-            <button class="nav-btn btn-prev" id="prevBtn" onclick="previousQuestion()" data-translate="testRunner.previous" title="Previous">Previous</button>
-            <button class="nav-btn btn-next" id="nextBtn" onclick="nextQuestion()" data-translate="testRunner.next" title="Next">Next</button>
-        </div>
-
         <div id="resultsContainer" class="results-container hidden">
             <h2 class="results-title" data-translate="testRunner.complete">Test Complete!</h2>
             <div class="score-display" id="scoreDisplay">0%</div>
             <div class="results-message" id="resultsMessage" data-translate="testRunner.completed">You have completed test.</div>
             <button class="nav-btn btn-close" onclick="closeTest()" data-translate="testRunner.close">Close Test</button>
         </div>
+    </div>
+
+    <!-- Independent Question Counter -->
+    <div class="question-counter" id="questionCounter">1/1</div>
+
+    <!-- Independent Navigation Buttons -->
+    <div class="navigation-buttons">
+        <button class="nav-btn btn-prev" id="prevBtn" onclick="previousQuestion()" data-translate="testRunner.previous" title="Previous">Previous</button>
+        <button class="nav-btn btn-next" id="nextBtn" onclick="nextQuestion()" data-translate="testRunner.next" title="Next">Next</button>
     </div>
 
     <!-- Supabase Client -->
