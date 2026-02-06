@@ -267,10 +267,10 @@
     --question-scale: 1;
     --options-scale: 1;
     --question-font-size: 48px;
-    --answer-font-size: 28px;
-    --fill-sentence-font-size: 18px;
-    --fill-option-font-size: 14px;
-    --matching-font-size: 14px;
+    --answer-font-size: 36px;
+    --fill-sentence-font-size: 24px;
+    --fill-option-font-size: 20px;
+    --matching-font-size: 20px;
 }
 
 /* Fill-in-the-blank styles */
