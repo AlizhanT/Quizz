@@ -159,7 +159,6 @@
 
 .matching-right-item.dragging {
     opacity: 0.5;
-    transform: rotate(5deg);
     z-index: 1000;
     cursor: grabbing;
 }
@@ -504,13 +503,16 @@ body {
     max-width: 100%;
     margin: 0 auto;
     min-width: 600px;
-    background: white;
+    background: transparent;      /* Invisible background */
     padding: 20px;
     height: calc(100vh - 20px);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
     position: relative;
+    border: none;                 /* Remove any borders */
+    outline: none;                /* Remove any outlines */
+    box-shadow: none;             /* Remove any shadows */
 }
 
 /* Top Controls */
@@ -576,9 +578,10 @@ body {
     color: var(--primary-color);
     font-weight: bold;
     z-index: 1000;
-    width: auto;
-    min-width: 50px;
-    max-width: 100px;
+    background: rgba(255, 255, 255, 0.9);  /* Semi-transparent background */
+    padding: 4px 8px;                      /* Add padding for visibility */
+    border-radius: 4px;                    /* Rounded corners */
+    border: 1px solid var(--primary-color); /* Visible border */
 }
 
 /* Navigation Buttons */
@@ -589,6 +592,10 @@ body {
     display: flex;
     gap: 10px;
     z-index: 1000;
+    background: rgba(255, 255, 255, 0.9);  /* Semi-transparent background */
+    padding: 4px;                          /* Add padding */
+    border-radius: 4px;                    /* Rounded corners */
+    border: 1px solid var(--primary-color); /* Visible border */
 }
 
 .nav-btn {
