@@ -841,9 +841,104 @@ function checkNewPairs(question) {
 }
 
 function checkAllMatchingDropZonesFilled() {
-    checkAllMatchingDropZonesFilled();
-        checkNewPairs(question);
+    const allDropZones = document.querySelectorAll('.matching-drop-zone');
+    return Array.from(allDropZones).every(zone => zone.dataset.occupied === 'true');
+}
+
+function displayFlippingCard(question, container) {
+    // Create card container
+    const cardContainer = document.createElement('div');
+    cardContainer.className = 'flipping-card-container';
+    
+    // Create the flipping card
+    const card = document.createElement('div');
+    card.className = 'flipping-card';
+    
+    // Create front face
+    const frontFace = document.createElement('div');
+    frontFace.className = 'card-face card-front';
+    
+    const frontContent = document.createElement('div');
+    frontContent.className = 'card-content';
+    
+    // Add front text
+    if (question.frontText) {
+        frontContent.innerHTML = question.frontText;
+    } else {
+        frontContent.innerHTML = 'Front side';
     }
+    
+    // Add front images if they exist
+    if (question.frontImages && question.frontImages.length > 0) {
+        question.frontImages.forEach(imageData => {
+            const img = document.createElement('img');
+            img.src = imageData.src;
+            img.alt = imageData.name || 'Front image';
+            img.className = 'card-image';
+            frontContent.appendChild(img);
+        });
+    }
+    
+    frontFace.appendChild(frontContent);
+    
+    // Create back face
+    const backFace = document.createElement('div');
+    backFace.className = 'card-face card-back';
+    
+    const backContent = document.createElement('div');
+    backContent.className = 'card-content';
+    
+    // Add back text
+    if (question.backText) {
+        backContent.innerHTML = question.backText;
+    } else {
+        backContent.innerHTML = 'Back side';
+    }
+    
+    // Add back images if they exist
+    if (question.backImages && question.backImages.length > 0) {
+        question.backImages.forEach(imageData => {
+            const img = document.createElement('img');
+            img.src = imageData.src;
+            img.alt = imageData.name || 'Back image';
+            img.className = 'card-image';
+            backContent.appendChild(img);
+        });
+    }
+    
+    backFace.appendChild(backContent);
+    
+    // Assemble the card
+    card.appendChild(frontFace);
+    card.appendChild(backFace);
+    
+    // Add click handler for flipping
+    card.addEventListener('click', function() {
+        this.classList.toggle('flipped');
+        
+        // Mark as completed when flipped
+        if (!userAnswers[currentQuestionIndex]) {
+            userAnswers[currentQuestionIndex] = {
+                flipped: false,
+                completed: false
+            };
+        }
+        userAnswers[currentQuestionIndex].flipped = true;
+        userAnswers[currentQuestionIndex].completed = true;
+        
+        // Auto-advance after showing back
+        setTimeout(() => {
+            if (currentQuestionIndex < testData.questions.length - 1) {
+                nextQuestion();
+            } else {
+                finishTest();
+            }
+        }, 1000);
+    });
+    
+    // Add to container
+    cardContainer.appendChild(card);
+    container.appendChild(cardContainer);
 }
 
 let draggedElement = null;
