@@ -913,6 +913,7 @@ function displayFlippingCard(question, container) {
     card.appendChild(backFace);
     
     // Add click handler for flipping
+    let isFlipped = false;
     card.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -920,7 +921,15 @@ function displayFlippingCard(question, container) {
         // Only flip if not already animating
         if (!this.classList.contains('animating')) {
             this.classList.add('animating');
-            this.classList.toggle('flipped');
+            
+            // Toggle flip state
+            isFlipped = !isFlipped;
+            
+            if (isFlipped) {
+                this.classList.add('flipped');
+            } else {
+                this.classList.remove('flipped');
+            }
             
             // Mark as completed when flipped
             if (!userAnswers[currentQuestionIndex]) {
@@ -929,8 +938,8 @@ function displayFlippingCard(question, container) {
                     completed: false
                 };
             }
-            userAnswers[currentQuestionIndex].flipped = true;
-            userAnswers[currentQuestionIndex].completed = true;
+            userAnswers[currentQuestionIndex].flipped = isFlipped;
+            userAnswers[currentQuestionIndex].completed = isFlipped;
             
             // Update navigation buttons to enable Next/Finish
             updateNavigationButtons();
