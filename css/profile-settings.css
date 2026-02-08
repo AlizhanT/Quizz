@@ -1,15 +1,4 @@
 /* Profile Settings Page Styles */
-
-/* CSS Custom Properties */
-:root {
-    --action-color: #F9D949;
-    --action-hover: #F5C542;
-    --success-color: #28a745;
-    --success-hover: #218838;
-    --danger-color: #F45050;
-    --danger-hover: #E63946;
-}
-
 html, body {
     margin: 0;
     padding: 0;
@@ -200,20 +189,20 @@ body {
 }
 
 .btn-save {
-    background: var(--action-color);
-    color: white;
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
     padding: 15px 30px;
-    border-radius: 10px;
+    border-radius: 3px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: var(--shadow-sm);
 }
 
 .btn-save:hover:not(:disabled) {
-    background: var(--action-hover);
-    box-shadow: var(--shadow-md);
+    background: var(--primary-color);
+    color: white;
 }
 
 .btn-save:disabled {
@@ -231,24 +220,23 @@ body {
 }
 
 .btn-delete-account {
-    background: var(--danger-color);
-    color: white;
-    border: none;
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
     padding: 12px 20px;
-    border-radius: 8px;
+    border-radius: 3px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: var(--shadow-sm);
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
 .btn-delete-account:hover {
-    background: var(--danger-hover);
-    box-shadow: var(--shadow-md);
+    background: var(--primary-color);
+    color: white;
 }
 
 /* Modal Styles */
@@ -343,40 +331,19 @@ body {
 
 .btn-cancel, .btn-delete, .btn-primary {
     padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
+    border: 2px solid var(--primary-color);
+    border-radius: 3px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    background: transparent;
+    color: var(--primary-color);
 }
 
-.btn-cancel {
-    background: var(--background-light);
-    color: var(--text-muted);
-    border: 1px solid var(--border-light);
-}
-
-.btn-cancel:hover {
-    background: var(--border-light);
-}
-
-.btn-delete {
-    background: var(--danger-color);
-    color: white;
-}
-
-.btn-delete:hover {
-    background: var(--danger-hover);
-}
-
-.btn-primary {
+.btn-cancel:hover, .btn-delete:hover, .btn-primary:hover {
     background: var(--primary-color);
     color: white;
-}
-
-.btn-primary:hover {
-    background: var(--primary-hover);
 }
 
 /* Success Message Animation */
@@ -532,14 +499,20 @@ body {
 }
 
 .btn-secondary {
-    background: var(--background-light);
-    color: var(--text-muted);
-    border: 1px solid var(--border-light);
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 12px 24px;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
-    background: var(--border-light);
-    color: var(--text-primary);
+    background: var(--primary-color);
+    color: white;
 }
 
 /* High Contrast Mode Support */

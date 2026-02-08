@@ -695,6 +695,8 @@ function populateQuestionBlock(block, questionData) {
             populateFillInBlank(block, questionData);
         } else if (questionData.type === 'matching') {
             populateMatching(block, questionData);
+        } else if (questionData.type === 'flippingcard') {
+            populateFlippingCard(block, questionData);
         }
     }, 100);
 }
@@ -827,6 +829,44 @@ function populateMatching(block, questionData) {
                 }
             }
         });
+    }
+}
+
+// Populate Flipping Card question
+function populateFlippingCard(block, questionData) {
+    const frontInput = block.querySelector('.flipping-card-front');
+    const backInput = block.querySelector('.flipping-card-back');
+    
+    if (frontInput && questionData.frontText) {
+        frontInput.innerHTML = questionData.frontText;
+        updatePlaceholder(frontInput);
+    }
+    
+    if (backInput && questionData.backText) {
+        backInput.innerHTML = questionData.backText;
+        updatePlaceholder(backInput);
+    }
+    
+    // Load front images
+    if (questionData.frontImages && questionData.frontImages.length > 0) {
+        const frontPreviewContainer = block.querySelector('#front-preview-' + getQuestionNumberFromBlock(block));
+        if (frontPreviewContainer) {
+            questionData.frontImages.forEach(imageData => {
+                const previewWrapper = createImagePreviewWrapper(imageData.src, imageData.name || 'image');
+                frontPreviewContainer.appendChild(previewWrapper);
+            });
+        }
+    }
+    
+    // Load back images
+    if (questionData.backImages && questionData.backImages.length > 0) {
+        const backPreviewContainer = block.querySelector('#back-preview-' + getQuestionNumberFromBlock(block));
+        if (backPreviewContainer) {
+            questionData.backImages.forEach(imageData => {
+                const previewWrapper = createImagePreviewWrapper(imageData.src, imageData.name || 'image');
+                backPreviewContainer.appendChild(previewWrapper);
+            });
+        }
     }
 }
 
@@ -963,6 +1003,7 @@ function addQuestion(insertAfterElement = null) {
                     <option value="typing" data-translate="quiz.typingAnswer">Typing Answer</option>
                     <option value="fill" data-translate="quiz.fillBlank">Fill in the Blank</option>
                     <option value="matching" data-translate="quiz.matching">Matching</option>
+                    <option value="flippingcard" data-translate="quiz.flippingCard">Flipping Card</option>
                 </select>
                 <div class="select-arrow">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
@@ -1276,12 +1317,77 @@ function renderQuestionContent(type, container) {
             }
         }, 10);
     }
+
+    if (type === "flippingcard") {
+        container.innerHTML = `
+            <div class="form-group">
+                <label data-translate="quiz.frontText">Front Text</label>
+                <div class="input-with-image">
+                    <div class="rich-text-input flipping-card-front" contenteditable="true" data-translate-placeholder="quiz.frontTextPlaceholder" data-placeholder="Enter text for the front side of the card..."></div>
+                    <button class="image-upload-btn" onclick="handleImageUpload(this, 'flipping-front')" data-translate-title="quiz.addImage" title="Add image">${getSVGIcon('image')}</button>
+                </div>
+                <div class="image-preview-container" id="front-preview-${questionCount}"></div>
+            </div>
+            <div class="form-group">
+                <label data-translate="quiz.backText">Back Text</label>
+                <div class="input-with-image">
+                    <div class="rich-text-input flipping-card-back" contenteditable="true" data-translate-placeholder="quiz.backTextPlaceholder" data-placeholder="Enter text for the back side of the card..."></div>
+                    <button class="image-upload-btn" onclick="handleImageUpload(this, 'flipping-back')" data-translate-title="quiz.addImage" title="Add image">${getSVGIcon('image')}</button>
+                </div>
+                <div class="image-preview-container" id="back-preview-${questionCount}"></div>
+            </div>
+            <div class="flipping-card-preview">
+                <div class="flipping-card-container">
+                    <div class="flipping-card">
+                        <div class="card-face card-front">
+                            <div class="card-content">Front side preview</div>
+                        </div>
+                        <div class="card-face card-back">
+                            <div class="card-content">Back side preview</div>
+                        </div>
+                    </div>
+                </div>
+                <p class="preview-note" style="text-align: center; color: #666; font-size: 12px; margin-top: 10px;">Click card to preview flip effect</p>
+            </div>
+        `;
+        
+        setTimeout(() => {
+            const frontInput = container.querySelector('.flipping-card-front');
+            const backInput = container.querySelector('.flipping-card-back');
+            
+            if (frontInput) setupRichTextInput(frontInput);
+            if (backInput) setupRichTextInput(backInput);
+            
+            // Setup preview flip functionality
+            const previewCard = container.querySelector('.flipping-card');
+            if (previewCard) {
+                previewCard.addEventListener('click', function() {
+                    this.classList.toggle('flipped');
+                });
+            }
+            
+            // Setup live preview updates
+            const updatePreview = () => {
+                const frontContent = frontInput ? frontInput.innerHTML : '';
+                const backContent = backInput ? backInput.innerHTML : '';
+                const frontPreview = container.querySelector('.card-front .card-content');
+                const backPreview = container.querySelector('.card-back .card-content');
+                
+                if (frontPreview) frontPreview.innerHTML = frontContent || 'Front side preview';
+                if (backPreview) backPreview.innerHTML = backContent || 'Back side preview';
+            };
+            
+            if (frontInput) frontInput.addEventListener('input', updatePreview);
+            if (backInput) backInput.addEventListener('input', updatePreview);
+        }, 10);
+    }
 }
 // Utility functions
 function renumberQuestions() {
     document.querySelectorAll(".question-number").forEach((el, i) => {
         el.textContent = t('js.common.questionNumber', { number: i + 1 });
-    });
+    }
+    );
 }
 
 function updateRemoveButtonsVisibility() {
@@ -1335,6 +1441,8 @@ function copyQuestion(sourceBlock) {
         copyFillInBlank(sourceBlock, newBlock);
     } else if (questionType === 'matching') {
         copyMatchingPairs(sourceBlock, newBlock);
+    } else if (questionType === 'flippingcard') {
+        copyFlippingCard(sourceBlock, newBlock);
     }
 }
 
@@ -1768,6 +1876,40 @@ function collectTestData() {
                 question.pairs = pairs;
                 questions.push(question);
             }
+        } else if (questionType === 'flippingcard') {
+            const frontInput = block.querySelector('.flipping-card-front');
+            const backInput = block.querySelector('.flipping-card-back');
+            const frontText = frontInput ? frontInput.innerHTML.trim() : '';
+            const backText = backInput ? backInput.innerHTML.trim() : '';
+            
+            question.frontText = frontText;
+            question.backText = backText;
+            
+            // Collect front images
+            const frontPreview = block.querySelector('#front-preview-' + getQuestionNumberFromBlock(block));
+            if (frontPreview) {
+                const frontImages = frontPreview.querySelectorAll('img');
+                if (frontImages.length > 0) {
+                    question.frontImages = Array.from(frontImages).map(img => ({
+                        src: img.src,
+                        name: img.dataset.name || 'image'
+                    }));
+                }
+            }
+            
+            // Collect back images
+            const backPreview = block.querySelector('#back-preview-' + getQuestionNumberFromBlock(block));
+            if (backPreview) {
+                const backImages = backPreview.querySelectorAll('img');
+                if (backImages.length > 0) {
+                    question.backImages = Array.from(backImages).map(img => ({
+                        src: img.src,
+                        name: img.dataset.name || 'image'
+                    }));
+                }
+            }
+            
+            questions.push(question);
         }
     });
     

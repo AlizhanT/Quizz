@@ -1,3 +1,83 @@
+/* Flipping Card Styles for Test Runner */
+.flipping-card-container {
+    perspective: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.flipping-card {
+    width: 400px;
+    height: 250px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease;
+    cursor: pointer;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    background: white;
+    border: 3px solid var(--primary-color);
+}
+
+.flipping-card .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    box-sizing: border-box;
+}
+
+.flipping-card .card-front {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: rotateY(0deg);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.flipping-card .card-back {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    transform: rotateY(180deg);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.flipping-card.flipped {
+    transform: rotateY(180deg);
+}
+
+.flipping-card.flipped .card-front {
+    transform: rotateY(180deg);
+}
+
+.flipping-card.flipped .card-back {
+    transform: rotateY(0deg);
+}
+
+.card-content {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 100%;
+    line-height: 1.4;
+}
+
+.card-content img.card-image {
+    max-width: 80%;
+    max-height: 60%;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
 /* New Matching Layout Styles */
 .matching-container-new {
     display: flex;
@@ -44,8 +124,8 @@
 .matching-left-item {
     flex: 1;
     padding: 12px 16px;
-    background: #F0F0F0;
-    border: 2px solid #3C486B;
+    background: white;
+    border: 2px solid navy;
     border-radius: 30px;
     font-weight: 500;
     text-align: center;
@@ -63,7 +143,7 @@
     min-height: 25px;
     border: 2px dashed #ccc;
     border-radius: 30px;
-    background: #F0F0F0;
+    background: white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -93,7 +173,7 @@
 }
 
 .matching-drop-zone.filled {
-    border: 2px solid #3C486B;
+    border: 2px solid navy;
     background: #f0f8ff;
     color: var(--primary-color);
     cursor: grab;
@@ -243,15 +323,13 @@
 
 /* CSS Custom Properties for Test Runner */
 :root {
-    --primary-color: #3C486B;
+    --primary-color: navy;
     --primary-hover: #4169E1;
     --primary-focus: #6495ED;
-    --action-color: #F9D949;
-    --action-hover: #F5C542;
     --success-color: #28a745;
     --success-hover: #218838;
-    --danger-color: #F45050;
-    --danger-hover: #E63946;
+    --danger-color: darkred;
+    --danger-hover: #8b0000;
     --background-light: #f8f9fa;
     --border-light: #dee2e6;
     --text-muted: #666;
@@ -309,7 +387,7 @@
     min-height: 40px;
     border: 2px dashed #ccc;
     border-radius: var(--border-radius-sm);
-    background: #F0F0F0;
+    background: white;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -340,7 +418,7 @@
 }
 
 .blank-drop-zone.filled {
-    border: 2px solid #3C486B;
+    border: 2px solid navy;
     background: #f0f8ff;
     color: var(--primary-color);
     cursor: grab;
@@ -387,7 +465,7 @@
 .fill-options-container {
     margin-top: 30px;
     padding: 20px;
-    background: #F0F0F0;
+    background: white;
     border: 2px solid var(--border-light);
     border-radius: var(--border-radius-md);
     display: flex;
@@ -495,7 +573,7 @@
 }
 
 body {
-    background: #F0F0F0;
+    background: white;
     height: 100vh;
     font-family: system-ui, -apple-system, BlinkMacSystemFont;
     padding: 10px;
@@ -516,7 +594,7 @@ body {
     bottom: 0;
     width: 100vw;
     height: 100vh;
-    background: #F0F0F0;
+    background: white;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -708,7 +786,7 @@ body {
 }
 
 .answer-option {
-    background: #F0F0F0;
+    background: white;
     border: 2px solid var(--primary-color);
     border-radius: var(--border-radius-lg);
     padding: calc(40px * var(--options-scale)) calc(30px * var(--options-scale));
@@ -749,9 +827,9 @@ body {
 .answer-radio {
     width: 24px;
     height: 24px;
-    border: 2px solid #3C486B;
+    border: 2px solid navy;
     border-radius: 50%;
-    background: #F0F0F0;
+    background: white;
     position: relative;
     flex-shrink: 0;
     display: none;
@@ -816,9 +894,9 @@ body {
 .results-container {
     text-align: center;
     padding: 40px;
-    background: #F0F0F0;
+    background: white;
     border-radius: 25px;
-    border: 2px solid #3C486B;
+    border: 2px solid navy;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -829,7 +907,7 @@ body {
 
 .results-title {
     font-size: 28px;
-    color: #3C486B;
+    color: navy;
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -860,7 +938,7 @@ body {
 .score-display {
     font-size: 48px;
     font-weight: bold;
-    color: #3C486B;
+    color: navy;
     margin-bottom: 20px;
 }
 
@@ -876,11 +954,11 @@ body {
 
 .fill-blank-input {
     border: none;
-    border-bottom: 2px solid #3C486B;
+    border-bottom: 2px solid navy;
     background: transparent;
     padding: 4px 8px;
     font-size: 16px;
-    color: #3C486B;
+    color: navy;
     outline: none;
     width: 120px;
     text-align: center;
@@ -906,7 +984,7 @@ body {
 .typing-input {
     width: 100%;
     padding: 12px;
-    border: 2px solid #3C486B;
+    border: 2px solid navy;
     border-radius: 25px;
     font-size: 16px;
     outline: none;
@@ -934,7 +1012,7 @@ body {
     background: #f8f9fa;
     padding: 20px;
     border-radius: 25px;
-    border: 2px solid #3C486B;
+    border: 2px solid navy;
     min-width: 200px;
     position: relative;
 }
@@ -948,8 +1026,8 @@ body {
 
 .matching-item {
     padding: calc(12px * var(--font-scale)) calc(16px * var(--font-scale));
-    background: #F0F0F0;
-    border: 2px solid #3C486B;
+    background: white;
+    border: 2px solid navy;
     border-radius: 20px;
     cursor: grab;
     transition: all 0.3s ease;
@@ -1157,7 +1235,7 @@ body {
     right: 20px;
     width: 300px;
     max-height: 400px;
-    background: #F0F0F0;
+    background: white;
     border: 2px solid #e74c3c;
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-lg);

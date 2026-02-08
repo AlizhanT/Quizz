@@ -1,14 +1,12 @@
 /* CSS Custom Properties */
 :root {
-    --primary-color: #3C486B;
+    --primary-color: navy;
     --primary-hover: #4169E1;
     --primary-focus: #6495ED;
-    --action-color: #F9D949;
-    --action-hover: #F5C542;
     --success-color: #28a745;
     --success-hover: #218838;
-    --danger-color: #F45050;
-    --danger-hover: #E63946;
+    --danger-color: darkred;
+    --danger-hover: #8b0000;
     --background-light: #f8f9fa;
     --border-light: #dee2e6;
     --text-muted: #666;
@@ -23,7 +21,81 @@
     --bin-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='20px' viewBox='0 -960 960 960' width='20px' fill='%23d32f2f'%3E%3Cpath d='M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z'/%3E%3C/svg%3E");
 }
 
-/* Simple Navigation Buttons */
+/* Flipping Card Styles */
+.flipping-card-preview {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.flipping-card-container {
+    perspective: 1000px;
+    display: inline-block;
+}
+
+.flipping-card {
+    width: 300px;
+    height: 200px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease;
+    cursor: pointer;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    background: white;
+    border: 2px solid var(--border-light);
+}
+
+.flipping-card .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.flipping-card .card-front {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: rotateY(0deg);
+}
+
+.flipping-card .card-back {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    transform: rotateY(180deg);
+}
+
+.flipping-card.flipped {
+    transform: rotateY(180deg);
+}
+
+.flipping-card.flipped .card-front {
+    transform: rotateY(180deg);
+}
+
+.flipping-card.flipped .card-back {
+    transform: rotateY(0deg);
+}
+
+.card-content {
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+.preview-note {
+    margin-top: 10px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-style: italic;
+}
 .simple-nav {
     position: fixed;
     top: 20px;
@@ -49,7 +121,7 @@
 }
 
 .simple-nav .nav-btn:hover {
-    background: #F0F0F0;
+    background: white;
     color: var(--primary-color);
     border-color: var(--primary-color);
     box-shadow: var(--shadow-md);
@@ -198,7 +270,7 @@
     padding: 8px 12px;
     border: 1px solid var(--border-light);
     border-radius: var(--border-radius-sm);
-    background: #F0F0F0;
+    background: white;
     font-size: 14px;
     cursor: pointer;
 }
@@ -213,7 +285,7 @@
     padding: 8px 12px;
     border: 1px solid var(--border-light);
     border-radius: var(--border-radius-sm);
-    background: #F0F0F0;
+    background: white;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -330,7 +402,7 @@
 }
 
 .menu-toggle:hover {
-    background: #F0F0F0;
+    background: white;
     box-shadow: var(--shadow-md);
 }
 
@@ -482,7 +554,7 @@
     top: 100%;
     right: 0;
     margin-top: 8px;
-    background: #F0F0F0;
+    background: white;
     border: 1px solid var(--border-light);
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-md);
@@ -538,11 +610,11 @@
 }
 
 .btn-welcome {
-    background: var(--primary-color);
-    color: white;
-    border: none;
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
     padding: 12px 24px;
-    border-radius: var(--border-radius-md);
+    border-radius: 3px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -550,20 +622,19 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    box-shadow: var(--shadow-sm);
 }
 
 .btn-welcome:hover {
-    background: var(--primary-hover);
-    box-shadow: var(--shadow-md);
+    background: var(--primary-color);
+    color: white;
 }
 
 .btn-saved-quizzes {
-    background: var(--primary-color);
-    color: white;
-    border: none;
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
     padding: 12px 24px;
-    border-radius: var(--border-radius-md);
+    border-radius: 3px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -571,12 +642,11 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    box-shadow: var(--shadow-sm);
 }
 
 .btn-saved-quizzes:hover {
-    background: var(--primary-hover);
-    box-shadow: var(--shadow-md);
+    background: var(--primary-color);
+    color: white;
 }
 
 
@@ -589,7 +659,7 @@
 }
 
 .quiz-card {
-    background: #F0F0F0;
+    background: white;
     border-radius: var(--border-radius-md);
     padding: 25px;
     box-shadow: var(--shadow-sm);
@@ -635,8 +705,9 @@
 
 .btn-icon {
     background: transparent;
-    border: 1px solid var(--border-light);
-    border-radius: var(--border-radius-sm);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 3px;
     width: 36px;
     height: 36px;
     display: flex;
@@ -648,8 +719,9 @@
 }
 
 .btn-icon:hover {
-    background: var(--background-light);
-    transform: scale(1.1);
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
 }
 
 .btn-edit:hover {
@@ -715,31 +787,20 @@
 .btn-run, .btn-load {
     flex: 1;
     padding: 10px 16px;
-    border: none;
-    border-radius: var(--border-radius-sm);
+    border: 2px solid var(--primary-color);
+    border-radius: 3px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition-fast);
     text-align: center;
+    background: transparent;
+    color: var(--primary-color);
 }
 
-.btn-run {
-    background: var(--action-color);
-    color: white;
-}
-
-.btn-run:hover {
-    background: var(--success-hover);
-}
-
-.btn-load {
+.btn-run:hover, .btn-load:hover {
     background: var(--primary-color);
     color: white;
-}
-
-.btn-load:hover {
-    background: var(--primary-hover);
 }
 
 /* Search Bar */
@@ -755,7 +816,7 @@ border: 2px solid var(--border-light);
 border-radius: var(--border-radius-md);
 font-size: 16px;
 transition: all 0.3s ease;
-background: #F0F0F0;
+background: white;
 }
 
 .search-bar input:focus {
@@ -777,7 +838,7 @@ padding: 10px 40px 10px 15px;
 border: 1px solid var(--border-light);
 border-radius: var(--border-radius-sm);
 font-size: 14px;
-background: #F0F0F0;
+background: white;
 }
 
 .header-buttons .search-bar input:focus {
@@ -799,10 +860,10 @@ position: absolute;
 right: 15px;
 top: 50%;
 transform: translateY(-50%);
-background: var(--text-muted);
-color: white;
-border: none;
-border-radius: 50%;
+background: transparent;
+color: var(--primary-color);
+border: 2px solid var(--primary-color);
+border-radius: 3px;
 width: 24px;
 height: 24px;
 display: flex;
@@ -811,22 +872,11 @@ justify-content: center;
 cursor: pointer;
 font-size: 12px;
 transition: var(--transition-fast);
-    background: var(--text-muted);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 12px;
-    transition: var(--transition-fast);
 }
 
 .btn-clear-search:hover {
-    background: var(--danger-color);
+    background: var(--primary-color);
+    color: white;
 }
 
 /* Empty States */
@@ -944,7 +994,7 @@ transition: var(--transition-fast);
     top: 100%;
     right: 0;
     margin-top: 8px;
-    background: #F0F0F0;
+    background: white;
     border: 1px solid var(--border-light);
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-md);
@@ -991,11 +1041,11 @@ transition: var(--transition-fast);
 }
 
 .btn-logout {
-    background: var(--danger-color);
-    color: white;
-    border: none;
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
     padding: 6px 12px;
-    border-radius: var(--border-radius-sm);
+    border-radius: 3px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -1003,8 +1053,8 @@ transition: var(--transition-fast);
 }
 
 .btn-logout:hover {
-    background: var(--danger-hover);
-    transform: translateY(-1px);
+    background: var(--primary-color);
+    color: white;
 }
 
 .header-buttons {
@@ -1020,46 +1070,24 @@ transition: var(--transition-fast);
     padding: 10px 12px;
     font-size: 14px;
     font-weight: 600;
-    border-radius: var(--border-radius-md);
-    border: none;
+    border-radius: 3px;
+    border: 2px solid var(--primary-color);
     cursor: pointer;
     transition: var(--transition-medium);
-    box-shadow: var(--shadow-sm);
     display: flex;
     align-items: center;
     gap: 6px;
     white-space: nowrap;
     flex: none;
+    background: transparent;
+    color: var(--primary-color);
 }
 
-.header-buttons .btn-save {
-    background: var(--action-color);
-    color: white;
-}
-
-.header-buttons .btn-save:hover {
-    background: var(--success-hover);
-    box-shadow: var(--shadow-md);
-}
-
-.header-buttons .btn-generate {
+.header-buttons .btn-save:hover,
+.header-buttons .btn-generate:hover,
+.header-buttons .btn-run:hover {
     background: var(--primary-color);
     color: white;
-}
-
-.header-buttons .btn-generate:hover {
-    background: var(--primary-hover);
-    box-shadow: var(--shadow-md);
-}
-
-.header-buttons .btn-run {
-    background: var(--action-color);
-    color: white;
-}
-
-.header-buttons .btn-run:hover {
-    background: var(--success-hover);
-    box-shadow: var(--shadow-md);
 }
 
 .btn-back {
@@ -1067,7 +1095,7 @@ transition: var(--transition-fast);
     color: var(--primary-color);
     border: 2px solid var(--primary-color);
     padding: 10px 20px;
-    border-radius: var(--border-radius-sm);
+    border-radius: 3px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -1083,11 +1111,11 @@ transition: var(--transition-fast);
 }
 
 .btn-create-new {
-    background: var(--primary-color);
-    color: white;
-    border: none;
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
     padding: 10px 20px;
-    border-radius: var(--border-radius-sm);
+    border-radius: 3px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -1098,7 +1126,8 @@ transition: var(--transition-fast);
 }
 
 .btn-create-new:hover {
-    background: var(--primary-hover);
+    background: var(--primary-color);
+    color: white;
 }
 
 /* Modal Styles */
@@ -1116,7 +1145,7 @@ transition: var(--transition-fast);
 }
 
 .modal-content {
-    background: #F0F0F0;
+    background: white;
     padding: 30px;
     border-radius: var(--border-radius-md);
     max-width: 400px;
@@ -1145,50 +1174,37 @@ transition: var(--transition-fast);
 
 .btn-cancel, .btn-delete {
     padding: 10px 20px;
-    border: none;
-    border-radius: var(--border-radius-sm);
+    border: 2px solid var(--primary-color);
+    border-radius: 3px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition-fast);
+    background: transparent;
+    color: var(--primary-color);
 }
 
-.btn-cancel {
-    background: var(--background-light);
-    color: var(--text-muted);
-    border: 1px solid var(--border-light);
-}
-
-.btn-cancel:hover {
-    background: var(--border-light);
-}
-
-.btn-delete {
-    background: var(--danger-color);
+.btn-cancel:hover, .btn-delete:hover {
+    background: var(--primary-color);
     color: white;
-}
-
-.btn-delete:hover {
-    background: var(--danger-hover);
 }
 
 /* Save Button */
 .btn-save {
-    background: var(--action-color);
-    color: white;
-    border: none;
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
     padding: 12px 24px;
-    border-radius: var(--border-radius-md);
+    border-radius: 3px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition-medium);
-    box-shadow: var(--shadow-sm);
 }
 
 .btn-save:hover {
-    background: var(--success-hover);
-    box-shadow: var(--shadow-md);
+    background: var(--primary-color);
+    color: white;
 }
 
 
@@ -1219,13 +1235,19 @@ transition: var(--transition-fast);
     color: var(--primary-color);
     border: 2px solid var(--primary-color);
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 3px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 40px;
     height: 40px;
+    transition: var(--transition-fast);
+}
+
+.add-fill-options-btn:hover {
+    background: var(--primary-color);
+    color: white;
 }
 
 
@@ -1256,7 +1278,7 @@ transition: var(--transition-fast);
     transition: var(--transition-fast);
 }
 
-/* Override any valid/invalid option styling to keep all options #3C486B blue */
+/* Override any valid/invalid option styling to keep all options navy blue */
 .fill-option-chip.valid-option,
 .fill-option-chip.invalid-option {
     background: var(--primary-color) !important;
@@ -1270,7 +1292,7 @@ transition: var(--transition-fast);
 }
 
 .fill-option-chip.correct-answer {
-    background: var(--action-color);
+    background: var(--success-color);
     border: 2px solid #218838;
 }
 
@@ -1321,7 +1343,7 @@ transition: var(--transition-fast);
 .answer-slot {
     min-height: 50px;
     padding: 10px;
-    background: #F0F0F0;
+    background: white;
     border: 2px solid var(--border-light);
     border-radius: var(--border-radius-sm);
     display: flex;
@@ -1377,7 +1399,7 @@ html, body {
 }
 
 body {
-    background: #F0F0F0;
+    background: white;
     font-family: system-ui, -apple-system, BlinkMacSystemFont;
     height: 100vh;
     padding: 0;
@@ -1452,7 +1474,7 @@ h1 {
     font-size: 13px;
     font-weight: 500;
     color: var(--text-muted);
-    background: #F0F0F0;
+    background: white;
     padding: 2px 6px;
     border-radius: 12px;
     pointer-events: none;
@@ -1472,7 +1494,7 @@ input, textarea {
     padding: 12px;
     border: 1px solid #d0d0d0;
     border-radius: var(--border-radius-sm);
-    background: #F0F0F0;
+    background: white;
     font-size: 14px;
     font-family: inherit;
     resize: none;
@@ -2136,7 +2158,7 @@ body.dragging {
 
 .btn-run {
     padding: 12px 20px;
-    background: var(--action-color);
+    background: var(--success-color);
     color: white;
     border: none;
     border-radius: var(--border-radius-lg);
@@ -2185,7 +2207,7 @@ body.dragging {
     padding: 10px 40px 10px 15px;
     border: 2px solid var(--border-light);
     border-radius: var(--border-radius-sm);
-    background: #F0F0F0;
+    background: white;
     font-size: 16px;
     appearance: none;
     -webkit-appearance: none;
@@ -2222,7 +2244,7 @@ body.dragging {
     height: 36px;
     flex-shrink: 0;
     padding: 0 12px;
-    background: #F0F0F0;
+    background: white;
     border: 2px solid var(--success-color);
     color: var(--success-color);
     cursor: pointer;
@@ -2233,13 +2255,13 @@ body.dragging {
 }
 
 .correct-answer-btn:hover {
-    background: var(--action-color);
+    background: var(--success-color);
     color: white;
     border-color: var(--success-color);
 }
 
 .correct-answer-btn.selected {
-    background: var(--action-color);
+    background: var(--success-color);
     color: white;
     border-color: var(--success-color);
 }
@@ -2248,7 +2270,7 @@ body.dragging {
     width: 36px;
     height: 36px;
     flex-shrink: 0;
-    background: #F0F0F0;
+    background: white;
     border: 2px solid var(--danger-color);
     color: var(--danger-color);
     cursor: pointer;
@@ -2263,7 +2285,7 @@ body.dragging {
 }
 
 .question-type option {
-    background: #F0F0F0;
+    background: white;
     color: var(--primary-color);
     padding: 10px;
     border: none;
@@ -2293,7 +2315,7 @@ body.dragging {
     min-height: 297mm;
     padding: 15mm;
     margin: 0;
-    background: #F0F0F0;
+    background: white;
     border: 1px solid #ccc;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     box-sizing: border-box;

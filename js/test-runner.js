@@ -308,8 +308,9 @@ function displayQuestion() {
     // Display question based on type
     const questionDisplayers = {
         'multiple': displayMultipleChoice,
-        'fill': window.displayFillInBlank,
-        'matching': displayMatching
+        'fill': displayFillInBlank,
+        'matching': displayMatching,
+        'flippingcard': displayFlippingCard
     };
     
     const displayer = questionDisplayers[question.type];
@@ -840,12 +841,7 @@ function checkNewPairs(question) {
 }
 
 function checkAllMatchingDropZonesFilled() {
-    const dropZones = document.querySelectorAll('.matching-drop-zone');
-    const allFilled = Array.from(dropZones).every(zone => zone.dataset.occupied === 'true');
-    
-    // If all drop zones are filled, check the pairs immediately
-    if (allFilled) {
-        const question = testData.questions[currentQuestionIndex];
+    checkAllMatchingDropZonesFilled();
         checkNewPairs(question);
     }
 }
