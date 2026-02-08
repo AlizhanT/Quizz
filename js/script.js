@@ -834,7 +834,7 @@ function populateMatching(block, questionData) {
 
 function getQuestionNumberFromBlock(block) {
     const questionNumber = block.querySelector('.question-number');
-    return questionNumber ? questionNumber.textContent.trim() : '';
+    return questionNumber ? questionNumber.textContent.trim().replace(/[^a-zA-Z0-9]/g, '') : '';
 }
 
 // Populate Flipping Card question
