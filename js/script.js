@@ -832,6 +832,11 @@ function populateMatching(block, questionData) {
     }
 }
 
+function getQuestionNumberFromBlock(block) {
+    const questionNumber = block.querySelector('.question-number');
+    return questionNumber ? questionNumber.textContent.trim() : '';
+}
+
 // Populate Flipping Card question
 function populateFlippingCard(block, questionData) {
     const frontInput = block.querySelector('.flipping-card-front');
