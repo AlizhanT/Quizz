@@ -912,37 +912,17 @@ function displayFlippingCard(question, container) {
     card.appendChild(frontFace);
     card.appendChild(backFace);
     
-    // Add click handler for flipping
-    let isFlipped = false;
+    // Add click handler for rotation only
     card.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         
-        // Only flip if not already animating
+        // Only rotate if not already animating
         if (!this.classList.contains('animating')) {
             this.classList.add('animating');
             
-            // Toggle flip state
-            isFlipped = !isFlipped;
-            
-            if (isFlipped) {
-                this.classList.add('flipped');
-            } else {
-                this.classList.remove('flipped');
-            }
-            
-            // Mark as completed when flipped
-            if (!userAnswers[currentQuestionIndex]) {
-                userAnswers[currentQuestionIndex] = {
-                    flipped: false,
-                    completed: false
-                };
-            }
-            userAnswers[currentQuestionIndex].flipped = isFlipped;
-            userAnswers[currentQuestionIndex].completed = isFlipped;
-            
-            // Update navigation buttons to enable Next/Finish
-            updateNavigationButtons();
+            // Simple rotation toggle
+            this.classList.toggle('flipped');
             
             // Remove animating class after animation completes
             setTimeout(() => {
