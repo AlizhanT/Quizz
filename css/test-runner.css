@@ -8,16 +8,16 @@
 }
 
 .flipping-card {
-    width: 400px;
-    height: 250px;
+    width: 600px;
+    height: 400px;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.8s ease;
+    transition: transform 0.3s ease;
     cursor: pointer;
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    background: white;
-    border: 3px solid var(--primary-color);
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    background: transparent;
+    border: 4px solid var(--primary-color);
 }
 
 .flipping-card .card-face {
@@ -25,28 +25,30 @@
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
-    border-radius: 12px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 25px;
+    padding: 40px;
     box-sizing: border-box;
 }
 
 .flipping-card .card-front {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: transparent;
+    color: var(--primary-color);
     transform: rotateY(0deg);
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 36px;
+    font-weight: 700;
+    border: 2px solid var(--primary-color);
 }
 
 .flipping-card .card-back {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
+    background: transparent;
+    color: var(--primary-color);
     transform: rotateY(180deg);
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 36px;
+    font-weight: 700;
+    border: 2px solid var(--primary-color);
 }
 
 .flipping-card.flipped {
@@ -62,8 +64,8 @@
 }
 
 .card-content {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 36px;
+    font-weight: 700;
     text-align: center;
     word-wrap: break-word;
     max-width: 100%;
@@ -71,11 +73,11 @@
 }
 
 .card-content img.card-image {
-    max-width: 80%;
-    max-height: 60%;
+    max-width: 90%;
+    max-height: 70%;
     object-fit: contain;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    border-radius: 12px;
+    margin-bottom: 20px;
 }
 
 /* New Matching Layout Styles */
