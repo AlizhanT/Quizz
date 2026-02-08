@@ -1336,19 +1336,6 @@ function renderQuestionContent(type, container) {
                 </div>
                 <div class="image-preview-container" id="back-preview-${questionCount}"></div>
             </div>
-            <div class="flipping-card-preview">
-                <div class="flipping-card-container">
-                    <div class="flipping-card">
-                        <div class="card-face card-front">
-                            <div class="card-content">Front side preview</div>
-                        </div>
-                        <div class="card-face card-back">
-                            <div class="card-content">Back side preview</div>
-                        </div>
-                    </div>
-                </div>
-                <p class="preview-note" style="text-align: center; color: #666; font-size: 12px; margin-top: 10px;">Click card to preview flip effect</p>
-            </div>
         `;
         
         setTimeout(() => {
@@ -1357,28 +1344,6 @@ function renderQuestionContent(type, container) {
             
             if (frontInput) setupRichTextInput(frontInput);
             if (backInput) setupRichTextInput(backInput);
-            
-            // Setup preview flip functionality
-            const previewCard = container.querySelector('.flipping-card');
-            if (previewCard) {
-                previewCard.addEventListener('click', function() {
-                    this.classList.toggle('flipped');
-                });
-            }
-            
-            // Setup live preview updates
-            const updatePreview = () => {
-                const frontContent = frontInput ? frontInput.innerHTML : '';
-                const backContent = backInput ? backInput.innerHTML : '';
-                const frontPreview = container.querySelector('.card-front .card-content');
-                const backPreview = container.querySelector('.card-back .card-content');
-                
-                if (frontPreview) frontPreview.innerHTML = frontContent || 'Front side preview';
-                if (backPreview) backPreview.innerHTML = backContent || 'Back side preview';
-            };
-            
-            if (frontInput) frontInput.addEventListener('input', updatePreview);
-            if (backInput) backInput.addEventListener('input', updatePreview);
         }, 10);
     }
 }
