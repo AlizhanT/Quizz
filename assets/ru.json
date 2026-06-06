@@ -1,7 +1,7 @@
 {
   "ru": {
-    "welcome": "📝 Генератор тестов с выбором ответа",
-    "savedQuizzes": "📚 Сохранённые тесты",
+    "welcome": "Генератор тестов с выбором ответа",
+    "savedQuizzes": "Сохранённые тесты",
     "auth": {
       "login": "Войти",
       "signup": "Зарегистрироваться",
@@ -27,12 +27,13 @@
     },
     "navigation": {
       "createNewQuiz": "+ Создать новый тест",
-      "savedQuizzes": "📚 Сохранённые тесты",
-      "saveQuiz": "💾 Сохранить тест",
-      "downloadPDF": "📥 Скачать PDF",
+      "savedQuizzes": "Сохранённые тесты",
+      "saveQuiz": "Сохранить тест",
+      "downloadPDF": "Скачать PDF",
       "run": "▶ ЗАПУСТИТЬ",
       "main": "Основное",
-      "language": "Язык"
+      "language": "Язык",
+      "about": "О нас"
     },
     "quiz": {
       "title": "Название теста",
@@ -385,7 +386,7 @@
       "savedQuizzes": {
         "noResultsFound": "Результаты не найдены",
         "tryAdjustingSearch": "Попробуйте изменить критерии поиска",
-        "clearSearch": "✖",
+        "clearSearch": "Очистить",
         "searchQuizzes": "Поиск тестов...",
         "createNewQuiz": "+ Создать новый тест",
         "noSavedQuizzes": "Сохраненных тестов пока нет",

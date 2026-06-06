@@ -52,6 +52,10 @@ function openProfileSettings() {
     window.location.href = 'profile-settings.html';
 }
 
+function goToAbout() {
+    window.location.href = 'about-us.html';
+}
+
 function logout() {
     // Clear session/storage
     if (typeof supabase !== 'undefined') {
@@ -78,7 +82,8 @@ function setActiveNavItem() {
         const onclick = item.getAttribute('onclick');
         if (onclick) {
             if ((currentPage === 'saved-quizzes.html' && onclick.includes('goToSavedQuizzes()')) ||
-                (currentPage === 'profile-settings.html' && onclick.includes('openProfileSettings()'))) {
+                (currentPage === 'profile-settings.html' && onclick.includes('openProfileSettings()')) ||
+                (currentPage === 'about-us.html' && onclick.includes('goToAbout()'))) {
                 item.setAttribute('onclick', '');
                 item.style.cursor = 'default';
             }
@@ -107,6 +112,9 @@ function setActiveNavItem() {
     } else if (currentPage === 'profile-settings.html') {
         const profileItem = document.querySelector('[onclick*="openProfileSettings"]');
         if (profileItem) profileItem.classList.add('active');
+    } else if (currentPage === 'about-us.html') {
+        const aboutItem = document.querySelector('[onclick*="goToAbout"]');
+        if (aboutItem) aboutItem.classList.add('active');
     }
 }
 

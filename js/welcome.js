@@ -87,8 +87,8 @@ function showUserProfile(user) {
         
         const userName = user.user_metadata?.full_name || user.email;
         userProfile.innerHTML = `
-            <span class="user-name"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"/></svg> ${userName}</span>
-            <button class="nav-btn" onclick="goToSavedQuizzes()" data-translate="navigation.myProfile">My Profile</button>
+            <span class="user-name"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000"><path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0-59 19.5-111t54.5-93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"/></svg> ${userName}</span>
+            <button class="nav-btn" onclick="goToSavedQuizzes()" data-translate="navigation.myProfile" style="background-color: #fff; color: #000;">My Profile</button>
         `;
         
         navButtons.insertBefore(userProfile, authButtons);
@@ -125,7 +125,7 @@ function showRequiredAuthModal() {
         modal.className = 'modal required-auth-modal';
         modal.innerHTML = `
             <div class="modal-content">
-                <div class="modal-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z"/></svg></div>
+                <div class="modal-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z"/></svg></div>
                 <h3 data-translate="modal.auth.login.title">${t('modal.auth.login.title')}</h3>
                 <p data-translate="modal.auth.login.description">${t('modal.auth.login.description')}</p>
                 <div class="auth-options">
@@ -257,12 +257,26 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         }
         
         console.log('Session established after login:', session);
+
+        // Ensure user record exists in database
+        try {
+            const userCreated = await window.ensureUserExists(session.user);
+            if (userCreated) {
+                console.log('User record verified/created after login');
+            } else {
+                console.warn('Failed to verify/create user record after login');
+            }
+        } catch (ensureError) {
+            console.error('Error ensuring user exists after login:', ensureError);
+            // Don't block login - user can still use the app
+        }
+
         showNotification(t('auth.loginSuccess'), 'success');
-        
+
         // Close all modals
         closeModal('loginModal');
         closeRequiredAuthModal();
-        
+
         // Update UI for logged in user
         await updateAuthUI();
         
@@ -346,13 +360,26 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         }
         
         closeModal('signupModal');
-        
+
         // Check if email confirmation is required
         if (data.user && !data.user.email_confirmed_at) {
             // Email verification is required, show verification modal (no notification)
             showEmailVerificationModal(email);
         } else {
-            // No email verification required, show success notification and login modal
+            // No email verification required, create user record explicitly
+            try {
+                const userCreated = await window.ensureUserExists(data.user);
+                if (userCreated) {
+                    console.log('User record created successfully after signup');
+                } else {
+                    console.warn('Failed to create user record after signup, but auth user was created');
+                }
+            } catch (ensureError) {
+                console.error('Error ensuring user exists after signup:', ensureError);
+                // Don't block signup - user can still use the app
+            }
+
+            // Show success notification and login modal
             showNotification(t('auth.signupSuccess'), 'success');
             showLoginModal();
         }
@@ -429,19 +456,19 @@ function validatePasswordMatch(password, confirmPassword) {
         if (isValid) {
             indicator.classList.remove('invalid');
             indicator.classList.add('valid');
-            icon.textContent = '✅';
+            icon.textContent = '✓';
             icon.classList.remove('invalid');
             icon.classList.add('valid');
         } else {
             indicator.classList.remove('valid');
             indicator.classList.add('invalid');
-            icon.textContent = '❌';
+            icon.textContent = '✗';
             icon.classList.remove('valid');
             icon.classList.add('invalid');
         }
     } else {
         indicator.classList.remove('valid', 'invalid');
-        icon.textContent = '❌';
+        icon.textContent = '✗';
         icon.classList.remove('valid', 'invalid');
     }
     
@@ -529,18 +556,19 @@ function showNotification(message, type = 'info') {
         transform: translateX(100%);
         transition: transform 0.3s ease;
         max-width: 300px;
+        border: 2px solid black;
     `;
     
     // Set background color based on type
     switch(type) {
         case 'error':
-            notification.style.background = 'var(--danger-color)';
+            notification.style.background = 'black';
             break;
         case 'success':
-            notification.style.background = 'var(--success-color)';
+            notification.style.background = 'black';
             break;
         default:
-            notification.style.background = 'var(--primary-color)';
+            notification.style.background = 'black';
     }
     
     // Add to DOM
@@ -583,10 +611,10 @@ document.getElementById('signupModal').addEventListener('click', function(e) {
 window.addEventListener('scroll', function() {
     const navbar = document.querySelector('.navbar');
     if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+        navbar.style.background = 'white';
         navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.15)';
     } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+        navbar.style.background = 'white';
         navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
     }
 });
@@ -696,6 +724,31 @@ window.addEventListener('scroll', function() {
 function changeLanguage(lang) {
     if (window.languageManager) {
         window.languageManager.setLanguage(lang);
+        
+        // Update language button text
+        const buttonText = document.querySelector('.language-dropdown .text-xs.font-bold');
+        const languageCodes = {
+            'kk': 'KK',
+            'ru': 'RU', 
+            'en': 'EN'
+        };
+        
+        if (buttonText) {
+            buttonText.textContent = languageCodes[lang] || 'KK';
+        }
+        
+        // Update blue circle indicators
+        const indicators = document.querySelectorAll('.language-dropdown a .w-2.h-2');
+        indicators.forEach((indicator, index) => {
+            const languages = ['kk', 'ru', 'en'];
+            if (languages[index] === lang) {
+                indicator.classList.remove('bg-transparent');
+                indicator.classList.add('bg-primary');
+            } else {
+                indicator.classList.remove('bg-primary');
+                indicator.classList.add('bg-transparent');
+            }
+        });
     }
 }
 

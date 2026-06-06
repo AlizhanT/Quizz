@@ -256,14 +256,14 @@ function setupPasswordValidation() {
         if (password.length >= 6) {
             strengthIndicator.classList.add('valid');
             strengthIndicator.classList.remove('invalid');
-            strengthIcon.textContent = '✅';
+            strengthIcon.textContent = '✓';
             strengthIcon.classList.add('valid');
             strengthIcon.classList.remove('invalid');
             strengthText.textContent = t('js.profileSettings.passwordStrength.good');
         } else {
             strengthIndicator.classList.add('invalid');
             strengthIndicator.classList.remove('valid');
-            strengthIcon.textContent = '❌';
+            strengthIcon.textContent = '✗';
             strengthIcon.classList.add('invalid');
             strengthIcon.classList.remove('valid');
             strengthText.textContent = t('js.profileSettings.passwordStrength.mustBe6Chars');
@@ -294,7 +294,7 @@ function checkPasswordMatch() {
     if (newPassword === confirmPassword && newPassword.length >= 6) {
         matchIndicator.classList.add('valid');
         matchIndicator.classList.remove('invalid');
-        matchIcon.textContent = '✅';
+        matchIcon.textContent = '✓';
         matchIcon.classList.add('valid');
         matchIcon.classList.remove('invalid');
         matchText.textContent = t('js.profileSettings.passwordMatch.match');
@@ -302,7 +302,7 @@ function checkPasswordMatch() {
     } else {
         matchIndicator.classList.add('invalid');
         matchIndicator.classList.remove('valid');
-        matchIcon.textContent = '❌';
+        matchIcon.textContent = '✗';
         matchIcon.classList.add('invalid');
         matchIcon.classList.remove('valid');
         matchText.textContent = t('js.profileSettings.passwordMatch.noMatch');
@@ -317,7 +317,7 @@ function resetPasswordValidation() {
     const strengthText = strengthIndicator.querySelector('.indicator-text');
     
     strengthIndicator.classList.remove('valid', 'invalid');
-    strengthIcon.textContent = '❌';
+    strengthIcon.textContent = '✗';
     strengthIcon.classList.add('invalid');
     strengthIcon.classList.remove('valid');
     strengthText.textContent = t('js.profileSettings.passwordStrength.mustBe6Chars');
@@ -357,41 +357,34 @@ function closeDeleteModal() {
 }
 
 async function confirmDeleteAccount() {
-    // Show loading state
-    const deleteBtn = document.querySelector('.btn-delete');
-    const originalText = deleteBtn.textContent;
-    deleteBtn.classList.add('loading');
-    deleteBtn.textContent = t('js.common.deleting');
+    closeDeleteModal();
     
     try {
         // Use the comprehensive delete function
         const { success, error } = await window.deleteUserAccount();
-        
+
         if (!success) {
             throw new Error(error || 'Failed to delete account');
         }
-        
+
         // Sign out the user
         await window.supabaseClient.auth.signOut();
-        
+
         // Show success message before redirecting
         showSuccess(t('js.profileSettings.accountDeleted'), t('js.notifications.accountDeletedTitle'));
-        
+
         // Redirect after a short delay
         setTimeout(() => {
             window.location.href = '../html/welcome.html';
         }, 2000);
-        
+
     } catch (error) {
         console.error('Error deleting account:', error);
         showError(t('js.profileSettings.failedToDeleteAccount'));
-        
+
         // Sign out user anyway for security
         await window.supabaseClient.auth.signOut();
         window.location.href = '../html/welcome.html';
-    } finally {
-        deleteBtn.classList.remove('loading');
-        deleteBtn.textContent = originalText;
     }
 }
 
@@ -419,11 +412,11 @@ function showError(message) {
     // Create error element
     const errorDiv = document.createElement('div');
     errorDiv.className = 'success-message error-message';
-    errorDiv.style.background = 'rgba(220, 53, 69, 0.1)';
-    errorDiv.style.borderColor = 'var(--danger-color)';
-    errorDiv.style.color = 'var(--danger-color)';
+    errorDiv.style.background = 'white';
+    errorDiv.style.borderColor = 'black';
+    errorDiv.style.color = 'black';
     errorDiv.innerHTML = `
-        <span>❌</span>
+        <span>✗</span>
         <span>${message}</span>
     `;
     

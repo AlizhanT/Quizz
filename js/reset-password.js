@@ -117,7 +117,7 @@ function checkResetPasswordMatch() {
     const isMatch = newPassword === confirmPassword && newPassword.length >= 6;
     
     // Update indicator
-    resetPasswordMatchIcon.textContent = isMatch ? '✅' : '❌';
+    resetPasswordMatchIcon.textContent = isMatch ? '✓' : '✗';
     resetPasswordMatchIcon.style.color = isMatch ? 'var(--success-color)' : 'var(--error-color)';
     
     // Update submit button

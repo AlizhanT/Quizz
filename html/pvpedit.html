@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-translate="page.title">Multiple Choice Test Generator</title>
+    <title data-translate="page.title">PvP Quiz Editor</title>
     
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -105,20 +105,20 @@
 <!-- TopAppBar -->
 <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl docked full-width top-0 sticky z-40 shadow-sm dark:shadow-none flex justify-between items-center w-full px-8 h-16 border-b border-transparent">
 <div class="flex items-center gap-4 flex-1">
-<div class="p-2 bg-primary/10 rounded-lg">
-<span class="material-symbols-outlined text-primary">edit_note</span>
+<div class="p-2 bg-tertiary/10 rounded-lg">
+<span class="material-symbols-outlined text-tertiary">sports_esports</span>
 </div>
-<input class="bg-transparent border-none focus:ring-0 text-xl font-bold text-indigo-600 dark:text-indigo-400 font-['Plus_Jakarta_Sans'] tracking-tight w-full max-w-xl" id="testTitle" data-translate-placeholder="quiz.titlePlaceholder" placeholder="Enter quiz title..." type="text" maxlength="36"/>
+<input class="bg-transparent border-none focus:ring-0 text-xl font-bold text-indigo-600 dark:text-indigo-400 font-['Plus_Jakarta_Sans'] tracking-tight w-full max-w-xl" id="testTitle" data-translate-placeholder="quiz.titlePlaceholder" placeholder="Enter PvP quiz title..." type="text" maxlength="36"/>
 </div>
 <div class="flex items-center gap-3">
 <button class="px-4 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors rounded-lg flex items-center gap-2 text-sm font-medium" onclick="generatePDF()">
 <span class="material-symbols-outlined text-lg">download</span>
                     Download PDF
                 </button>
-<button class="px-6 py-2 bg-primary-container text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform" onclick="saveQuiz()">
+<button class="px-6 py-2 bg-tertiary-container text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform" onclick="saveQuiz()">
                     Save Quiz
                 </button>
-<button class="px-4 py-2 bg-primary text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform" onclick="runTest()">
+<button class="px-4 py-2 bg-tertiary text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform" onclick="runTest()">
                     ▶ RUN
                 </button>
 <button class="px-4 py-2 text-error hover:bg-error/5 transition-colors rounded-lg flex items-center gap-2 text-sm font-medium" onclick="saveAndGoHome()">
@@ -141,15 +141,15 @@
 <h3 class="font-headline font-semibold text-lg text-on-surface">Instructions</h3>
 </div>
 </div>
-<textarea id="instructions" class="w-full bg-surface-container-highest border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-on-surface-variant/50" placeholder="Add instructions for your quiz (optional)..." rows="3"></textarea>
+<textarea id="instructions" class="w-full bg-surface-container-highest border-none rounded-xl p-4 focus:ring-2 focus:ring-tertiary/20 text-on-surface placeholder:text-on-surface-variant/50" placeholder="Add instructions for your PvP quiz (optional)..." rows="3"></textarea>
 </section>
 
 <!-- Questions Container -->
 <div class="questions-container" id="questionsContainer"></div>
 
 <!-- Add Question Button -->
-<button class="w-full py-8 border-2 border-dashed border-primary/30 rounded-[2rem] flex flex-col items-center justify-center gap-3 text-primary hover:bg-primary/5 hover:border-primary transition-all group" id="addQuestionBtn">
-<div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+<button class="w-full py-8 border-2 border-dashed border-tertiary/30 rounded-[2rem] flex flex-col items-center justify-center gap-3 text-tertiary hover:bg-tertiary/5 hover:border-tertiary transition-all group" id="addQuestionBtn">
+<div class="w-14 h-14 rounded-full bg-tertiary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
 <span class="material-symbols-outlined text-3xl font-bold">add</span>
 </div>
 <span class="font-headline font-bold text-lg">Add Question</span>
@@ -182,7 +182,7 @@
     <script src="../js/top-navigation.js"></script>
     <script src="../js/navigation-scroll.js"></script>
     <script src="../js/side-navigation.js"></script>
-    <script src="../js/script.js"></script>
+    <script src="../js/pvp-script.js"></script>
     <script src="../js/pdf-converter.js"></script>
     
     <script>
@@ -193,10 +193,10 @@
             const modalMessage = document.getElementById('modalMessage');
             const modalButtons = document.getElementById('modalButtons');
             
-            modalTitle.textContent = 'Publish Quiz';
-            modalMessage.textContent = 'Your quiz has been published successfully!';
+            modalTitle.textContent = 'Publish PvP Quiz';
+            modalMessage.textContent = 'Your PvP quiz has been published successfully!';
             modalButtons.innerHTML = `
-                <button class="px-6 py-2 bg-primary text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform" onclick="closeModal()">OK</button>
+                <button class="px-6 py-2 bg-tertiary text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform" onclick="closeModal()">OK</button>
             `;
             
             modal.classList.remove('hidden');

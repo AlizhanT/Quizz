@@ -5,237 +5,363 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-translate="page.profileSettings">Profile Settings - QuizMaster Pro</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#ecf1ff",
+                        "on-background": "#111c2d",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#00714d",
+                        "on-primary-fixed": "#07006c",
+                        "primary": "#4648d4",
+                        "outline": "#767586",
+                        "surface-container-highest": "#d8e3fb",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-bright": "#f9f9ff",
+                        "surface-dim": "#cfdaf2",
+                        "surface-container-low": "#f0f3ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "surface-tint": "#494bd6",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "primary-fixed": "#e1e0ff",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#f9f9ff",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#6cf8bb",
+                        "on-tertiary-fixed": "#23005c",
+                        "on-surface": "#111c2d",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-primary-container": "#fffbff",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#c0c1ff",
+                        "secondary": "#006c49",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d8e3fb",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#6b38d4",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#8455ef",
+                        "surface-container": "#e7eeff",
+                        "inverse-surface": "#263143",
+                        "primary-container": "#6063ee",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "surface-container-high": "#dee8ff",
+                        "on-surface-variant": "#464554",
+                        "outline-variant": "#c7c4d7",
+                        "tertiary-fixed": "#e9ddff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-secondary-fixed": "#002113",
+                        "surface": "#f9f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
     
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/profile-settings.css">
 </head>
-<body>
-    <div class="container with-side-nav">
-        <!-- Menu Toggle Button -->
-        <button class="menu-toggle" onclick="toggleSideNav()">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>
-            </svg>
-        </button>
-
-        <!-- Side Navigation -->
-        <nav class="side-navbar" id="sideNavbar">
-            <div class="nav-header">
-                <div class="logo">
-                    <span class="logo-icon">📝</span>
-                    <span class="logo-text">QuizMaster Pro</span>
-                </div>
-                <div class="user-profile" id="userProfile">
-                    <div class="profile-info" onclick="openProfileSettings()">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"/>
-                        </svg>
-                        <span class="profile-name" id="userName">Loading...</span>
-                    </div>
-                </div>
-                <button class="close-btn" onclick="toggleSideNav()">×</button>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-section-title" data-translate="navigation.main">Main</div>
-                <button class="nav-item" onclick="goToSavedQuizzes()">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M120-680v-80h720v80H120Zm0 480v-80h720v80H120Zm0-240v-80h720v80H120Z"/></svg>
-                    <span data-translate="navigation.savedQuizzes">Saved Quizzes</span>
-                </button>
-            </div>
-
-
-            <div class="nav-section logout-section">
-                <button class="nav-item logout-btn" onclick="logout()">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
-                        <path d="M200-120v-80h560v80H200Zm280-160v-200h-80l120-160 120 160h-80v200h-80Z"/>
-                    </svg>
-                    <span data-translate="auth.logout">Log Out</span>
-                </button>
-            </div>
-        </nav>
-
-        <!-- Overlay -->
-        <div class="side-nav-overlay" id="sideNavOverlay" onclick="toggleSideNav()"></div>
-        <div class="content-wrapper">
-            <!-- Page Header -->
-            <div class="page-header">
-                <h1 data-translate="auth.profileSettings">Profile Settings</h1>
-                <div class="header-buttons">
-                    <button class="btn-back" onclick="goToMainApp()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                            <line x1="19" y1="12" x2="5" y2="12"></line>
-                            <polyline points="12 19 5 12 12 5"></polyline>
-                        </svg>
-                        <span data-translate="profile.backToEditor">Back to Editor</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Settings Panels -->
-            <div class="settings-container">
-                <!-- Username Change Panel -->
-                <div class="settings-panel">
-                    <div class="panel-content">
-                        <form id="usernameForm" class="settings-form">
-                            <div class="form-group">
-                                <div class="label-input-row">
-                                    <label for="currentUsername" data-translate="profile.currentDisplayName">Current Display Name</label>
-                                    <input type="text" id="currentUsername" readonly value="Loading...">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="label-input-row">
-                                    <label for="newUsername" data-translate="profile.newDisplayName">New Display Name</label>
-                                    <input type="text" id="newUsername" name="newUsername" data-translate-placeholder="profile.newDisplayNamePlaceholder" placeholder="Enter new display name" required>
-                                </div>
-                                <div class="input-hint" data-translate="profile.displayNameHint">Display name must be 3-20 characters long</div>
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn-save" data-translate="profile.updateDisplayName">Update Display Name</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Password Change Panel -->
-                <div class="settings-panel">
-                    <div class="panel-content">
-                        <form id="passwordForm" class="settings-form">
-                            <div class="form-group">
-                                <div class="label-input-row">
-                                    <label for="currentPassword" data-translate="profile.currentPassword">Current Password</label>
-                                    <input type="password" id="currentPassword" name="currentPassword" data-translate-placeholder="profile.currentPasswordPlaceholder" placeholder="Enter current password" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="label-input-row">
-                                    <label for="newPassword" data-translate="profile.newPassword">New Password</label>
-                                    <input type="password" id="newPassword" name="newPassword" data-translate-placeholder="profile.newPasswordPlaceholder" placeholder="Enter new password" required>
-                                </div>
-                                <div class="password-indicator" id="passwordStrength">
-                                    <span class="indicator-text" data-translate="profile.passwordRequirement">Password must be at least 6 characters</span>
-                                    <span class="indicator-icon" id="strengthIcon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="label-input-row">
-                                    <label for="confirmPassword" data-translate="profile.confirmNewPassword">Confirm New Password</label>
-                                    <input type="password" id="confirmPassword" name="confirmPassword" data-translate-placeholder="profile.confirmNewPasswordPlaceholder" placeholder="Confirm new password" required>
-                                </div>
-                                <div class="password-indicator" id="passwordMatch">
-                                    <span class="indicator-text" data-translate="profile.passwordMatch">Passwords must match</span>
-                                    <span class="indicator-icon" id="matchIcon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></span>
-                                </div>
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn-save" id="updatePasswordBtn" disabled data-translate="profile.updatePassword">Update Password</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Language Settings Panel -->
-                <div class="settings-panel">
-                    <div class="panel-content">
-                        <form id="languageForm" class="settings-form">
-                            <div class="form-group">
-                                <div class="label-input-row">
-                                    <label for="languageSelector" data-translate="profile.languageSettings.selectLanguage">Select Language</label>
-                                    <select id="languageSelector" name="languageSelector" class="language-select">
-                                        <option value="en">🇺🇸 English</option>
-                                        <option value="ru">🇷🇺 Русский</option>
-                                        <option value="kk">🇰🇿 Қазақша</option>
-                                    </select>
-                                </div>
-                                <div class="input-hint" data-translate="profile.languageSettings.languageHint">Language preference will be saved and applied across all pages</div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Account Management Panel -->
-                <div class="settings-panel danger-panel">
-                    <div class="panel-content">
-                        <div class="danger-actions">
-                            <button class="btn-delete-account" onclick="showDeleteConfirmation()">
-                                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                                </svg>
-                                <span data-translate="profile.deleteAccount">Delete Account</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<body class="bg-background text-on-background min-h-screen">
+<!-- SideNavBar Integration updated to match SCREEN_13 -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-lowest border-r border-outline-variant/30 flex flex-col p-6 z-50">
+    <div class="mb-10">
+        <div class="text-2xl font-extrabold text-indigo-600 tracking-tighter">QuizMaster</div>
+        <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-60">Settings Panel</p>
     </div>
+    <nav class="flex-1 space-y-1">
+    </nav>
+    <div class="mt-auto pt-6 border-t border-outline-variant/30">
+        <button class="w-full py-4 bg-primary text-on-primary rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mb-4" onclick="goToMainApp()">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span data-translate="profile.backToEditor">Back to Editor</span>
+        </button>
+        <button class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary rounded-xl font-bold transition-all w-full" onclick="logout()">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">logout</span>
+            <span data-translate="auth.logout">Log Out</span>
+        </button>
+    </div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen">
+<div class="max-w-5xl mx-auto p-8 lg:p-12">
+<!-- Header Section -->
+<div class="mb-12">
+<h2 class="text-4xl font-extrabold tracking-tight text-on-background mb-2" data-translate="profile.settingsTitle">Profile Settings</h2>
+<p class="text-on-surface-variant text-lg" data-translate="profile.settingsSubtitle">Manage your profile, security, and preferences for QuizMaster Pro.</p>
+</div>
+<!-- Layout for Settings Sections -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Section 1: Profile (Large Card) -->
+<section class="lg:col-span-12 bg-surface-container-lowest rounded-[2rem] p-8 shadow-[0_32px_64px_-15px_rgba(99,102,241,0.06)] relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-8 -mt-8"></div>
+<div class="flex items-center gap-4 mb-8">
+<div class="p-3 bg-primary/10 rounded-2xl text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<h3 class="text-2xl font-bold" data-translate="profile.userProfile">User Profile</h3>
+</div>
+<div class="flex flex-col md:flex-row gap-10">
+<div class="flex-grow space-y-6 max-w-2xl">
+<div class="grid grid-cols-1 gap-6">
+<div class="space-y-2">
+<label class="text-xs font-bold text-on-surface-variant/80 ml-1" data-translate="profile.currentDisplayName">Current Display Name</label>
+<input class="w-full bg-surface-container-high/40 border-none rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary/20 font-medium transition-all" type="text" id="currentUsername" readonly value="Loading..."/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-on-surface-variant/80 ml-1" data-translate="profile.newDisplayName">New Display Name</label>
+<input class="w-full bg-surface-container-high/40 border-none rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary/20 font-medium transition-all" type="text" id="newUsername" name="newUsername" data-translate-placeholder="profile.newDisplayNamePlaceholder" placeholder="Enter new display name" required>
+<div class="text-xs text-on-surface-variant/60 mt-1" data-translate="profile.displayNameHint">Display name must be 3-20 characters long</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-end gap-4 border-t border-surface-container-high pt-8">
+<button class="px-6 py-3 rounded-xl text-on-surface-variant font-bold hover:bg-surface-container transition-colors" data-translate="profile.cancel">Cancel</button>
+<button type="submit" form="usernameForm" class="px-8 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:bg-primary-container transition-all" data-translate="profile.updateDisplayName">Update Display Name</button>
+</div>
+</section>
+
+<!-- Section 2: Password (Medium Card) -->
+<section class="lg:col-span-12 bg-white rounded-[2rem] p-8 shadow-[0_32px_64px_-15px_rgba(99,102,241,0.06)] border border-surface-container-high">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+<div class="flex items-center gap-4">
+<div class="p-3 bg-tertiary-container/10 rounded-2xl text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<h3 class="text-2xl font-bold" data-translate="profile.security">Security and Password</h3>
+</div>
+<p class="text-sm text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base">info</span>
+<span data-translate="profile.passwordRequirement">Password must be at least 6 characters</span>
+</p>
+</div>
+<form id="passwordForm" class="settings-form">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="space-y-2">
+<label class="text-xs font-bold text-on-surface-variant/80 ml-1" data-translate="profile.currentPassword">Current Password</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary/20 transition-all" type="password" id="currentPassword" name="currentPassword" data-translate-placeholder="profile.currentPasswordPlaceholder" placeholder="••••••••" required>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-50 hover:opacity-100 transition-opacity" type="button">
+<span class="material-symbols-outlined text-lg">visibility</span>
+</button>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-on-surface-variant/80 ml-1" data-translate="profile.newPassword">New Password</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary/20 transition-all" type="password" id="newPassword" name="newPassword" data-translate-placeholder="profile.newPasswordPlaceholder" placeholder="New password" required>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-on-surface-variant/80 ml-1" data-translate="profile.confirmNewPassword">Confirm New Password</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary/20 transition-all" type="password" id="confirmPassword" name="confirmPassword" data-translate-placeholder="profile.confirmNewPasswordPlaceholder" placeholder="Confirm password" required>
+</div>
+</div>
+<div class="mt-8 flex justify-end gap-4 border-t border-surface-container-high pt-8">
+<button class="px-6 py-3 rounded-xl text-on-surface-variant font-bold hover:bg-surface-container transition-colors" data-translate="profile.cancel">Cancel</button>
+<button type="submit" class="px-8 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:bg-primary-container transition-all" id="updatePasswordBtn" disabled data-translate="profile.updatePassword">Update Password</button>
+</div>
+</form>
+</section>
+
+<!-- Section 3: Language Settings (Смена языка) -->
+<section class="lg:col-span-12 bg-white rounded-[2rem] p-8 shadow-[0_32px_64px_-15px_rgba(99,102,241,0.06)] border border-surface-container-high">
+<div class="flex items-center gap-4 mb-6">
+<div class="p-3 bg-secondary-container/20 rounded-2xl text-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">language</span>
+</div>
+<h3 class="text-2xl font-bold" data-translate="profile.languageSettings.title">Language Settings</h3>
+</div>
+<div class="max-w-md space-y-4">
+<p class="text-sm text-on-surface-variant" data-translate="profile.languageSettings.languageHint">Select your preferred interface language:</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-wrap gap-3">
+<button class="flex items-center gap-2 px-6 py-2.5 rounded-full border-2 border-primary bg-primary/5 text-primary font-bold transition-all text-sm" onclick="selectLanguage('en')">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+<span>English</span>
+</button>
+<button class="flex items-center gap-2 px-6 py-2.5 rounded-full border-2 border-surface-container-high hover:border-primary/30 transition-all font-bold text-on-surface-variant text-sm" onclick="selectLanguage('ru')">
+<div class="w-4 h-4 rounded-full border-2 border-surface-container-high"></div>
+<span>Русский</span>
+</button>
+<button class="flex items-center gap-2 px-6 py-2.5 rounded-full border-2 border-surface-container-high hover:border-primary/30 transition-all font-bold text-on-surface-variant text-sm" onclick="selectLanguage('kk')">
+<div class="w-4 h-4 rounded-full border-2 border-surface-container-high"></div>
+<span>Қазақша</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Section 4: Account Management (Danger Zone) -->
+<section class="lg:col-span-12 bg-white rounded-[2rem] p-8 shadow-[0_32px_64px_-15px_rgba(99,102,241,0.06)] border border-surface-container-high">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+<div class="flex items-center gap-4">
+<div class="p-3 bg-error-container/10 rounded-2xl text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<h3 class="text-2xl font-bold" data-translate="profile.dangerZone">Danger Zone</h3>
+</div>
+<p class="text-sm text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-base">error</span>
+<span data-translate="profile.dangerZoneWarning">Irreversible actions</span>
+</p>
+</div>
+<div class="bg-error-container/5 border border-error/20 rounded-xl p-6">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h4 class="font-bold text-error mb-2" data-translate="profile.deleteAccount">Delete Account</h4>
+<p class="text-sm text-on-surface-variant" data-translate="profile.deleteAccountWarning">Permanently delete your account and all data</p>
+</div>
+<button class="px-6 py-3 bg-error text-white rounded-xl font-bold shadow-lg shadow-error/20 hover:bg-error-container transition-all flex items-center gap-2" onclick="showDeleteConfirmation()">
+<span class="material-symbols-outlined">delete_forever</span>
+<span data-translate="profile.deleteAccount">Delete Account</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer Help/Support -->
+<footer class="mt-20 text-center border-t border-surface-container-high pt-12 pb-8">
+<p class="text-on-surface-variant mb-6" data-translate="profile.helpNeeded">Need help with settings or have questions?</p>
+<div class="flex flex-wrap justify-center gap-4">
+<button class="bg-surface-container-high hover:bg-surface-container-highest px-6 py-3 rounded-full font-bold text-on-surface transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">support_agent</span>
+<span data-translate="profile.support">Support</span>
+</button>
+<button class="bg-surface-container-high hover:bg-surface-container-highest px-6 py-3 rounded-full font-bold text-on-surface transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">description</span>
+<span data-translate="profile.documentation">Documentation</span>
+</button>
+</div>
+<p class="mt-12 text-xs text-on-surface-variant/50 uppercase tracking-widest font-bold">© 2024 QuizMaster Pro. All rights reserved.</p>
+</footer>
+</div>
+</main>
 
     <!-- Delete Account Confirmation Modal -->
-    <div id="deleteModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-icon danger-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z"/></svg></div>
-            <h3 data-translate="modal.deleteAccount.title">Delete Account Forever?</h3>
-            <p data-translate="modal.deleteAccount.message">Are you absolutely sure? This action cannot be undone and all your data will be permanently lost.</p>
-            
-            <div class="warning-details">
-                <div class="warning-message">
-                    <strong data-translate="modal.deleteAccount.warning">Warning:</strong> <span data-translate="modal.deleteAccount.warningText">This action will permanently remove:</span>
+    <div id="deleteModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50" style="display: none;">
+        <div class="bg-surface-container-lowest rounded-[2rem] p-8 max-w-lg w-full mx-4 shadow-[0_32px_64px_-15px_rgba(99,102,241,0.12)]">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="p-3 bg-error-container/10 rounded-2xl text-error">
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warning</span>
                 </div>
-                <ul class="destruction-list">
-                    <li data-translate="modal.deleteAccount.quizzes">All your saved quizzes and questions</li>
-                    <li data-translate="modal.deleteAccount.profile">Your profile information and preferences</li>
-                    <li data-translate="modal.deleteAccount.history">Your account history and statistics</li>
-                    <li data-translate="modal.deleteAccount.data">All associated data and settings</li>
+                <div>
+                    <h3 class="text-2xl font-bold text-error" data-translate="modal.deleteAccount.title">Delete Account Forever?</h3>
+                    <p class="text-on-surface-variant" data-translate="modal.deleteAccount.message">Are you absolutely sure? This action cannot be undone and all your data will be permanently lost.</p>
+                </div>
+            </div>
+            
+            <div class="bg-error-container/5 border border-error/20 rounded-xl p-6 mb-6">
+                <div class="warning-message">
+                    <strong class="text-error" data-translate="modal.deleteAccount.warning">Warning:</strong> <span class="text-on-surface-variant" data-translate="modal.deleteAccount.warningText">This action will permanently remove:</span>
+                </div>
+                <ul class="destruction-list mt-3 space-y-2">
+                    <li class="flex items-center gap-2 text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-error text-lg">remove_circle</span>
+                        <span data-translate="modal.deleteAccount.quizzes">All your saved quizzes and questions</span>
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-error text-lg">remove_circle</span>
+                        <span data-translate="modal.deleteAccount.profile">Your profile information and preferences</span>
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-error text-lg">remove_circle</span>
+                        <span data-translate="modal.deleteAccount.history">Your account history and statistics</span>
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-error text-lg">remove_circle</span>
+                        <span data-translate="modal.deleteAccount.data">All associated data and settings</span>
+                    </li>
                 </ul>
             </div>
             
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeDeleteModal()" data-translate="modal.deleteAccount.cancel">Cancel</button>
-                <button class="btn-delete" onclick="confirmDeleteAccount()" data-translate="modal.deleteAccount.confirm">Delete Account</button>
+            <div class="flex gap-4">
+                <button class="flex-1 px-6 py-3 rounded-xl text-on-surface-variant font-bold hover:bg-surface-container transition-colors" onclick="closeDeleteModal()" data-translate="modal.deleteAccount.cancel">Cancel</button>
+                <button class="flex-1 px-6 py-3 bg-error text-white rounded-xl font-bold shadow-lg shadow-error/20 hover:bg-error-container transition-all" onclick="confirmDeleteAccount()" data-translate="modal.deleteAccount.confirm">Delete Account</button>
             </div>
         </div>
     </div>
 
     <!-- Success Modal -->
-    <div id="successModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></div>
-            <h3 id="successTitle" data-translate="modal.success.title">Success!</h3>
-            <p id="successMessage" data-translate="modal.success.message">Your changes have been saved.</p>
-            <button class="btn-primary" onclick="closeSuccessModal()" data-translate="modal.success.ok">OK</button>
+    <div id="successModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50" style="display: none;">
+        <div class="bg-surface-container-lowest rounded-[2rem] p-8 max-w-md w-full mx-4 shadow-[0_32px_64px_-15px_rgba(99,102,241,0.12)]">
+            <div class="flex flex-col items-center text-center">
+                <div class="p-4 bg-secondary-container/20 rounded-2xl text-secondary mb-4">
+                    <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                </div>
+                <h3 id="successTitle" class="text-2xl font-bold mb-2" data-translate="modal.success.title">Success!</h3>
+                <p id="successMessage" class="text-on-surface-variant mb-6" data-translate="modal.success.message">Your changes have been saved.</p>
+                <button class="w-full px-6 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:bg-primary-container transition-all" onclick="closeSuccessModal()" data-translate="modal.success.ok">OK</button>
+            </div>
         </div>
     </div>
 
     <!-- Email Verification Modal -->
-    <div id="emailVerificationModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-icon email-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z"/></svg></div>
-            <h3 data-translate="modal.emailVerification.title">Verify Your Email Address</h3>
-            <p data-translate="modal.emailVerification.message">Thank you for signing up! We've sent a verification email to your email address. Please check your inbox and click the verification link to activate your account.</p>
-            
-            <div class="verification-details">
-                <div class="email-info">
-                    <strong data-translate="modal.emailVerification.sentTo">Email sent to:</strong>
-                    <span id="verificationEmail" class="email-address"></span>
+    <div id="emailVerificationModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50" style="display: none;">
+        <div class="bg-surface-container-lowest rounded-[2rem] p-8 max-w-lg w-full mx-4 shadow-[0_32px_64px_-15px_rgba(99,102,241,0.12)]">
+            <div class="flex flex-col items-center text-center">
+                <div class="p-4 bg-primary-container/20 rounded-2xl text-primary mb-4">
+                    <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">mail</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-2" data-translate="modal.emailVerification.title">Verify Your Email Address</h3>
+                <p class="text-on-surface-variant mb-6" data-translate="modal.emailVerification.message">Thank you for signing up! We've sent a verification email to your email address. Please check your inbox and click the verification link to activate your account.</p>
+                
+                <div class="w-full bg-primary-container/5 border border-primary/20 rounded-xl p-6 mb-6 text-left">
+                    <div class="email-info mb-4">
+                        <strong class="text-sm font-bold text-primary" data-translate="modal.emailVerification.sentTo">Email sent to:</strong>
+                        <span id="verificationEmail" class="email-address block text-primary font-semibold mt-1"></span>
+                    </div>
+                    
+                    <div class="verification-tips">
+                        <p class="text-sm font-bold text-on-surface-variant mb-3" data-translate="modal.emailVerification.tipsTitle">Tips:</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center gap-2 text-sm text-on-surface-variant">
+                                <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                                <span data-translate="modal.emailVerification.tip1">Check your spam/junk folder if you don't see the email</span>
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-on-surface-variant">
+                                <span class="material-symbols-outlined text-primary text-lg">schedule</span>
+                                <span data-translate="modal.emailVerification.tip2">The verification link expires in 24 hours</span>
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-on-surface-variant">
+                                <span class="material-symbols-outlined text-primary text-lg">link</span>
+                                <span data-translate="modal.emailVerification.tip3">Make sure to click the link in the email to complete verification</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 
-                <div class="verification-tips">
-                    <p data-translate="modal.emailVerification.tipsTitle">Tips:</p>
-                    <ul>
-                        <li data-translate="modal.emailVerification.tip1">Check your spam/junk folder if you don't see the email</li>
-                        <li data-translate="modal.emailVerification.tip2">The verification link expires in 24 hours</li>
-                        <li data-translate="modal.emailVerification.tip3">Make sure to click the link in the email to complete verification</li>
-                    </ul>
+                <div class="flex gap-4 w-full">
+                    <button class="flex-1 px-6 py-3 bg-surface-container-high hover:bg-surface-container-highest rounded-xl font-bold text-on-surface transition-all" onclick="resendVerificationEmail()" data-translate="modal.emailVerification.resend">Resend Email</button>
+                    <button class="flex-1 px-6 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:bg-primary-container transition-all" onclick="closeEmailVerificationModal()" data-translate="modal.emailVerification.close">I've Verified</button>
                 </div>
-            </div>
-            
-            <div class="modal-buttons">
-                <button class="btn-secondary" onclick="resendVerificationEmail()" data-translate="modal.emailVerification.resend">Resend Email</button>
-                <button class="btn-primary" onclick="closeEmailVerificationModal()" data-translate="modal.emailVerification.close">I've Verified</button>
             </div>
         </div>
     </div>
@@ -247,5 +373,39 @@
     <script src="../js/side-navigation.js"></script>
     <script src="../js/email-verification.js"></script>
     <script src="../js/profile-settings.js"></script>
+    
+    <script>
+        // Language selection function
+        function selectLanguage(lang) {
+            // Update UI to show selected language
+            const buttons = document.querySelectorAll('[onclick^="selectLanguage"]');
+            buttons.forEach(btn => {
+                const buttonLang = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+                if (buttonLang === lang) {
+                    btn.className = 'flex items-center gap-2 px-6 py-2.5 rounded-full border-2 border-primary bg-primary/5 text-primary font-bold transition-all text-sm';
+                    btn.innerHTML = `<span class="material-symbols-outlined text-lg">check_circle</span><span>${btn.querySelector('span:last-child').textContent}</span>`;
+                } else {
+                    btn.className = 'flex items-center gap-2 px-6 py-2.5 rounded-full border-2 border-surface-container-high hover:border-primary/30 transition-all font-bold text-on-surface-variant text-sm';
+                    btn.innerHTML = `<div class="w-4 h-4 rounded-full border-2 border-surface-container-high"></div><span>${btn.querySelector('span:last-child').textContent}</span>`;
+                }
+            });
+            
+            // Save language preference
+            localStorage.setItem('selectedLanguage', lang);
+            
+            // Apply language changes
+            if (typeof changeLanguage === 'function') {
+                changeLanguage(lang);
+            }
+        }
+        
+        // Initialize language selection on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+            selectLanguage(savedLang);
+        });
+        
+        // Form submission handlers, modal functions, password validation, and user data loading are handled by profile-settings.js
+    </script>
 </body>
 </html>

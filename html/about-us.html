@@ -84,19 +84,6 @@
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f9f9ff; }
         h1, h2, h3, p, span, table, button, input { font-family: 'Plus Jakarta Sans', sans-serif; }
-        
-        .filter-btn {
-            color: #464554;
-            background: transparent;
-        }
-        .filter-btn:hover {
-            background: rgba(70, 72, 212, 0.1);
-            color: #4648d4;
-        }
-        .filter-btn.active {
-            background: rgba(70, 72, 212, 0.1);
-            color: #4648d4;
-        }
     </style>
     
     <!-- Supabase Client -->
@@ -110,23 +97,17 @@
 <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-60">Teacher Dashboard</p>
 </div>
 <nav class="flex-1 space-y-1">
-<div class="flex flex-col gap-1 px-2">
-<button class="px-4 py-2 rounded-lg font-headline font-bold text-sm transition-all filter-btn active text-left" data-filter="all" onclick="filterQuizzes('all')">
-<span class="material-symbols-outlined text-sm align-middle mr-2">apps</span>
-All
-</button>
-<button class="px-4 py-2 rounded-lg font-headline font-bold text-sm transition-all filter-btn text-left" data-filter="single" onclick="filterQuizzes('single')">
-<span class="material-symbols-outlined text-sm align-middle mr-2">person</span>
-Single
-</button>
-<button class="px-4 py-2 rounded-lg font-headline font-bold text-sm transition-all filter-btn text-left" data-filter="pvp" onclick="filterQuizzes('pvp')">
-<span class="material-symbols-outlined text-sm align-middle mr-2">groups</span>
-PvP
-</button>
-</div>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-all font-headline font-bold" href="#" onclick="goToSavedQuizzes()">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">quiz</span>
+<span data-translate="navigation.savedQuizzes">Saved Quizzes</span>
+</a>
+<a  class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary rounded-xl font-headline font-bold transition-all" href="#" onclick="goToAbout()">
+<span class="material-symbols-outlined">info</span>
+<span data-translate="navigation.about">About</span>
+</a>
 </nav>
 <div class="mt-auto pt-6 border-t border-outline-variant/30">
-<button class="w-full py-4 bg-primary text-on-primary rounded-2xl font-headline font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mb-4" onclick="showQuizModeModal()">
+<button class="w-full py-4 bg-primary text-on-primary rounded-2xl font-headline font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mb-4" onclick="createNewQuiz()">
 <span class="material-symbols-outlined">add_circle</span>
 <span data-translate="navigation.createNewQuiz">Create New Quiz</span>
 </button>
@@ -134,10 +115,6 @@ PvP
 <div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs" id="userAvatar">U</div>
 <span class="text-sm font-bold text-on-surface" id="userName">Loading...</span>
 </div>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-all font-headline font-bold rounded-xl" href="#" onclick="goToAbout()">
-<span class="material-symbols-outlined">info</span>
-<span data-translate="navigation.about">About</span>
-</a>
 <button class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-all font-headline font-bold rounded-xl w-full" onclick="logout()">
 <span class="material-symbols-outlined">logout</span>
 <span data-translate="auth.logout">Log Out</span>
@@ -161,88 +138,14 @@ PvP
 <!-- Header Section -->
 <div class="mb-10 flex items-end justify-between">
 <div>
-<h1 class="text-4xl font-extrabold text-on-surface tracking-tight mb-2" data-translate="savedQuizzes">Saved Quizzes</h1>
-<p class="text-on-surface-variant text-lg">Manage and organize your quiz collection.</p>
+<h1 class="text-4xl font-extrabold text-on-surface tracking-tight mb-2" data-translate="aboutUs">About Us</h1>
 </div>
-<div class="text-right">
-<button class="bg-primary text-on-primary px-6 py-3 rounded-xl font-headline font-bold hover:bg-primary-container transition-all shadow-md shadow-primary/10 flex items-center gap-2" onclick="showQuizModeModal()">
-<span class="material-symbols-outlined">add_circle</span>
-<span data-translate="navigation.createNewQuiz">Create New Quiz</span>
-</button>
-</div>
-</div>
-<!-- Quizzes Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="quizzesGrid">
-<!-- Quiz cards will be dynamically inserted here -->
 </div>
 
-<!-- Empty State -->
-<div class="flex flex-col items-center justify-center py-20" id="emptyState" style="display: none;">
-<div class="w-20 h-20 rounded-2xl bg-surface-container flex items-center justify-center text-primary mb-6">
-<span class="material-symbols-outlined text-4xl">quiz</span>
-</div>
-<h2 class="text-2xl font-extrabold text-on-surface mb-2" data-translate="quiz.noSavedQuizzes">No Saved Quizzes</h2>
-<p class="text-on-surface-variant text-center mb-8 max-w-md" data-translate="quiz.noSavedQuizzesDesc">You haven't created any quizzes yet. Start by creating your first quiz to engage your students.</p>
-<button class="bg-primary text-on-primary px-6 py-3 rounded-xl font-headline font-bold hover:bg-primary-container transition-all shadow-md shadow-primary/10 flex items-center gap-2" onclick="showQuizModeModal()">
-<span class="material-symbols-outlined">add_circle</span>
-<span data-translate="quiz.createFirstQuiz">Create Your First Quiz</span>
-</button>
-</div>
-
-<!-- No Results State -->
-<div class="flex flex-col items-center justify-center py-20" id="noResults" style="display: none;">
-<div class="w-20 h-20 rounded-2xl bg-surface-container flex items-center justify-center text-primary mb-6">
-<span class="material-symbols-outlined text-4xl">search_off</span>
-</div>
-<h2 class="text-2xl font-extrabold text-on-surface mb-2" data-translate="quiz.noResults">No Results Found</h2>
-<p class="text-on-surface-variant text-center max-w-md" data-translate="quiz.noResultsDesc">Try adjusting your search terms or browse through your complete quiz collection.</p>
-</div>
-</main>
-
-<!-- Delete Confirmation Modal -->
-<div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50" id="deleteModal" style="display: none;">
-<div class="bg-surface-container-lowest rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
-<div class="flex items-center gap-4 mb-6">
-<div class="w-12 h-12 rounded-full bg-error/10 flex items-center justify-center">
-<span class="material-symbols-outlined text-error text-2xl">warning</span>
-</div>
 <div>
-<h3 class="text-xl font-extrabold text-on-surface" data-translate="modal.delete.title">Delete Quiz</h3>
-<p class="text-on-surface-variant text-sm" data-translate="modal.delete.message">Are you sure you want to delete <span id="deleteQuizName" class="font-bold text-primary"></span>?</p>
-</div>
-</div>
-<div class="flex gap-3">
-<button class="flex-1 py-3 px-4 bg-surface-container text-on-surface-variant rounded-xl font-headline font-bold hover:bg-surface-container-high transition-all" onclick="closeDeleteModal()" data-translate="modal.delete.cancel">Cancel</button>
-<button class="btn-delete flex-1 py-3 px-4 bg-error text-on-error rounded-xl font-headline font-bold hover:bg-error-container transition-all" onclick="confirmDelete()" data-translate="modal.delete.confirm">Delete</button>
-</div>
-</div>
+  <p>Site was developed and shared by Company. Thank yon for your usage and support!</p>
 </div>
 
-<!-- Quiz Mode Selection Modal -->
-<div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50" id="quizModeModal" style="display: none;">
-<div class="bg-surface-container-lowest rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
-<div class="text-center mb-6">
-<div class="w-16 h-16 rounded-full bg-tertiary/10 flex items-center justify-center mx-auto mb-4">
-<span class="material-symbols-outlined text-tertiary text-4xl">sports_esports</span>
-</div>
-<h3 class="text-2xl font-extrabold text-on-surface mb-2" data-translate="modal.quizMode.title">Select Quiz Mode</h3>
-<p class="text-on-surface-variant text-sm" data-translate="modal.quizMode.message">Choose the mode for your new quiz</p>
-</div>
-<div class="flex flex-col gap-3">
-<button class="w-full py-4 px-6 bg-primary text-on-primary rounded-xl font-headline font-bold hover:bg-primary-container transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-3" onclick="createNewQuiz('single')">
-<span class="material-symbols-outlined">person</span>
-<span data-translate="modal.quizMode.singlePlayer">Single Player</span>
-</button>
-<button class="w-full py-4 px-6 bg-tertiary text-on-tertiary rounded-xl font-headline font-bold hover:bg-tertiary-container transition-all shadow-md shadow-tertiary/10 flex items-center justify-center gap-3" onclick="createNewQuiz('pvp')">
-<span class="material-symbols-outlined">groups</span>
-<span data-translate="modal.quizMode.pvp">PvP (Player vs Player)</span>
-</button>
-</div>
-<div class="mt-6">
-<button class="w-full py-3 px-4 bg-surface-container text-on-surface-variant rounded-xl font-headline font-bold hover:bg-surface-container-high transition-all" onclick="closeQuizModeModal()" data-translate="modal.quizMode.cancel">Cancel</button>
-</div>
-</div>
-</div>
 
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

@@ -1324,25 +1324,34 @@ function populateQuestionBlock(block, questionData) {
 
     
 
-    // Set question text
+    // Set question text for both player columns
+    const questionTextElements = block.querySelectorAll('.rich-text-input.question-text');
 
-    const questionTextElement = block.querySelector('.rich-text-input.question-text');
+    if (questionTextElements[0]) {
+        // Player 1 question text
+        const player1Question = questionData.player1?.question || questionData.question || '';
+        if (player1Question) {
+            questionTextElements[0].innerHTML = player1Question;
+            updatePlaceholder(questionTextElements[0]);
+        }
+    }
 
-    if (questionTextElement && questionData.question) {
-
-        questionTextElement.innerHTML = questionData.question;
-
-        updatePlaceholder(questionTextElement);
-
+    if (questionTextElements[1]) {
+        // Player 2 question text
+        const player2Question = questionData.player2?.question || questionData.question || '';
+        if (player2Question) {
+            questionTextElements[1].innerHTML = player2Question;
+            updatePlaceholder(questionTextElements[1]);
+        }
     }
 
     
 
-    // Render question content based on type
+    // Render question content based on type for both columns
 
-    const contentBox = block.querySelector('.question-content');
+    const contentBoxes = block.querySelectorAll('.question-content');
 
-    typeSelect.onchange(); // This will render the appropriate content
+    typeSelect.onchange(); // This will render the appropriate content for both columns
 
     
 
@@ -1357,6 +1366,10 @@ function populateQuestionBlock(block, questionData) {
         } else if (questionData.type === 'fill') {
 
             populateFillInBlank(block, questionData);
+
+        } else if (questionData.type === 'typing') {
+
+            populateTyping(block, questionData);
 
         } else if (questionData.type === 'matching') {
 
@@ -1373,57 +1386,81 @@ function populateQuestionBlock(block, questionData) {
 // Populate multiple choice question
 
 function populateMultipleChoice(block, questionData) {
+    const contentBoxes = block.querySelectorAll('.question-content');
 
-    const answersGrid = block.querySelector('.answers-grid');
+    console.log('populateMultipleChoice - questionData:', questionData);
 
-    answersGrid.innerHTML = '';
+    // Player 1 options
+    if (contentBoxes[0]) {
+        const answersGrid1 = contentBoxes[0].querySelector('.answers-grid');
+        if (answersGrid1) {
+            answersGrid1.innerHTML = '';
 
-    
+            const options1 = questionData.player1?.options || questionData.options || [];
+            const correctAnswer1 = questionData.player1?.correctAnswer !== undefined ? questionData.player1.correctAnswer : questionData.correctAnswer;
 
-    if (questionData.options && questionData.options.length > 0) {
+            console.log('Player 1 - options:', options1, 'correctAnswer:', correctAnswer1, 'type:', typeof correctAnswer1);
 
-        questionData.options.forEach((optionData, index) => {
+            if (options1.length > 0) {
+                options1.forEach((optionData, index) => {
+                    addAnswer(answersGrid1);
+                    const lastOption = answersGrid1.lastElementChild;
 
-            addAnswer(answersGrid);
+                    const input = lastOption.querySelector('.rich-text-input.answer-input');
+                    if (input && optionData.text) {
+                        input.innerHTML = optionData.text;
+                        updatePlaceholder(input);
+                    }
 
-            const lastOption = answersGrid.lastElementChild;
-
-            
-
-            // Set option text
-
-            const input = lastOption.querySelector('.rich-text-input.answer-input');
-
-            if (input && optionData.text) {
-
-                input.innerHTML = optionData.text;
-
-                updatePlaceholder(input);
-
+                    // Convert to number for comparison (in case it's stored as string)
+                    if (Number(correctAnswer1) === index) {
+                        const correctBtn = lastOption.querySelector('.correct-answer-btn');
+                        if (correctBtn) {
+                            correctBtn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/20');
+                            correctBtn.classList.add('selected', 'bg-primary', 'text-on-primary', 'border-primary');
+                            console.log('Player 1 - Marked option', index, 'as correct');
+                        }
+                    }
+                });
             }
-
-            
-
-            // Set correct answer
-
-            if (questionData.correctAnswer === index) {
-
-                const correctBtn = lastOption.querySelector('.correct-answer-btn');
-
-                if (correctBtn) correctBtn.classList.add('selected');
-
-            }
-
-            
-
-            
-        });
-
+        }
     }
 
-    
+    // Player 2 options
+    if (contentBoxes[1]) {
+        const answersGrid2 = contentBoxes[1].querySelector('.answers-grid');
+        if (answersGrid2) {
+            answersGrid2.innerHTML = '';
 
-    
+            const options2 = questionData.player2?.options || [];
+            const correctAnswer2 = questionData.player2?.correctAnswer !== undefined ? questionData.player2.correctAnswer : -1;
+
+            console.log('Player 2 - options:', options2, 'correctAnswer:', correctAnswer2, 'type:', typeof correctAnswer2);
+
+            if (options2.length > 0) {
+                options2.forEach((optionData, index) => {
+                    addAnswer(answersGrid2);
+                    const lastOption = answersGrid2.lastElementChild;
+
+                    const input = lastOption.querySelector('.rich-text-input.answer-input');
+                    if (input && optionData.text) {
+                        input.innerHTML = optionData.text;
+                        updatePlaceholder(input);
+                    }
+
+                    // Convert to number for comparison (in case it's stored as string)
+                    if (Number(correctAnswer2) === index) {
+                        const correctBtn = lastOption.querySelector('.correct-answer-btn');
+                        if (correctBtn) {
+                            correctBtn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/20');
+                            correctBtn.classList.add('selected', 'bg-primary', 'text-on-primary', 'border-primary');
+                            console.log('Player 2 - Marked option', index, 'as correct');
+                        }
+                    }
+                });
+            }
+        }
+    }
 }
 
 
@@ -1431,65 +1468,77 @@ function populateMultipleChoice(block, questionData) {
 // Populate fill in the blank question
 
 function populateFillInBlank(block, questionData) {
+    const contentBoxes = block.querySelectorAll('.question-content');
 
-    const sentenceElement = block.querySelector('.fill-sentence');
+    // Player 1 data
+    if (contentBoxes[0]) {
+        const sentenceElement1 = contentBoxes[0].querySelector('.fill-sentence');
+        if (sentenceElement1) {
+            const sentence1 = questionData.player1?.sentence || questionData.sentence || '';
+            sentenceElement1.value = sentence1;
+        }
 
-    if (sentenceElement && questionData.sentence) {
+        const draggableAnswers1 = contentBoxes[0].querySelector('.draggable-answers');
+        if (draggableAnswers1) {
+            let optionsList1 = draggableAnswers1.querySelector('.fill-options-list');
+            const options1 = questionData.player1?.options || questionData.options || [];
 
-        sentenceElement.value = questionData.sentence;
+            if (!optionsList1 && options1.length > 0) {
+                optionsList1 = document.createElement('div');
+                optionsList1.className = 'fill-options-list';
+                draggableAnswers1.appendChild(optionsList1);
+            }
 
+            if (optionsList1 && options1.length > 0) {
+                optionsList1.innerHTML = '';
+                options1.forEach(optionText => {
+                    const optionChip = document.createElement('div');
+                    optionChip.className = 'fill-option-chip';
+                    optionChip.dataset.isCorrect = 'true';
+                    optionChip.innerHTML = `
+                        <span class="option-text">${optionText}</span>
+                        <button class="remove-option-btn" onclick="this.parentElement.remove()">×</button>
+                    `;
+                    optionsList1.appendChild(optionChip);
+                });
+            }
+        }
     }
 
-    
+    // Player 2 data
+    if (contentBoxes[1]) {
+        const sentenceElement2 = contentBoxes[1].querySelector('.fill-sentence');
+        if (sentenceElement2) {
+            const sentence2 = questionData.player2?.sentence || '';
+            sentenceElement2.value = sentence2;
+        }
 
-    const draggableAnswers = block.querySelector('.draggable-answers');
+        const draggableAnswers2 = contentBoxes[1].querySelector('.draggable-answers');
+        if (draggableAnswers2) {
+            let optionsList2 = draggableAnswers2.querySelector('.fill-options-list');
+            const options2 = questionData.player2?.options || [];
 
-    if (!draggableAnswers) return;
+            if (!optionsList2 && options2.length > 0) {
+                optionsList2 = document.createElement('div');
+                optionsList2.className = 'fill-options-list';
+                draggableAnswers2.appendChild(optionsList2);
+            }
 
-    
-
-    // Get or create the options container
-
-    let optionsList = draggableAnswers.querySelector('.fill-options-list');
-
-    if (!optionsList && questionData.options && questionData.options.length > 0) {
-
-        optionsList = document.createElement('div');
-
-        optionsList.className = 'fill-options-list';
-
-        draggableAnswers.appendChild(optionsList);
-
+            if (optionsList2 && options2.length > 0) {
+                optionsList2.innerHTML = '';
+                options2.forEach(optionText => {
+                    const optionChip = document.createElement('div');
+                    optionChip.className = 'fill-option-chip';
+                    optionChip.dataset.isCorrect = 'true';
+                    optionChip.innerHTML = `
+                        <span class="option-text">${optionText}</span>
+                        <button class="remove-option-btn" onclick="this.parentElement.remove()">×</button>
+                    `;
+                    optionsList2.appendChild(optionChip);
+                });
+            }
+        }
     }
-
-    
-
-    if (optionsList && questionData.options && questionData.options.length > 0) {
-
-        optionsList.innerHTML = '';
-
-        questionData.options.forEach(optionText => {
-
-            const optionChip = document.createElement('div');
-
-            optionChip.className = 'fill-option-chip';
-
-            optionChip.dataset.isCorrect = 'true';
-
-            optionChip.innerHTML = `
-
-                <span class="option-text">${optionText}</span>
-
-                <button class="remove-option-btn" onclick="this.parentElement.remove()">×</button>
-
-            `;
-
-            optionsList.appendChild(optionChip);
-
-        });
-
-    }
-
 }
 
 
@@ -1497,66 +1546,105 @@ function populateFillInBlank(block, questionData) {
 // Populate matching question
 
 function populateMatching(block, questionData) {
+    const contentBoxes = block.querySelectorAll('.question-content');
 
-    const pairsContainer = block.querySelector('.matching-pairs');
+    // Player 1 pairs
+    if (contentBoxes[0]) {
+        const pairsContainer1 = contentBoxes[0].querySelector('.matching-pairs');
+        if (pairsContainer1) {
+            pairsContainer1.innerHTML = '';
 
-    pairsContainer.innerHTML = '';
+            const pairs1 = questionData.player1?.pairs || questionData.pairs || [];
+            if (pairs1.length > 0) {
+                pairs1.forEach(pairData => {
+                    const addPairBtn1 = contentBoxes[0].querySelector('.add-pair-btn');
+                    if (addPairBtn1) {
+                        addPairBtn1.click();
+                        const newRow = pairsContainer1.lastElementChild;
 
-    
+                        if (newRow) {
+                            const leftInput = newRow.querySelector('.rich-text-input.matching-left');
+                            if (leftInput && pairData.left) {
+                                leftInput.innerHTML = pairData.left;
+                                updatePlaceholder(leftInput);
+                            }
 
-    if (questionData.pairs && questionData.pairs.length > 0) {
-
-        questionData.pairs.forEach(pairData => {
-
-            const addPairBtn = block.querySelector('.add-pair-btn');
-
-            if (addPairBtn) {
-
-                addPairBtn.click();
-
-                const newRow = pairsContainer.lastElementChild;
-
-                
-
-                if (newRow) {
-
-                    // Set left content
-
-                    const leftInput = newRow.querySelector('.rich-text-input.matching-left');
-
-                    if (leftInput && pairData.left) {
-
-                        leftInput.innerHTML = pairData.left;
-
-                        updatePlaceholder(leftInput);
-
+                            const rightInput = newRow.querySelector('.rich-text-input.matching-right');
+                            if (rightInput && pairData.right) {
+                                rightInput.innerHTML = pairData.right;
+                                updatePlaceholder(rightInput);
+                            }
+                        }
                     }
-
-                    
-
-                    // Set right content
-
-                    const rightInput = newRow.querySelector('.rich-text-input.matching-right');
-
-                    if (rightInput && pairData.right) {
-
-                        rightInput.innerHTML = pairData.right;
-
-                        updatePlaceholder(rightInput);
-
-                    }
-
-                    
-
-                    
-                }
-
+                });
             }
-
-        });
-
+        }
     }
 
+    // Player 2 pairs
+    if (contentBoxes[1]) {
+        const pairsContainer2 = contentBoxes[1].querySelector('.matching-pairs');
+        if (pairsContainer2) {
+            pairsContainer2.innerHTML = '';
+
+            const pairs2 = questionData.player2?.pairs || [];
+            if (pairs2.length > 0) {
+                pairs2.forEach(pairData => {
+                    const addPairBtn2 = contentBoxes[1].querySelector('.add-pair-btn');
+                    if (addPairBtn2) {
+                        addPairBtn2.click();
+                        const newRow = pairsContainer2.lastElementChild;
+
+                        if (newRow) {
+                            const leftInput = newRow.querySelector('.rich-text-input.matching-left');
+                            if (leftInput && pairData.left) {
+                                leftInput.innerHTML = pairData.left;
+                                updatePlaceholder(leftInput);
+                            }
+
+                            const rightInput = newRow.querySelector('.rich-text-input.matching-right');
+                            if (rightInput && pairData.right) {
+                                rightInput.innerHTML = pairData.right;
+                                updatePlaceholder(rightInput);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    }
+}
+
+
+
+// Populate typing question
+
+function populateTyping(block, questionData) {
+    const contentBoxes = block.querySelectorAll('.question-content');
+
+    // Player 1 answer
+    if (contentBoxes[0]) {
+        const typingInput1 = contentBoxes[0].querySelector('.rich-text-input.typing-answer');
+        if (typingInput1) {
+            const answer1 = questionData.player1?.answer || questionData.answer || '';
+            if (answer1) {
+                typingInput1.innerHTML = answer1;
+                updatePlaceholder(typingInput1);
+            }
+        }
+    }
+
+    // Player 2 answer
+    if (contentBoxes[1]) {
+        const typingInput2 = contentBoxes[1].querySelector('.rich-text-input.typing-answer');
+        if (typingInput2) {
+            const answer2 = questionData.player2?.answer || '';
+            if (answer2) {
+                typingInput2.innerHTML = answer2;
+                updatePlaceholder(typingInput2);
+            }
+        }
+    }
 }
 
 
@@ -2155,15 +2243,53 @@ function addQuestion(insertAfterElement = null) {
 
         </div>
 
-        <div class="mb-8">
+        <div class="flex flex-col md:flex-row gap-6">
 
-            <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-3 block" data-translate="quiz.questionText">Question Text</label>
+            <!-- Player 1 Column -->
 
-            <div class="rich-text-input question-text w-full bg-surface-container-highest border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-on-surface-variant/50 min-h-[80px]" contenteditable="true" data-translate-placeholder="quiz.questionPlaceholder" data-placeholder="Enter your question here..."></div>
+            <div class="flex-1 w-full">
+
+                <div class="mb-4">
+
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2 block">Player 1</label>
+
+                </div>
+
+                <div class="mb-6">
+
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-3 block" data-translate="quiz.questionText">Question Text</label>
+
+                    <div class="rich-text-input question-text w-full bg-surface-container-highest border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-on-surface-variant/50 min-h-[80px]" contenteditable="true" data-translate-placeholder="quiz.questionPlaceholder" data-placeholder="Enter your question here..."></div>
+
+                </div>
+
+                <div class="question-content"></div>
+
+            </div>
+
+            <!-- Player 2 Column -->
+
+            <div class="flex-1 w-full">
+
+                <div class="mb-4">
+
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2 block">Player 2</label>
+
+                </div>
+
+                <div class="mb-6">
+
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-3 block" data-translate="quiz.questionText">Question Text</label>
+
+                    <div class="rich-text-input question-text w-full bg-surface-container-highest border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-on-surface-variant/50 min-h-[80px]" contenteditable="true" data-translate-placeholder="quiz.questionPlaceholder" data-placeholder="Enter your question here..."></div>
+
+                </div>
+
+                <div class="question-content"></div>
+
+            </div>
 
         </div>
-
-        <div class="question-content"></div>
 
     `;
 
@@ -2209,17 +2335,29 @@ function setupQuestionBlock(block) {
 
     const typeSelect = block.querySelector(".question-type");
 
-    const contentBox = block.querySelector(".question-content");
+    const contentBoxes = block.querySelectorAll(".question-content");
 
     
 
-    renderQuestionContent(typeSelect.value, contentBox);
+    // Render question content for both player columns
+
+    contentBoxes.forEach(contentBox => {
+
+        renderQuestionContent(typeSelect.value, contentBox);
+
+    });
 
     
 
     typeSelect.onchange = () => {
 
-        renderQuestionContent(typeSelect.value, contentBox);
+        // Update both player columns when type changes
+
+        contentBoxes.forEach(contentBox => {
+
+            renderQuestionContent(typeSelect.value, contentBox);
+
+        });
 
         const warningIndicator = block.querySelector('.typing-warning-indicator');
 
@@ -2809,15 +2947,21 @@ function copyQuestion(sourceBlock) {
 
     newBlock.querySelector('.question-type').value = questionType;
 
-    const newQuestionTextElement = newBlock.querySelector('.rich-text-input.question-text');
+    // Copy question text to both player columns
 
-    if (newQuestionTextElement) {
+    const newQuestionTextElements = newBlock.querySelectorAll('.rich-text-input.question-text');
 
-        newQuestionTextElement.innerHTML = questionText;
+    newQuestionTextElements.forEach(newQuestionTextElement => {
 
-        updatePlaceholder(newQuestionTextElement);
+        if (newQuestionTextElement) {
 
-    }
+            newQuestionTextElement.innerHTML = questionText;
+
+            updatePlaceholder(newQuestionTextElement);
+
+        }
+
+    });
 
 
 
@@ -2827,26 +2971,21 @@ function copyQuestion(sourceBlock) {
 
         const typeSelect = newBlock.querySelector('.question-type');
 
-        const contentBox = newBlock.querySelector('.question-content');
+        const contentBoxes = newBlock.querySelectorAll('.question-content');
 
         typeSelect.onchange();
 
 
 
         // Copy type-specific content
-
         if (questionType === 'multiple') {
-
             copyMultipleChoiceAnswers(sourceBlock, newBlock);
-
+        } else if (questionType === 'typing') {
+            copyTypingAnswer(sourceBlock, newBlock);
         } else if (questionType === 'fill') {
-
             copyFillInBlank(sourceBlock, newBlock);
-
         } else if (questionType === 'matching') {
-
             copyMatchingPairs(sourceBlock, newBlock);
-
         }
 
     }, 50);
@@ -2856,212 +2995,166 @@ function copyQuestion(sourceBlock) {
 
 
 function copyMultipleChoiceAnswers(sourceBlock, newBlock) {
+    // Get all question-content divs (one for each player column)
+    const sourceContentBoxes = sourceBlock.querySelectorAll('.question-content');
+    const newContentBoxes = newBlock.querySelectorAll('.question-content');
 
-    const sourceAnswers = sourceBlock.querySelectorAll('.answer-option');
+    // Copy content for each player column separately
+    sourceContentBoxes.forEach((sourceContentBox, index) => {
+        const newContentBox = newContentBoxes[index];
+        if (!sourceContentBox || !newContentBox) return;
 
-    const answersGrid = newBlock.querySelector('.answers-grid');
+        const sourceAnswers = sourceContentBox.querySelectorAll('.answer-option');
+        const answersGrid = newContentBox.querySelector('.answers-grid');
 
-    
+        if (!answersGrid) return;
 
-    answersGrid.innerHTML = '';
+        answersGrid.innerHTML = '';
 
-    
+        sourceAnswers.forEach(sourceOption => {
+            const sourceInput = sourceOption.querySelector('.rich-text-input.answer-input');
+            const sourceCorrectBtn = sourceOption.querySelector('.correct-answer-btn');
+            const option = document.createElement("div");
+            option.className = "answer-option bg-transparent border border-outline-variant/10 rounded-lg p-3 flex items-center gap-2 transition-all hover:border-outline-variant/20 group";
 
-    sourceAnswers.forEach(sourceOption => {
+            const inputContainer = document.createElement("div");
+            inputContainer.className = "answer-input-container flex-1";
 
-        const sourceInput = sourceOption.querySelector('.rich-text-input.answer-input');
+            const input = document.createElement("div");
+            input.className = "rich-text-input answer-input w-full bg-surface-container-highest border border-outline-variant/10 rounded-md p-2 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-on-surface-variant/50 min-h-[36px] transition-all hover:border-outline-variant/20 text-sm";
+            input.contentEditable = true;
+            input.dataset.placeholder = "Answer option";
+            input.setAttribute('data-translate-placeholder', 'quiz.answerPlaceholder');
+            if (sourceInput) input.innerHTML = sourceInput.innerHTML;
 
-        const sourceCorrectBtn = sourceOption.querySelector('.correct-answer-btn');
+            inputContainer.appendChild(input);
 
-        const option = document.createElement("div");
+            const correctBtn = document.createElement("button");
+            correctBtn.className = "correct-answer-btn w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center text-on-surface-variant transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-primary group-hover:border-primary/20 flex-shrink-0";
+            correctBtn.innerHTML = getSVGIcon('check', 14);
+            correctBtn.onclick = () => {
+                answersGrid.querySelectorAll('.correct-answer-btn').forEach(btn => {
+                    btn.classList.remove('selected', 'bg-primary', 'text-on-primary', 'border-primary');
+                    btn.classList.add('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/20');
+                });
+                correctBtn.classList.add('selected', 'bg-primary', 'text-on-primary', 'border-primary');
+                correctBtn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/20');
+                triggerAutosave();
+            };
+            if (sourceCorrectBtn?.classList.contains('selected')) {
+                correctBtn.classList.add('selected', 'bg-primary', 'text-on-primary', 'border-primary');
+                correctBtn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/20');
+            };
 
-        option.className = "answer-option bg-transparent border border-outline-variant/10 rounded-lg p-3 flex items-center gap-2 transition-all hover:border-outline-variant/20 group";
+            const removeBtn = document.createElement("button");
+            removeBtn.className = "remove-option-btn w-6 h-6 rounded-full bg-error/10 text-error flex items-center justify-center transition-all hover:bg-error hover:text-on-primary opacity-0 group-hover:opacity-100 flex-shrink-0";
+            removeBtn.innerHTML = getSVGIcon('close', 12);
+            removeBtn.onclick = () => option.remove();
 
-        
-
-        const inputContainer = document.createElement("div");
-
-        inputContainer.className = "answer-input-container flex-1";
-
-        
-
-        const input = document.createElement("div");
-
-        input.className = "rich-text-input answer-input w-full bg-surface-container-highest border border-outline-variant/10 rounded-md p-2 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-on-surface-variant/50 min-h-[36px] transition-all hover:border-outline-variant/20 text-sm";
-
-        input.contentEditable = true;
-
-        input.dataset.placeholder = "Answer option";
-
-        input.setAttribute('data-translate-placeholder', 'quiz.answerPlaceholder');
-
-        if (sourceInput) input.innerHTML = sourceInput.innerHTML;
-
-        
-
-        inputContainer.appendChild(input);
-
-        
-
-        const correctBtn = document.createElement("button");
-
-        correctBtn.className = "correct-answer-btn w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center text-on-surface-variant transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-primary group-hover:border-primary/20 flex-shrink-0";
-
-        correctBtn.innerHTML = getSVGIcon('check', 14);
-
-        correctBtn.onclick = () => {
-
-            answersGrid.querySelectorAll('.correct-answer-btn').forEach(btn => {
-
-                btn.classList.remove('selected', 'bg-primary', 'text-on-primary', 'border-primary');
-
-                btn.classList.add('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/20');
-
-            });
-
-            correctBtn.classList.add('selected', 'bg-primary', 'text-on-primary', 'border-primary');
-
-            correctBtn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/20');
-
-            triggerAutosave();
-
-        };
-
-        if (sourceCorrectBtn?.classList.contains('selected')) {
-
-            correctBtn.classList.add('selected', 'bg-primary', 'text-on-primary', 'border-primary');
-
-            correctBtn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/20');
-
-        };
-
-        
-
-        const removeBtn = document.createElement("button");
-
-        removeBtn.className = "remove-option-btn w-6 h-6 rounded-full bg-error/10 text-error flex items-center justify-center transition-all hover:bg-error hover:text-on-primary opacity-0 group-hover:opacity-100 flex-shrink-0";
-
-        removeBtn.innerHTML = getSVGIcon('close', 12);
-
-        removeBtn.onclick = () => option.remove();
-
-        
-
-        option.appendChild(inputContainer);
-
-        option.appendChild(correctBtn);
-
-        option.appendChild(removeBtn);
-
-        answersGrid.appendChild(option);
-
+            option.appendChild(inputContainer);
+            option.appendChild(correctBtn);
+            option.appendChild(removeBtn);
+            answersGrid.appendChild(option);
+        });
     });
-
 }
 
 
 
 function copyFillInBlank(sourceBlock, newBlock) {
+    // Get all question-content divs (one for each player column)
+    const sourceContentBoxes = sourceBlock.querySelectorAll('.question-content');
+    const newContentBoxes = newBlock.querySelectorAll('.question-content');
 
-    const sourceSentence = sourceBlock.querySelector('.fill-sentence');
+    // Copy content for each player column separately
+    sourceContentBoxes.forEach((sourceContentBox, index) => {
+        const newContentBox = newContentBoxes[index];
+        if (!sourceContentBox || !newContentBox) return;
 
-    const sourceOptions = sourceBlock.querySelectorAll('.fill-option-chip .option-text');
+        const sourceSentence = sourceContentBox.querySelector('.fill-sentence');
+        const sourceOptions = sourceContentBox.querySelectorAll('.fill-option-chip .option-text');
+        const newSentence = newContentBox.querySelector('.fill-sentence');
+        const newOptionsList = newContentBox.querySelector('.fill-options-list');
+        const newOptionsContainer = newContentBox.querySelector('.fill-options-container');
 
-    const newSentence = newBlock.querySelector('.fill-sentence');
+        if (sourceSentence && newSentence) newSentence.value = sourceSentence.value;
 
-    const newOptionsList = newBlock.querySelector('.fill-options-list');
-
-    const newOptionsContainer = newBlock.querySelector('.fill-options-container');
-
-    
-
-    if (sourceSentence && newSentence) newSentence.value = sourceSentence.value;
-
-    
-
-    if (sourceOptions && newOptionsList) {
-
-        newOptionsList.innerHTML = '';
-
-        sourceOptions.forEach(option => {
-
-            const optionText = option.textContent;
-
-            const optionChip = document.createElement('div');
-
-            optionChip.className = 'fill-option-chip bg-surface-container-highest border border-outline-variant/15 rounded-lg px-3 py-2 flex items-center gap-2 transition-all hover:border-outline-variant/30 group cursor-pointer';
-
-            optionChip.innerHTML = `
-
-                <span class="option-text text-sm font-medium">${optionText}</span>
-
-                <button class="remove-option-btn w-5 h-5 rounded-full bg-error/10 text-error flex items-center justify-center transition-all hover:bg-error hover:text-on-primary opacity-0 group-hover:opacity-100" onclick="this.parentElement.remove()">${getSVGIcon('close', 10)}</button>
-
-            `;
-
-            newOptionsList.appendChild(optionChip);
-
-        });
-
-        // Maintain consistent DOM structure
-
-        newOptionsContainer.appendChild(newOptionsList);
-
-    }
-
+        if (sourceOptions && newOptionsList) {
+            newOptionsList.innerHTML = '';
+            sourceOptions.forEach(option => {
+                const optionText = option.textContent;
+                const optionChip = document.createElement('div');
+                optionChip.className = 'fill-option-chip bg-surface-container-highest border border-outline-variant/15 rounded-lg px-3 py-2 flex items-center gap-2 transition-all hover:border-outline-variant/30 group cursor-pointer';
+                optionChip.innerHTML = `
+                    <span class="option-text text-sm font-medium">${optionText}</span>
+                    <button class="remove-option-btn w-5 h-5 rounded-full bg-error/10 text-error flex items-center justify-center transition-all hover:bg-error hover:text-on-primary opacity-0 group-hover:opacity-100" onclick="this.parentElement.remove()">${getSVGIcon('close', 10)}</button>
+                `;
+                newOptionsList.appendChild(optionChip);
+            });
+            // Maintain consistent DOM structure
+            newOptionsContainer.appendChild(newOptionsList);
+        }
+    });
 }
 
 
 function copyMatchingPairs(sourceBlock, newBlock) {
+    // Get all question-content divs (one for each player column)
+    const sourceContentBoxes = sourceBlock.querySelectorAll('.question-content');
+    const newContentBoxes = newBlock.querySelectorAll('.question-content');
 
-    const sourceRows = sourceBlock.querySelectorAll('.matching-row');
+    // Copy content for each player column separately
+    sourceContentBoxes.forEach((sourceContentBox, index) => {
+        const newContentBox = newContentBoxes[index];
+        if (!sourceContentBox || !newContentBox) return;
 
-    const newPairsContainer = newBlock.querySelector('.matching-pairs');
+        const sourceRows = sourceContentBox.querySelectorAll('.matching-row');
+        const newPairsContainer = newContentBox.querySelector('.matching-pairs');
 
-    
+        if (!newPairsContainer) return;
 
-    newPairsContainer.innerHTML = '';
+        newPairsContainer.innerHTML = '';
 
-    
+        sourceRows.forEach(sourceRow => {
+            const sourceLeftElement = sourceRow.querySelector('.rich-text-input.matching-left');
+            const sourceRightElement = sourceRow.querySelector('.rich-text-input.matching-right');
+            const leftItem = sourceLeftElement ? sourceLeftElement.innerHTML : '';
+            const rightItem = sourceRightElement ? sourceRightElement.innerHTML : '';
 
-    sourceRows.forEach(sourceRow => {
-
-        const sourceLeftElement = sourceRow.querySelector('.rich-text-input.matching-left');
-
-        const sourceRightElement = sourceRow.querySelector('.rich-text-input.matching-right');
-
-        const leftItem = sourceLeftElement ? sourceLeftElement.innerHTML : '';
-
-        const rightItem = sourceRightElement ? sourceRightElement.innerHTML : '';
-
-        
-
-        // Add a new pair and set its content
-
-        const addPairBtn = newBlock.querySelector('.add-pair-btn');
-
-        if (addPairBtn) {
-
-            addPairBtn.click();
-
-            const newRow = newPairsContainer.lastElementChild;
-
-            if (newRow) {
-
-                const newLeft = newRow.querySelector('.rich-text-input.matching-left');
-
-                const newRight = newRow.querySelector('.rich-text-input.matching-right');
-
-                if (newLeft) newLeft.innerHTML = leftItem;
-
-                if (newRight) newRight.innerHTML = rightItem;
-
+            // Add a new pair and set its content
+            const addPairBtn = newContentBox.querySelector('.add-pair-btn');
+            if (addPairBtn) {
+                addPairBtn.click();
+                const newRow = newPairsContainer.lastElementChild;
+                if (newRow) {
+                    const newLeft = newRow.querySelector('.rich-text-input.matching-left');
+                    const newRight = newRow.querySelector('.rich-text-input.matching-right');
+                    if (newLeft) newLeft.innerHTML = leftItem;
+                    if (newRight) newRight.innerHTML = rightItem;
+                }
             }
-
-        }
-
+        });
     });
+}
 
+function copyTypingAnswer(sourceBlock, newBlock) {
+    // Get all question-content divs (one for each player column)
+    const sourceContentBoxes = sourceBlock.querySelectorAll('.question-content');
+    const newContentBoxes = newBlock.querySelectorAll('.question-content');
+
+    // Copy content for each player column separately
+    sourceContentBoxes.forEach((sourceContentBox, index) => {
+        const newContentBox = newContentBoxes[index];
+        if (!sourceContentBox || !newContentBox) return;
+
+        const sourceTypingAnswer = sourceContentBox.querySelector('.typing-answer');
+        const newTypingAnswer = newContentBox.querySelector('.typing-answer');
+
+        if (sourceTypingAnswer && newTypingAnswer) {
+            newTypingAnswer.innerHTML = sourceTypingAnswer.innerHTML;
+            updatePlaceholder(newTypingAnswer);
+        }
+    });
 }
 
 
@@ -3088,11 +3181,13 @@ function runTest() {
 
         console.log('Test data questions count:', testData?.questions?.length);
 
-        
+        console.log('Test data structure:', JSON.stringify(testData, null, 2));
+
+
 
         if (!testData || testData.questions.length === 0) {
 
-            alert('Please add at least one question before running test.');
+            alert('Please add at least one valid question before running test. Make sure fill-in-the-blank questions have both a sentence and options (words to hide).');
 
             return;
 
@@ -3132,21 +3227,35 @@ function runTest() {
 
         
 
-        // Save test data to sessionStorage for test runner
+        // Save test data to sessionStorage for PvP test runner
 
-        sessionStorage.setItem('testData', JSON.stringify(testData));
+        const testDataString = JSON.stringify(testData);
 
-        console.log('Test data saved to sessionStorage, size:', JSON.stringify(testData).length);
+        console.log('PvP test data string length:', testDataString.length);
 
-        console.log('SessionStorage contents:', sessionStorage.getItem('testData'));
+        console.log('PvP test data string preview:', testDataString.substring(0, 200) + '...');
 
-        
+        if (!testDataString || testDataString === '{}' || testDataString === '{"title":"","instructions":"","questions":[],"quiz_type":"pvp"}') {
 
-        // Open test runner in a new window
+            alert('Error: Test data is empty or invalid. Please add valid questions before running the test.');
 
-        const newWindow = window.open('test-runner.html', '_blank');
+            return;
 
-        console.log('Opening test runner window:', newWindow);
+        }
+
+        sessionStorage.setItem('pvpTestData', testDataString);
+
+        console.log('PvP test data saved to sessionStorage');
+
+        console.log('SessionStorage verification:', sessionStorage.getItem('pvpTestData'));
+
+
+
+        // Open PvP test runner in a new window
+
+        const newWindow = window.open('pvp-runner.html', '_blank');
+
+        console.log('Opening PvP test runner window:', newWindow);
 
         
 
@@ -3426,9 +3535,13 @@ function collectTestData() {
 
         const questionType = block.querySelector('.question-type').value;
 
-        const questionTextElement = block.querySelector('.rich-text-input.question-text');
+        // Get question text from both player columns
+        const questionTextElements = block.querySelectorAll('.rich-text-input.question-text');
+        const questionText1 = questionTextElements[0] ? questionTextElements[0].innerHTML.trim() : '';
+        const questionText2 = questionTextElements[1] ? questionTextElements[1].innerHTML.trim() : '';
 
-        const questionText = questionTextElement ? questionTextElement.innerHTML.trim() : '';
+        // Use first player's question text as primary (for backward compatibility)
+        const questionText = questionText1;
 
         
 
@@ -3440,162 +3553,211 @@ function collectTestData() {
 
             type: questionType,
 
-            question: questionText
+            question: questionText,
 
+            // PvP-specific data
+            player1: { question: questionText1 },
+            player2: { question: questionText2 }
         };
 
         
 
         if (questionType === 'multiple') {
-
-            const options = [];
-
-            const correctAnswer = block.querySelector('.correct-answer-btn.selected');
-
-            let correctIndex = -1;
-
+            // Collect options from both player columns
+            const contentBoxes = block.querySelectorAll('.question-content');
             
+            const options1 = [];
+            const options2 = [];
+            let correctIndex1 = -1;
+            let correctIndex2 = -1;
 
-            block.querySelectorAll('.answer-option').forEach((option, index) => {
-
-                const input = option.querySelector('.rich-text-input.answer-input');
-
-                if (input && input.innerHTML.trim()) {
-
-                    const optionData = {
-
-                        text: input.innerHTML.trim()
-
-                    };
-
-                    
-
-                    options.push(optionData);
-
-                    if (option.querySelector('.correct-answer-btn.selected')) {
-
-                        correctIndex = index;
-
+            // Player 1 options
+            if (contentBoxes[0]) {
+                contentBoxes[0].querySelectorAll('.answer-option').forEach((option, index) => {
+                    const input = option.querySelector('.rich-text-input.answer-input');
+                    if (input && input.innerHTML.trim()) {
+                        const optionData = { text: input.innerHTML.trim() };
+                        options1.push(optionData);
+                        if (option.querySelector('.correct-answer-btn.selected')) {
+                            correctIndex1 = index;
+                        }
                     }
-
-                }
-
-            });
-
-            
-
-            if (options.length > 0) {
-
-                question.options = options;
-
-                if (correctIndex !== -1) {
-
-                    question.correctAnswer = correctIndex;
-
-                }
-
-                questions.push(question);
-
+                });
             }
 
+            // Player 2 options
+            if (contentBoxes[1]) {
+                contentBoxes[1].querySelectorAll('.answer-option').forEach((option, index) => {
+                    const input = option.querySelector('.rich-text-input.answer-input');
+                    if (input && input.innerHTML.trim()) {
+                        const optionData = { text: input.innerHTML.trim() };
+                        options2.push(optionData);
+                        if (option.querySelector('.correct-answer-btn.selected')) {
+                            correctIndex2 = index;
+                        }
+                    }
+                });
+            }
+
+            // Use player 1 options as primary (for backward compatibility)
+            const options = options1;
+            const correctIndex = correctIndex1;
+
+            console.log('Player 1 options:', options1);
+            console.log('Player 2 options:', options2);
+
+            if (options.length > 0) {
+                question.options = options;
+                if (correctIndex !== -1) {
+                    question.correctAnswer = correctIndex;
+                }
+                // Add PvP-specific data
+                question.player1.options = options1;
+                question.player1.correctAnswer = correctIndex1;
+                question.player2.options = options2;
+                question.player2.correctAnswer = correctIndex2;
+                questions.push(question);
+            }
         } else if (questionType === 'fill') {
+            // Collect fill-in-the-blank data from both player columns
+            const contentBoxes = block.querySelectorAll('.question-content');
 
-            const sentence = block.querySelector('.fill-sentence').value;
-
-            
-
-            // Try to get options text - handle both cases: with and without nested span
-
-            const optionChips = block.querySelectorAll('.fill-option-chip');
-
-            
-
-            const options = Array.from(optionChips).map((chip, index) => {
-
-                
-
-                // First try to find nested span (when loading saved data)
-
-                const optionTextSpan = chip.querySelector('.option-text');
-
-                if (optionTextSpan) {
-
-                    const text = optionTextSpan.textContent.trim();
-
-                    return text;
-
+            // Player 1 data
+            let sentence1 = '';
+            let options1 = [];
+            if (contentBoxes[0]) {
+                const sentenceInput1 = contentBoxes[0].querySelector('.fill-sentence');
+                if (sentenceInput1) {
+                    sentence1 = sentenceInput1.value;
                 }
+                const optionChips1 = contentBoxes[0].querySelectorAll('.fill-option-chip');
+                options1 = Array.from(optionChips1).map((chip) => {
+                    const optionTextSpan = chip.querySelector('.option-text');
+                    if (optionTextSpan) {
+                        return optionTextSpan.textContent.trim();
+                    }
+                    return chip.textContent.trim().replace('×', '').trim();
+                }).filter(opt => opt && opt.trim() !== '' && opt !== '×');
+            }
 
-                // Fallback to direct textContent (when creating new options)
-
-                const text = chip.textContent.trim().replace('×', '').trim(); // Remove × button text
-
-                return text;
-
-            }).filter(opt => opt && opt.trim() !== '' && opt !== '×'); // Filter out empty options and button text
-
-            
-
-            // Always include fill-in-the-blank questions, even without options
-
-            question.sentence = sentence;
-
-            question.options = options;
-
-            questions.push(question);
-
-        } else if (questionType === 'typing') {
-
-            // Typing questions are now included in the test
-
-            question.type = 'typing';
-
-            questions.push(question);
-
-            // Skip adding typing questions to the questions array
-
-        } else if (questionType === 'matching') {
-
-            const pairs = [];
-
-            block.querySelectorAll('.matching-row').forEach(row => {
-
-                const leftElement = row.querySelector('.rich-text-input.matching-left');
-
-                const rightElement = row.querySelector('.rich-text-input.matching-right');
-
-                const leftItem = leftElement ? leftElement.innerHTML.trim() : '';
-
-                const rightItem = rightElement ? rightElement.innerHTML.trim() : '';
-
-                
-
-                const pairData = {};
-
-                
-
-                if (leftItem) pairData.left = leftItem;
-
-                if (rightItem) pairData.right = rightItem;
-
-                
-
-                if (leftItem || rightItem) {
-
-                    pairs.push(pairData);
-
+            // Player 2 data
+            let sentence2 = '';
+            let options2 = [];
+            if (contentBoxes[1]) {
+                const sentenceInput2 = contentBoxes[1].querySelector('.fill-sentence');
+                if (sentenceInput2) {
+                    sentence2 = sentenceInput2.value;
                 }
+                const optionChips2 = contentBoxes[1].querySelectorAll('.fill-option-chip');
+                options2 = Array.from(optionChips2).map((chip) => {
+                    const optionTextSpan = chip.querySelector('.option-text');
+                    if (optionTextSpan) {
+                        return optionTextSpan.textContent.trim();
+                    }
+                    return chip.textContent.trim().replace('×', '').trim();
+                }).filter(opt => opt && opt.trim() !== '' && opt !== '×');
+            }
 
-            });
+            console.log('Player 1 sentence:', sentence1);
+            console.log('Player 2 sentence:', sentence2);
 
-            
+            // Only add question if it has valid data (sentence and options)
+            if (sentence1 && sentence1.trim() !== '' && options1.length > 0) {
+                // Use player 1 data as primary (for backward compatibility)
+                question.sentence = sentence1;
+                question.options = options1;
 
-            if (pairs.length > 0) {
-
-                question.pairs = pairs;
+                // Add PvP-specific data
+                question.player1.sentence = sentence1;
+                question.player1.options = options1;
+                question.player2.sentence = sentence2;
+                question.player2.options = options2;
 
                 questions.push(question);
+            } else {
+                console.warn('Skipping fill-in-the-blank question - missing sentence or options');
+            }
 
+        } else if (questionType === 'typing') {
+            // Collect typing answer from both player columns
+            const contentBoxes = block.querySelectorAll('.question-content');
+
+            // Player 1 answer
+            let answer1 = '';
+            if (contentBoxes[0]) {
+                const typingInput1 = contentBoxes[0].querySelector('.rich-text-input.typing-answer');
+                if (typingInput1) {
+                    answer1 = typingInput1.innerHTML.trim();
+                }
+            }
+
+            // Player 2 answer
+            let answer2 = '';
+            if (contentBoxes[1]) {
+                const typingInput2 = contentBoxes[1].querySelector('.rich-text-input.typing-answer');
+                if (typingInput2) {
+                    answer2 = typingInput2.innerHTML.trim();
+                }
+            }
+
+            console.log('Player 1 typing answer:', answer1);
+            console.log('Player 2 typing answer:', answer2);
+
+            // Use player 1 answer as primary (for backward compatibility)
+            question.answer = answer1;
+
+            // Add PvP-specific data
+            question.player1.answer = answer1;
+            question.player2.answer = answer2;
+
+            questions.push(question);
+
+        } else if (questionType === 'matching') {
+            // Collect matching pairs from both player columns
+            const contentBoxes = block.querySelectorAll('.question-content');
+
+            // Player 1 pairs
+            const pairs1 = [];
+            if (contentBoxes[0]) {
+                contentBoxes[0].querySelectorAll('.matching-row').forEach(row => {
+                    const leftElement = row.querySelector('.rich-text-input.matching-left');
+                    const rightElement = row.querySelector('.rich-text-input.matching-right');
+                    const leftItem = leftElement ? leftElement.innerHTML.trim() : '';
+                    const rightItem = rightElement ? rightElement.innerHTML.trim() : '';
+
+                    if (leftItem || rightItem) {
+                        pairs1.push({ left: leftItem, right: rightItem });
+                    }
+                });
+            }
+
+            // Player 2 pairs
+            const pairs2 = [];
+            if (contentBoxes[1]) {
+                contentBoxes[1].querySelectorAll('.matching-row').forEach(row => {
+                    const leftElement = row.querySelector('.rich-text-input.matching-left');
+                    const rightElement = row.querySelector('.rich-text-input.matching-right');
+                    const leftItem = leftElement ? leftElement.innerHTML.trim() : '';
+                    const rightItem = rightElement ? rightElement.innerHTML.trim() : '';
+
+                    if (leftItem || rightItem) {
+                        pairs2.push({ left: leftItem, right: rightItem });
+                    }
+                });
+            }
+
+            console.log('Player 1 pairs:', pairs1);
+            console.log('Player 2 pairs:', pairs2);
+
+            // Use player 1 pairs as primary (for backward compatibility)
+            question.pairs = pairs1;
+
+            // Add PvP-specific data
+            question.player1.pairs = pairs1;
+            question.player2.pairs = pairs2;
+
+            if (pairs1.length > 0 || pairs2.length > 0) {
+                questions.push(question);
             }
 
         }
@@ -3616,7 +3778,7 @@ function collectTestData() {
 
         questions: questions,
 
-        quiz_type: 'single'
+        quiz_type: 'pvp'
 
     };
 

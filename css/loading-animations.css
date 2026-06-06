@@ -1,4 +1,6 @@
-/* Loading Animations CSS */
+/* Loading Animations CSS - Black and White Theme */
+
+/* CSS Custom Properties - Uses variables from style.css */
 
 /* Loading Spinner Component */
 .loading-spinner {
@@ -15,8 +17,8 @@
     display: block;
     width: 32px;
     height: 32px;
-    border: 3px solid var(--border-light);
-    border-top: 3px solid var(--primary-color);
+    border: 3px solid var(--color-border);
+    border-top: 3px solid var(--color-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -62,7 +64,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: var(--primary-color);
+    background-color: var(--color-primary);
     animation: dot-pulse 1.4s ease-in-out infinite both;
 }
 
@@ -86,7 +88,7 @@
     display: inline-block;
     width: 40px;
     height: 40px;
-    background-color: var(--primary-color);
+    background-color: var(--color-primary);
     border-radius: 50%;
     animation: pulse 1.5s ease-in-out infinite;
 }
@@ -104,26 +106,26 @@
 @keyframes pulse {
     0% {
         transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(65, 105, 225, 0.7);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
     }
     
     70% {
         transform: scale(1);
-        box-shadow: 0 0 0 10px rgba(65, 105, 225, 0);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
     }
     
     100% {
         transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(65, 105, 225, 0);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
     }
 }
 
 /* Skeleton loading animation */
 .skeleton {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background: linear-gradient(90deg, var(--color-bg-soft) 25%, var(--color-primary) 50%, var(--color-bg-soft) 75%);
     background-size: 200% 100%;
     animation: skeleton-loading 1.5s ease-in-out infinite;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
 }
 
 @keyframes skeleton-loading {
@@ -137,11 +139,11 @@
 
 /* Skeleton card */
 .skeleton-card {
-    background: white;
-    border-radius: var(--border-radius-md);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     padding: 25px;
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-light);
 }
 
 .skeleton-card .skeleton-header {
@@ -165,7 +167,7 @@
 .skeleton-card .skeleton-btn {
     width: 36px;
     height: 36px;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
 }
 
 .skeleton-card .skeleton-info {
@@ -203,7 +205,7 @@
 .skeleton-card .skeleton-footer-btn {
     flex: 1;
     height: 40px;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-sm);
 }
 
 /* Full page loading overlay */
@@ -213,7 +215,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--color-bg);
     backdrop-filter: blur(2px);
     display: flex;
     flex-direction: column;
@@ -240,7 +242,7 @@
 
 .loading-overlay .loading-text {
     font-size: 16px;
-    color: var(--text-muted);
+    color: var(--color-text-muted);
     font-weight: 500;
 }
 
@@ -272,13 +274,13 @@
 
 .btn.btn-primary {
     background: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-    border-radius: 3px;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-sm);
 }
 
 .btn.btn-primary:hover {
-    background: var(--primary-color);
+    background: var(--color-primary);
     color: white;
 }
 
@@ -288,29 +290,29 @@
 
 .btn.btn-success {
     background: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-    border-radius: 3px;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-sm);
 }
 
 .btn.btn-success:hover {
-    background: var(--primary-color);
+    background: var(--color-primary);
     color: white;
 }
 
 .btn.btn-outline.loading::after {
-    border-top-color: var(--primary-color);
+    border-top-color: var(--color-primary);
 }
 
 .btn.btn-outline {
     background: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-    border-radius: 3px;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-sm);
 }
 
 .btn.btn-outline:hover {
-    background: var(--primary-color);
+    background: var(--color-primary);
     color: white;
 }
 
@@ -337,9 +339,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--color-bg);
     backdrop-filter: blur(1px);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--radius-md);
     z-index: 10;
 }
 
@@ -354,7 +356,7 @@
 .progress-bar {
     width: 100%;
     height: 4px;
-    background-color: var(--border-light);
+    background-color: var(--color-border);
     border-radius: 2px;
     overflow: hidden;
     position: relative;
@@ -362,7 +364,7 @@
 
 .progress-bar .progress-fill {
     height: 100%;
-    background-color: var(--primary-color);
+    background-color: var(--color-primary);
     border-radius: 2px;
     animation: progress-loading 2s ease-in-out infinite;
 }

@@ -22,11 +22,23 @@ async function closeEmailVerificationModal() {
     if (modal) {
         modal.style.display = 'none';
     }
-    
+
     // Check if email is verified after user claims they verified
     const verificationResult = await window.checkEmailVerification();
-    
+
     if (verificationResult.verified) {
+        // Create user record after email verification
+        try {
+            const userCreated = await window.ensureUserExists(verificationResult.user);
+            if (userCreated) {
+                console.log('User record created successfully after email verification');
+            } else {
+                console.warn('Failed to create user record after email verification');
+            }
+        } catch (ensureError) {
+            console.error('Error ensuring user exists after email verification:', ensureError);
+        }
+
         showNotification(t('modal.emailVerification.resendSuccess'), 'success');
         // Redirect to welcome page with success parameter
         setTimeout(() => {

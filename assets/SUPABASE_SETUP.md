@@ -2,7 +2,7 @@
 
 Your quiz application has been successfully migrated from localStorage to Supabase! Follow these steps to complete the setup:
 
-## 🚀 Quick Setup
+## Quick Setup
 
 ### 1. Create Supabase Project
 1. Go to [https://supabase.com](https://supabase.com)
@@ -21,13 +21,16 @@ Your quiz application has been successfully migrated from localStorage to Supaba
 ### 3. Set Up Database
 1. Go to your Supabase project dashboard
 2. Navigate to **SQL Editor**
-3. Copy and paste the SQL schema from `supabase-config.js` (comments section)
-4. Click **Run** to execute the schema
-5. **IMPORTANT**: Also execute the RPC function from `assets/delete_user_rpc.sql` to enable complete account deletion
+3. Execute the SQL from `assets/DATABASE_SETUP.md` to create:
+   - The `users` table with proper RLS policies
+   - The `create_user_if_not_exists` RPC function
+   - The `delete_user_account` RPC function (for account deletion)
+4. Click **Run** to execute each SQL block
+5. **IMPORTANT**: Both RPC functions are required for proper user registration and account deletion
 
-## 📋 What Was Migrated
+## What Was Migrated
 
-### ✅ Completed Features
+### Completed Features
 - **User Authentication**: Sign up/sign in with email/password
 - **Quiz Storage**: All quizzes saved to Supabase database
 - **Autosave**: Real-time autosave to Supabase
@@ -36,7 +39,7 @@ Your quiz application has been successfully migrated from localStorage to Supaba
 - **Row Level Security**: Secure data access per user
 - **Complete Account Deletion**: Users can permanently delete their accounts and all data
 
-### 🔄 Data Flow Changes
+### Data Flow Changes
 
 #### Before (localStorage):
 ```
@@ -48,7 +51,7 @@ localStorage → Browser Storage → Single Device
 User Input → Supabase Auth → Database → All Devices
 ```
 
-## 🔧 Technical Changes
+## Technical Changes
 
 ### Files Modified:
 - `supabase-config.js` - New configuration file
@@ -67,7 +70,7 @@ User Input → Supabase Auth → Database → All Devices
 - Added user authentication flows
 - Added error handling for network operations
 
-## 🎯 Next Steps
+## Next Steps
 
 1. **Test the Application**:
    - Try creating a new user account
@@ -86,7 +89,7 @@ User Input → Supabase Auth → Database → All Devices
    - Add user profile management
    - Enable quiz sharing between users
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues:
 - **CORS Errors**: Ensure your domain is added to Supabase CORS settings
@@ -94,12 +97,13 @@ User Input → Supabase Auth → Database → All Devices
 - **Database Errors**: Verify SQL schema was executed correctly
 - **Permission Issues**: Check RLS policies are properly configured
 - **Account Deletion Issues**: Make sure the RPC function from `delete_user_rpc.sql` was executed in SQL Editor
+- **Registration Issues**: Make sure the RPC function from `create_user_rpc.sql` was executed in SQL Editor and the `users` table exists with proper RLS policies
 
 ### Debug Mode:
 Open browser console to see detailed Supabase operation logs and error messages.
 
 ---
 
-**🎉 Your application is now ready for production use with Supabase!**
+**Your application is now ready for production use with Supabase!**
 
 The migration preserves all existing functionality while adding cloud storage, user authentication, and multi-device support.

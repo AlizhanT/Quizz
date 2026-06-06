@@ -1,5 +1,6 @@
 // Saved Quizzes Management
 let quizzes = [];
+let currentFilteredQuizzes = [];
 let quizToDelete = null;
 
 // Initialize the page
@@ -71,6 +72,9 @@ function renderQuizzes(quizzesToRender = quizzes) {
 
     grid.innerHTML = '';
 
+    // Store current filtered quizzes
+    currentFilteredQuizzes = quizzesToRender;
+
     if (quizzes.length === 0) {
         emptyState.style.display = 'block';
         noResults.style.display = 'none';
@@ -95,12 +99,14 @@ function renderQuizzes(quizzesToRender = quizzes) {
 // Create a quiz card element
 function createQuizCard(quiz, index) {
     const card = document.createElement('div');
-    card.className = 'quiz-card';
+    card.className = 'group bg-surface-container-lowest rounded-[2rem] overflow-hidden border border-outline-variant/20 hover:shadow-xl transition-all';
     
     let createdDate = t('js.common.unknownDate');
-    if (quiz.created_at) {
+    // Use updated_at if available (shows last edit date), otherwise use created_at
+    const dateToUse = quiz.updated_at || quiz.created_at;
+    if (dateToUse) {
         try {
-            createdDate = new Date(quiz.created_at).toLocaleDateString();
+            createdDate = new Date(dateToUse).toLocaleDateString();
             // Check if the date is invalid
             if (createdDate === 'Invalid Date') {
                 createdDate = t('js.common.unknownDate');
@@ -112,36 +118,55 @@ function createQuizCard(quiz, index) {
     }
     
     const questionCount = quiz.questions ? quiz.questions.length : 0;
+    const quizType = quiz.quiz_type || 'single'; // Default to single if not specified
+    
+    // Determine icon and color based on quiz type
+    const typeIcon = quizType === 'pvp' ? 'groups' : 'person';
+    const typeLabel = quizType === 'pvp' ? 'PvP' : 'Single';
+    const typeColor = quizType === 'pvp' ? 'bg-tertiary' : 'bg-primary';
+    
+    // Generate a random gradient background for the card header
+    const gradients = [
+        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+        'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+        'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+        'linear-gradient(135deg, #30cfd0 0%, #330867 100%)'
+    ];
+    const randomGradient = gradients[index % gradients.length];
     
     card.innerHTML = `
-        <div class="quiz-card-header">
-            <h3 class="quiz-title">${escapeHtml(quiz.title)}</h3>
-            <div class="quiz-actions">
-                <button class="btn-icon btn-edit" onclick="editQuiz(${index})" title="${t('js.common.editQuiz')}">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#1976d2"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-160l528-528q12-12 28.5-12t28.5 12l56 57q12 12 12 28.5T812-672L284-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
-                </button>
-                <button class="btn-icon btn-duplicate" onclick="duplicateQuiz(${index})" title="${t('quiz.duplicate')}">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5a626aaa"><path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"/></svg>
-                </button>
-                <button class="btn-icon btn-delete" onclick="deleteQuiz(${index})" title="${t('js.common.deleteQuiz')}">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#b90808da"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-160l528-528q12-12 28.5-12t28.5 12l56 57q12 12 12 28.5T812-672L284-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
-                </button>
+        <div class="h-44 overflow-hidden relative" style="background: ${randomGradient};">
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center">
+                    <span class="material-symbols-outlined text-6xl text-white/80">quiz</span>
+                </div>
+            </div>
+            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-extrabold text-primary uppercase">${questionCount} QUESTIONS</div>
+            <div class="absolute top-4 left-4 ${typeColor} text-white px-3 py-1 rounded-full text-[10px] font-extrabold uppercase flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">${typeIcon}</span>
+                ${typeLabel}
             </div>
         </div>
-        <div class="quiz-info">
-            <div class="quiz-stats">
-                <span class="stat">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-160v-441q0-33 24-56t57-23h439q33 0 56.5 23.5T880-600v320L680-80H360q-33 0-56.5-23.5T280-160ZM81-710q-6-33 13-59.5t52-32.5l434-77q33-6 59.5 13t32.5 52l10 54h-82l-7-40-433 77 40 226v279q-16-9-27.5-24T158-276L81-710Zm279 110v440h280v-160h160v-280H360Zm220 220Z"/></svg>                    ${questionCount} ${t('js.common.questions')}
-                </span>
-                <span class="stat">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v200h-80v-40H200v400h280v80H200Zm0-560h560v-80H200v80Zm0 0v-80 80ZM560-80v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q8 9 12.5 20t4.5 22q0 11-4 22.5T903-300L683-80H560Zm300-263-37-37 37 37ZM620-140h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z"/></svg>
-                    ${createdDate}
-                </span>
+        <div class="p-6">
+            <h3 class="text-xl font-extrabold text-on-surface mb-2 group-hover:text-primary transition-colors">${escapeHtml(quiz.title)}</h3>
+            <p class="text-sm text-on-surface-variant mb-6">${createdDate}</p>
+            ${quiz.instructions ? `<p class="text-sm text-on-surface-variant mb-6 line-clamp-2">${escapeHtml(quiz.instructions.substring(0, 100))}${quiz.instructions.length > 100 ? '...' : ''}</p>` : ''}
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors" title="${t('js.common.editQuiz')}" onclick="editQuiz(${index})">
+                        <span class="material-symbols-outlined text-xl">edit</span>
+                    </button>
+                    <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors" title="${t('quiz.duplicate')}" onclick="duplicateQuiz(${index})">
+                        <span class="material-symbols-outlined text-xl">content_copy</span>
+                    </button>
+                    <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container text-on-surface-variant hover:bg-error/10 hover:text-error transition-colors" title="${t('js.common.deleteQuiz')}" onclick="deleteQuiz(${index})">
+                        <span class="material-symbols-outlined text-xl">delete</span>
+                    </button>
+                </div>
+                <button class="bg-primary text-on-primary px-6 py-2.5 rounded-xl font-headline font-bold text-sm hover:bg-primary-container transition-all shadow-md shadow-primary/10" onclick="runQuiz(${index})">${t('js.common.runQuiz')}</button>
             </div>
-            ${quiz.instructions ? `<p class="quiz-description">${escapeHtml(quiz.instructions.substring(0, 100))}${quiz.instructions.length > 100 ? '...' : ''}</p>` : ''}
-        </div>
-        <div class="quiz-card-footer">
-            <button class="btn-run" onclick="runQuiz(${index})">${t('js.common.runQuiz')}</button>
         </div>
     `;
     
@@ -151,13 +176,6 @@ function createQuizCard(quiz, index) {
 // Search quizzes
 function searchQuizzes() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const clearBtn = document.querySelector('.btn-clear-search');
-    
-    if (searchTerm) {
-        clearBtn.style.display = 'block';
-    } else {
-        clearBtn.style.display = 'none';
-    }
     
     const filteredQuizzes = quizzes.filter(quiz => 
         quiz.title.toLowerCase().includes(searchTerm) ||
@@ -167,32 +185,69 @@ function searchQuizzes() {
     renderQuizzes(filteredQuizzes);
 }
 
+// Filter quizzes by type
+function filterQuizzes(filterType) {
+    // Update active button state
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.filter === filterType) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Filter quizzes based on type
+    let filteredQuizzes;
+    if (filterType === 'all') {
+        filteredQuizzes = quizzes;
+    } else {
+        filteredQuizzes = quizzes.filter(quiz => {
+            const quizType = quiz.quiz_type || 'single';
+            return quizType === filterType;
+        });
+    }
+    
+    renderQuizzes(filteredQuizzes);
+}
+
 // Clear search
 function clearSearch() {
     document.getElementById('searchInput').value = '';
-    document.querySelector('.btn-clear-search').style.display = 'none';
-    renderQuizzes();
+    filterQuizzes('all');
 }
 
 // Edit quiz (load to main page)
 async function editQuiz(index) {
-    const quiz = quizzes[index];
-    // Navigate to editor with quiz ID in URL
-    window.location.href = `edit.html?id=${quiz.id}`;
+    const quiz = currentFilteredQuizzes[index];
+    const quizType = quiz.quiz_type || 'single'; // Default to single if not specified
+    
+    // Navigate to editor based on quiz type
+    if (quizType === 'pvp') {
+        window.location.href = `pvpedit.html?id=${quiz.id}`;
+    } else {
+        window.location.href = `edit.html?id=${quiz.id}`;
+    }
 }
 
 // Run quiz
 async function runQuiz(index) {
-    const quiz = quizzes[index];
+    const quiz = currentFilteredQuizzes[index];
+    const quizType = quiz.quiz_type || 'single'; // Default to single if not specified
+    
     // Store quiz data in sessionStorage for test runner
     sessionStorage.setItem('testData', JSON.stringify(quiz));
-    window.open('test-runner.html', '_blank');
+    
+    // Navigate to the appropriate runner based on quiz type
+    if (quizType === 'pvp') {
+        window.open('pvp-runner.html', '_blank');
+    } else {
+        window.open('test-runner.html', '_blank');
+    }
 }
 
 // Delete quiz
 async function deleteQuiz(index) {
     quizToDelete = index;
-    const quiz = quizzes[index];
+    const quiz = currentFilteredQuizzes[index];
     
     // Try to find the modal first
     const deleteModal = document.getElementById('deleteModal');
@@ -245,9 +300,14 @@ async function confirmDelete() {
     try {
         // Show loading state on confirm button
         await window.LoadingUtils.withButtonLoading(confirmBtn, async () => {
-            const result = await window.deleteQuizFromSupabase(quizzes[quizToDelete].id);
+            const quizToDeleteData = currentFilteredQuizzes[quizToDelete];
+            const result = await window.deleteQuizFromSupabase(quizToDeleteData.id);
             if (result.success) {
-                quizzes.splice(quizToDelete, 1);
+                // Find and remove from original quizzes array
+                const originalIndex = quizzes.findIndex(q => q.id === quizToDeleteData.id);
+                if (originalIndex !== -1) {
+                    quizzes.splice(originalIndex, 1);
+                }
                 renderQuizzes();
                 closeDeleteModal();
                 showNotification(t('quiz.deleteSuccess'), 'success');
@@ -267,15 +327,29 @@ function closeDeleteModal() {
     quizToDelete = null;
 }
 
+// Show quiz mode modal
+function showQuizModeModal() {
+    document.getElementById('quizModeModal').style.display = 'flex';
+}
+
+// Close quiz mode modal
+function closeQuizModeModal() {
+    document.getElementById('quizModeModal').style.display = 'none';
+}
+
 // Create new quiz
-async function createNewQuiz() {
-    // Navigate to editor with 'new' parameter
-    window.location.href = 'edit.html?id=new';
+async function createNewQuiz(mode = 'single') {
+    // Navigate to editor based on mode
+    if (mode === 'pvp') {
+        window.location.href = 'pvpedit.html?id=new';
+    } else {
+        window.location.href = 'edit.html?id=new';
+    }
 }
 
 // Duplicate quiz
 async function duplicateQuiz(index) {
-    const quiz = quizzes[index];
+    const quiz = currentFilteredQuizzes[index];
     
     try {
         // Show loading state
@@ -284,11 +358,12 @@ async function duplicateQuiz(index) {
         duplicateBtn.innerHTML = '<div class="spinner"></div>';
         duplicateBtn.disabled = true;
         
-        // Create duplicate data with modified title
+        // Create duplicate data with modified title, preserving quiz type
         const duplicateData = {
             title: `${quiz.title} (Copy)`,
             instructions: quiz.instructions,
-            questions: quiz.questions
+            questions: quiz.questions,
+            quiz_type: quiz.quiz_type || 'single' // Preserve quiz type
             // Don't include id to create new record
         };
         
@@ -339,19 +414,14 @@ function showNotification(message, type = 'success') {
         position: fixed;
         top: 20px;
         right: 20px;
-        background: ${type === 'success' ? '#27ae60' : '#e74c3c'};
+        background: black;
         color: white;
         padding: 12px 20px;
         border-radius: 6px;
         font-size: 14px;
         font-weight: 500;
         z-index: 10000;
-        opacity: 0;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-        pointer-events: none;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        max-width: 300px;
+        border: 2px solid black;
     `;
     notification.textContent = message;
     
@@ -423,9 +493,13 @@ document.addEventListener('click', (e) => {
 
 // Close modal when clicking outside
 window.onclick = function(event) {
-    const modal = document.getElementById('deleteModal');
-    if (event.target === modal) {
+    const deleteModal = document.getElementById('deleteModal');
+    const quizModeModal = document.getElementById('quizModeModal');
+    if (event.target === deleteModal) {
         closeDeleteModal();
+    }
+    if (event.target === quizModeModal) {
+        closeQuizModeModal();
     }
 }
 

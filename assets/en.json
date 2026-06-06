@@ -1,7 +1,7 @@
 {
   "en": {
-    "welcome": "📝 Multiple Choice Test Generator",
-    "savedQuizzes": "📚 Saved Quizzes",
+    "welcome": "Multiple Choice Test Generator",
+    "savedQuizzes": "Saved Quizzes",
     "auth": {
       "login": "Login",
       "signup": "Sign Up",
@@ -25,16 +25,73 @@
       "profileSettingsComingSoon": "Profile settings feature coming soon!",
       "logoutFailed": "Failed to sign out. Please try again."
     },
-    "navigation": {
-      "createNewQuiz": "+ Create New Quiz",
-      "savedQuizzes": "📚 Saved Quizzes",
-      "saveQuiz": "💾 Save Quiz",
-      "downloadPDF": "📥 Download PDF",
-      "run": "▶ RUN",
-      "main": "Main",
-      "home": "Home",
-      "menu": "Menu",
-      "language": "Language"
+    "nav": {
+      "teachers": "Teachers",
+      "students": "Students",
+      "features": "Features",
+      "pricing": "Pricing"
+    },
+    "hero": {
+      "platformType": "EDUCATION PLATFORM",
+      "title": "Test Knowledge Through",
+      "titleHighlight": "Gamification",
+      "subtitle": "QuizMaster makes learning fun and engaging for teachers and students. Create quizzes easily and track results in real-time.",
+      "getStarted": "Get Started Free",
+      "viewDemo": "View Demo"
+    },
+    "features": {
+      "title": "Powerful Tools for Teachers",
+      "subtitle": "Everything you need to effectively plan lessons and assess student progress.",
+      "quizCreation": {
+        "title": "Quick Quiz Creation",
+        "description": "Create tests for any subject in minutes with our intelligent constructor. Use ready-made templates.",
+        "multimedia": "Multimedia Questions",
+        "formulas": "Mathematical Formulas"
+      },
+      "analytics": {
+        "title": "Real-time Analytics",
+        "description": "Instantly identify where students struggle and make corrections during lessons. Download full reports."
+      },
+      "classroom": {
+        "title": "Classroom Management",
+        "description": "Organize students into groups, assign homework, and monitor their activity levels."
+      },
+      "autoGrading": {
+        "title": "Automatic Grading",
+        "description": "Save time! The system automatically grades tests and fills the grade journal automatically."
+      }
+    },
+    "students": {
+      "tagline": "FUN FOR STUDENTS",
+      "title": "Turn Learning into Competition",
+      "quickJoin": {
+        "title": "Quick Code Join",
+        "description": "No registration needed! Enter the 6-digit code provided by the teacher and start the game immediately."
+      },
+      "interactive": {
+        "title": "Interactive Competition",
+        "description": "Leaderboards, avatars and fun sound effects turn learning into a game."
+      },
+      "feedback": {
+        "title": "Instant Feedback",
+        "description": "See your mistakes after answering each question and master the topic better."
+      }
+    },
+    "socialProof": {
+      "title": "TRUSTED BY EDUCATIONAL INSTITUTIONS"
+    },
+    "cta": {
+      "title": "Join the Future of Learning Today",
+      "description": "Thousands of teachers are making their lessons more engaging with QuizMaster. It's your turn.",
+      "contact": "Contact Us"
+    },
+    "footer": {
+      "tagline": "Modern platform designed to make teaching easier and more engaging.",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "help": "Help",
+      "about": "About",
+      "copyright": "© 2024 QuizMaster. All rights reserved."
     },
     "quiz": {
       "title": "Test Title",
@@ -46,7 +103,6 @@
       "typingAnswer": "Typing Answer",
       "fillBlank": "Fill in the Blank",
       "matching": "Matching",
-      "flippingCard": "Flipping Card",
       "questionText": "Question Text",
       "questionPlaceholder": "Enter your question here...",
       "answer": "Answer",
@@ -57,10 +113,6 @@
       "fillOptionsPlaceholder": "Enter options separated by commas and press Add",
       "leftSide": "Left side",
       "rightSide": "Right side",
-      "frontText": "Front Text",
-      "backText": "Back Text",
-      "frontTextPlaceholder": "Enter text for the front side of the card...",
-      "backTextPlaceholder": "Enter text for the back side of the card...",
       "typingAnswerPlaceholder": "Enter your answer here...",
       "addOption": "Add Option",
       "addPair": "Add Pair",
@@ -409,7 +461,7 @@
       "savedQuizzes": {
         "noResultsFound": "No Results Found",
         "tryAdjustingSearch": "Try adjusting your search criteria",
-        "clearSearch": "✖",
+        "clearSearch": "Clear",
         "searchQuizzes": "Search quizzes...",
         "createNewQuiz": "+ Create New Quiz",
         "noSavedQuizzes": "No Saved Quizzes Yet",

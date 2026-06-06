@@ -95,21 +95,16 @@ async function ensureUserExists(user) {
       return false;
     }
 
-    // Check for suspicious email patterns (bot detection)
+    // Check for suspicious email patterns (bot detection) - relaxed rules
     const email = user.email.toLowerCase();
     const suspiciousPatterns = [
-      /^[0-9]+@/, // Numbers only at start
-      /test.*@/, // Test emails
-      /example.*@/, // Example emails
-      /temp.*@/, // Temporary emails
-      /fake.*@/, // Fake emails
-      /bot.*@/, // Bot emails
-      /\.tmp@/, // Temporary domains
-      /\.test@/, // Test domains
+      /^[0-9]{10,}@/, // 10+ numbers only at start (likely bot)
+      /^bot[0-9]*@/, // Bot followed by numbers
+      /^spam[0-9]*@/, // Spam followed by numbers
     ];
 
     const isSuspicious = suspiciousPatterns.some(pattern => pattern.test(email));
-    
+
     if (isSuspicious) {
       console.warn('Suspicious email pattern detected - skipping user record creation:', email);
       return false;
@@ -194,6 +189,7 @@ async function saveQuizToSupabase(quizData) {
     console.log('User ID length:', user.id ? user.id.length : 'null');
 
     // Create user record on-demand when actually saving data (more secure)
+    // Note: If this fails due to RLS policies, the quiz save will still proceed
     await createUserRecordIfNeeded(user);
 
     // Process images to upload data URLs to Supabase Storage
@@ -207,6 +203,7 @@ async function saveQuizToSupabase(quizData) {
       instructions: processedQuizData.instructions || '',
       questions: processedQuizData.questions, // Now with storage URLs instead of data URLs
       user_id: user.id, // This now references auth.users directly
+      quiz_type: processedQuizData.quiz_type || 'single', // Default to single if not specified
       updated_at: new Date().toISOString()
     };
     
@@ -266,6 +263,7 @@ async function duplicateQuizToSupabase(quizData) {
       instructions: quizData.instructions || '',
       questions: quizData.questions, // Keep as array - Supabase will handle JSON conversion
       user_id: user.id,
+      quiz_type: quizData.quiz_type || 'single', // Preserve quiz type when duplicating
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
@@ -296,19 +294,20 @@ async function createUserRecordIfNeeded(user) {
       .select('id')
       .eq('id', user.id)
       .single();
-    
+
     if (userError && userError.code !== 'PGRST116') {
-      console.error('Error checking user record:', userError);
-      return false;
+      console.warn('Error checking user record:', userError.message);
+      // Don't return false - continue with quiz save
+      return true;
     }
-    
+
     if (userRecord) {
       console.log('User record already exists');
       return true;
     }
-    
+
     console.log('Creating user record on-demand for:', user.email);
-    
+
     // Create user record
     const { error: insertError } = await supabaseClient
       .from('users')
@@ -317,17 +316,21 @@ async function createUserRecordIfNeeded(user) {
         email: user.email,
         created_at: new Date().toISOString()
       });
-    
+
     if (insertError) {
-      console.error('Failed to create user record:', insertError.message);
-      return false;
+      console.warn('Failed to create user record:', insertError.message);
+      console.warn('Quiz save will continue - user record creation is optional');
+      // Don't return false - continue with quiz save
+      return true;
     }
-    
+
     console.log('User record created successfully on-demand');
     return true;
   } catch (error) {
-    console.error('Error in createUserRecordIfNeeded:', error);
-    return false;
+    console.warn('Error in createUserRecordIfNeeded:', error.message);
+    console.warn('Quiz save will continue - user record creation is optional');
+    // Don't return false - continue with quiz save
+    return true;
   }
 }
 
@@ -347,7 +350,7 @@ async function loadQuizzesFromSupabase() {
         .from("quizzes")
         .select("*")
         .eq('user_id', user.id) // Only load user's own quizzes
-        .order('created_at', { ascending: false });
+        .order('updated_at', { ascending: false });
 
       if (error) {
         console.error(error);

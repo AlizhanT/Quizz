@@ -242,10 +242,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // При выборе языка пользователем
     const languageSelector = document.getElementById('languageSelector');
     if (languageSelector) {
-        languageSelector.addEventListener('change', (e) => {
+        languageSelector.addEventListener('change', async (e) => {
             const lang = e.target.value;
             localStorage.setItem('selectedLanguage', lang);
-            location.reload(); // Перезагрузка с новым языком
+            await languageManager.setLanguage(lang); // Динамическая смена языка
         });
     }
 });

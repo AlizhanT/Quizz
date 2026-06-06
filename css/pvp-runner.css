@@ -1,0 +1,263 @@
+/* PvP Runner Layout Styles */
+body {
+    background: var(--background-light);
+    height: 100vh;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.pvp-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    gap: 2px;
+    background: black;
+}
+
+.player-section {
+    flex: 1;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    background: var(--background-light);
+    position: relative;
+    overflow: hidden;
+}
+
+.player-header {
+    background: var(--primary-color);
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.player-left .player-header {
+    background: #2196F3;
+}
+
+.player-right .player-header {
+    background: #FF5722;
+}
+
+/* Override test-container styles for PvP */
+.player-section .test-container {
+    position: relative;
+    flex: 1;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    z-index: 1;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.player-section .question-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.player-section .question-text {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.player-section .answer-options {
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.player-section .answer-option {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.player-section .matching-container-new {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.player-section .matching-left-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.player-section .fill-options-container {
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.player-section .blank-drop-zone {
+    position: relative;
+}
+
+.player-section .blank-drop-zone .word-status {
+    position: absolute;
+    right: -25px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.player-section .blank-drop-zone .word-status.correct {
+    color: var(--success-color);
+}
+
+.player-section .blank-drop-zone .word-status.incorrect {
+    color: var(--danger-color);
+}
+
+.player-section .top-controls {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 5px;
+    z-index: 1000;
+}
+
+.player-section .question-counter {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 12px;
+    color: var(--primary-color);
+    font-weight: bold;
+    z-index: 1000;
+    width: auto;
+    min-width: 50px;
+    max-width: 100px;
+}
+
+.player-section .navigation-buttons {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.player-section .notification-panel {
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    width: 250px;
+    max-height: 300px;
+    background: white;
+    border: 2px solid #e74c3c;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    overflow: hidden;
+    transition: var(--transition-medium);
+}
+
+.player-section .notification-panel.hidden {
+    transform: translateX(270px);
+}
+
+/* Global Controls */
+.global-controls {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+    z-index: 2000;
+}
+
+.global-controls .fullscreen-btn {
+    background: white;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius-sm);
+    padding: 8px;
+    cursor: pointer;
+    transition: var(--transition-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.global-controls .fullscreen-btn:hover {
+    transform: scale(1.1);
+}
+
+.global-controls .btn-close {
+    padding: 8px 16px;
+    border: 2px solid var(--danger-color);
+    border-radius: var(--border-radius-lg);
+    font-size: 12px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    font-weight: bold;
+    background: var(--danger-color);
+    color: white;
+}
+
+.global-controls .btn-close:hover {
+    background: var(--danger-hover);
+    border-color: var(--danger-hover);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pvp-container {
+        flex-direction: column;
+    }
+
+    .player-header {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .player-section .question-counter {
+        font-size: 10px;
+        bottom: 45px;
+    }
+
+    .player-section .navigation-buttons {
+        bottom: 5px;
+        right: 5px;
+        gap: 5px;
+    }
+
+    .player-section .nav-btn {
+        padding: 6px 12px;
+        font-size: 10px;
+    }
+
+    .player-section .matching-left-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@keyframes correctPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}

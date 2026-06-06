@@ -72,9 +72,6 @@ function createPDFContent() {
         } else if (type === "matching") {
             const rows = questionBlock.querySelectorAll('.matching-row');
             estimatedHeight += (rows.length * 12); // Reduced from 15
-        } else if (type === "flippingcard") {
-            // Flipping cards are ignored in PDF generation
-            return;
         }
         
         // Check if we need a new page

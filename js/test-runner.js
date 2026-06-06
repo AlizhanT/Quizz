@@ -138,36 +138,53 @@ function clearValidationErrors() {
 function validateCurrentQuestion() {
     const question = testData.questions[currentQuestionIndex];
     const errors = [];
-    
+
     if (!question) {
         errors.push('Question data is missing');
         return errors;
     }
-    
+
     // Check if question area is empty
     if (!question.question || question.question.trim() === '') {
         errors.push('Question text is empty');
     }
-    
+
     // Check for missing correct answer in multiple choice
     if (question.type === 'multiple') {
         if (question.correctAnswer === undefined || question.correctAnswer === null || question.correctAnswer === -1) {
             errors.push('No correct answer selected for this multiple choice question');
         }
     }
-    
+
+    // Check for missing pairs in matching questions
+    if (question.type === 'matching') {
+        if (!question.pairs || !Array.isArray(question.pairs) || question.pairs.length === 0) {
+            errors.push('No matching pairs defined for this question');
+        }
+    }
+
+    // Check for missing sentence or options in fill questions
+    if (question.type === 'fill') {
+        if (!question.sentence || question.sentence.trim() === '') {
+            errors.push('No sentence defined for this fill-in-the-blank question');
+        }
+        if (!question.options || !Array.isArray(question.options) || question.options.length === 0) {
+            errors.push('No options defined for this fill-in-the-blank question');
+        }
+    }
+
     return errors;
 }
 
 function applyValidationErrors(errors) {
     if (errors.length === 0) return;
-    
+
     // Add validation error styling to question container
     const container = document.getElementById('questionContainer');
     if (container) {
         container.classList.add('validation-error');
     }
-    
+
     // Add specific styling based on question type
     const question = testData.questions[currentQuestionIndex];
     if (question.type === 'multiple') {
@@ -175,20 +192,20 @@ function applyValidationErrors(errors) {
             option.classList.add('validation-error');
         });
     } else if (question.type === 'fill') {
-        document.querySelectorAll('.blank-drop-zone').forEach(zone => {
-            zone.classList.add('validation-error');
+        document.querySelectorAll('.fill-sentence-container').forEach(sentenceContainer => {
+            sentenceContainer.classList.add('validation-error');
         });
     } else if (question.type === 'matching') {
-        document.querySelectorAll('.matching-stack').forEach(stack => {
-            stack.classList.add('validation-error');
+        document.querySelectorAll('.matching-left-column').forEach(column => {
+            column.classList.add('validation-error');
         });
     }
-    
+
     // Add notifications
     errors.forEach(error => {
         addNotification(error, 'error');
     });
-    
+
     // Store errors for clearing later
     validationErrors = errors;
 }
@@ -308,9 +325,8 @@ function displayQuestion() {
     // Display question based on type
     const questionDisplayers = {
         'multiple': displayMultipleChoice,
-        'fill': displayFillInBlank,
-        'matching': displayMatching,
-        'flippingcard': displayFlippingCard
+        'fill': window.displayFillInBlank,
+        'matching': displayMatching
     };
     
     const displayer = questionDisplayers[question.type];
@@ -539,6 +555,15 @@ function displayMatching(question, container) {
     const questionText = createQuestionText(question);
     container.appendChild(questionText);
 
+    // Check if pairs exist and are valid
+    if (!question.pairs || !Array.isArray(question.pairs) || question.pairs.length === 0) {
+        const errorMsg = document.createElement('p');
+        errorMsg.textContent = 'Error: No matching pairs available';
+        errorMsg.style.color = 'red';
+        container.appendChild(errorMsg);
+        return;
+    }
+
     const matchingContainer = createMatchingContainer(question);
     container.appendChild(matchingContainer);
 
@@ -578,7 +603,7 @@ function handleMatchingDropZoneDragStart(e) {
         // Create a ghost image showing the option being removed
         const ghostImage = document.createElement('div');
         ghostImage.textContent = dropZone.textContent;
-        ghostImage.style.cssText = 'position: absolute; top: -1000px; left: -1000px; padding: 8px 12px; background: #f8f9fa; border: 2px solid #6c757d; border-radius: 8px; font-weight: 600;';
+        ghostImage.style.cssText = 'position: absolute; top: -1000px; left: -1000px; padding: 8px 12px; background: white; border: 2px solid black; border-radius: 8px; font-weight: 600;';
         document.body.appendChild(ghostImage);
         e.dataTransfer.setDragImage(ghostImage, 0, 0);
         setTimeout(() => ghostImage.remove(), 0);
@@ -841,99 +866,14 @@ function checkNewPairs(question) {
 }
 
 function checkAllMatchingDropZonesFilled() {
-    const allDropZones = document.querySelectorAll('.matching-drop-zone');
-    return Array.from(allDropZones).every(zone => zone.dataset.occupied === 'true');
-}
-
-function displayFlippingCard(question, container) {
-    // Create card container
-    const cardContainer = document.createElement('div');
-    cardContainer.className = 'flipping-card-container';
+    const dropZones = document.querySelectorAll('.matching-drop-zone');
+    const allFilled = Array.from(dropZones).every(zone => zone.dataset.occupied === 'true');
     
-    // Create the flipping card
-    const card = document.createElement('div');
-    card.className = 'flipping-card';
-    
-    // Create front face
-    const frontFace = document.createElement('div');
-    frontFace.className = 'card-face card-front';
-    
-    const frontContent = document.createElement('div');
-    frontContent.className = 'card-content';
-    
-    // Add front text
-    if (question.frontText) {
-        frontContent.innerHTML = question.frontText;
-    } else {
-        frontContent.innerHTML = 'Front side';
+    // If all drop zones are filled, check the pairs immediately
+    if (allFilled) {
+        const question = testData.questions[currentQuestionIndex];
+        checkNewPairs(question);
     }
-    
-    // Add front images if they exist
-    if (question.frontImages && question.frontImages.length > 0) {
-        question.frontImages.forEach(imageData => {
-            const img = document.createElement('img');
-            img.src = imageData.src;
-            img.alt = imageData.name || 'Front image';
-            img.className = 'card-image';
-            frontContent.appendChild(img);
-        });
-    }
-    
-    frontFace.appendChild(frontContent);
-    
-    // Create back face
-    const backFace = document.createElement('div');
-    backFace.className = 'card-face card-back';
-    
-    const backContent = document.createElement('div');
-    backContent.className = 'card-content';
-    
-    // Add back text
-    if (question.backText) {
-        backContent.innerHTML = question.backText;
-    } else {
-        backContent.innerHTML = 'Back side';
-    }
-    
-    // Add back images if they exist
-    if (question.backImages && question.backImages.length > 0) {
-        question.backImages.forEach(imageData => {
-            const img = document.createElement('img');
-            img.src = imageData.src;
-            img.alt = imageData.name || 'Back image';
-            img.className = 'card-image';
-            backContent.appendChild(img);
-        });
-    }
-    
-    backFace.appendChild(backContent);
-    
-    // Assemble the card
-    card.appendChild(frontFace);
-    card.appendChild(backFace);
-    
-    // Add click handler for rotation only
-    card.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Only rotate if not already animating
-        if (!this.classList.contains('animating')) {
-            this.classList.add('animating');
-            
-            // Simple rotation toggle
-            this.classList.toggle('flipped');
-            
-            // Remove animating class after animation completes
-            setTimeout(() => {
-                this.classList.remove('animating');
-            }, 300);
-        }
-    });
-    
-    // Add to container
-    cardContainer.appendChild(card);
-    container.appendChild(cardContainer);
 }
 
 let draggedElement = null;
@@ -1734,8 +1674,8 @@ function handleDropZoneTouchMove(e) {
         touchClone.style.pointerEvents = 'none';
         touchClone.style.opacity = '0.8';
         touchClone.style.padding = '8px 12px';
-        touchClone.style.background = '#f8f9fa';
-        touchClone.style.border = '2px solid #6c757d';
+        touchClone.style.background = 'white';
+        touchClone.style.border = '2px solid black';
         touchClone.style.borderRadius = '8px';
         touchClone.style.fontWeight = '600';
         
