@@ -449,7 +449,30 @@ async function loadQuizFromSupabase(quizId) {
 }
 
 // Autosave functions
-async function saveAutosaveToSupabase(quizData) {
+function buildAutosaveRecord(user, quizData, quizType = 'single', useCompositeId = false) {
+  const autosaveId = useCompositeId ? `${user.id}_${quizType}` : user.id;
+
+  const record = {
+    id: autosaveId,
+    user_id: user.id,
+    quiz_data: {
+      ...quizData,
+      id: 'autosave_current',
+      isAutosave: true,
+      autosavedAt: new Date().toISOString()
+    },
+    autosaved_at: new Date().toISOString()
+  };
+
+  // Only include quiz_type when the table supports it.
+  if (useCompositeId) {
+    record.quiz_type = quizType;
+  }
+
+  return record;
+}
+
+async function saveAutosaveToSupabase(quizData, quizType = 'single') {
   try {
     // Ensure user is authenticated
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
@@ -462,25 +485,34 @@ async function saveAutosaveToSupabase(quizData) {
     // Create user record on-demand when actually saving data
     await createUserRecordIfNeeded(user);
 
-    const autosaveData = {
-      id: user.id, // Use user ID as the autosave ID
-      user_id: user.id,
-      quiz_data: {
-        ...quizData,
-        id: 'autosave_current',
-        isAutosave: true,
-        autosavedAt: new Date().toISOString()
-      },
-      autosaved_at: new Date().toISOString()
-    };
-    
-    const { data, error } = await supabaseClient
+    // Prefer the newer per-mode autosave record, but fall back to the legacy
+    // single-row schema if the table does not expose quiz_type or uses a UUID id.
+    const autosaveData = buildAutosaveRecord(user, quizData, quizType, true);
+    const legacyAutosaveData = buildAutosaveRecord(user, quizData, quizType, false);
+
+    let result = await supabaseClient
       .from('quiz_autosaves')
-      .upsert(autosaveData, {
-        onConflict: 'id'
-      })
+      .upsert(autosaveData, { onConflict: 'id' })
       .select()
       .single();
+
+    if (result.error) {
+      console.warn('Mode-specific autosave failed, trying legacy schema:', result.error.message);
+      result = await supabaseClient
+        .from('quiz_autosaves')
+        .upsert(legacyAutosaveData, { onConflict: 'id' })
+        .select()
+        .single();
+    } else {
+      // Keep the legacy row out of the way when the newer schema works.
+      await supabaseClient
+        .from('quiz_autosaves')
+        .delete()
+        .eq('id', legacyAutosaveData.id)
+        .eq('user_id', user.id);
+    }
+
+    const { data, error } = result;
       
     if (error) throw error;
     return { success: true, data };
@@ -490,7 +522,7 @@ async function saveAutosaveToSupabase(quizData) {
   }
 }
 
-async function loadAutosaveFromSupabase() {
+async function loadAutosaveFromSupabase(quizType = 'single') {
   try {
     // Ensure user is authenticated
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
@@ -500,12 +532,26 @@ async function loadAutosaveFromSupabase() {
       return null;
     }
     
-    const { data, error } = await supabaseClient
+    // Try the newer per-mode record first, then fall back to the legacy row.
+    const autosaveId = `${user.id}_${quizType}`;
+    const query = supabaseClient
       .from('quiz_autosaves')
       .select('*')
-      .eq('id', user.id)
-      .eq('user_id', user.id)
-      .single();
+      .eq('id', autosaveId)
+      .eq('user_id', user.id);
+
+    let { data, error } = await query.single();
+
+    if (error) {
+      console.warn('Mode-specific autosave load failed, trying legacy schema:', error.message);
+      const legacyQuery = supabaseClient
+        .from('quiz_autosaves')
+        .select('*')
+        .eq('id', user.id)
+        .eq('user_id', user.id);
+
+      ({ data, error } = await legacyQuery.single());
+    }
       
     if (error && error.code !== 'PGRST116') {
       throw error;
@@ -518,7 +564,7 @@ async function loadAutosaveFromSupabase() {
   }
 }
 
-async function clearAutosaveFromSupabase() {
+async function clearAutosaveFromSupabase(quizType = 'single') {
   try {
     // Ensure user is authenticated
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
@@ -528,12 +574,22 @@ async function clearAutosaveFromSupabase() {
       throw new Error('User not authenticated');
     }
     
-    const { error } = await supabaseClient
+    // Clear both the mode-specific row and the legacy row, if present.
+    const autosaveId = `${user.id}_${quizType}`;
+    
+    const { error: modeError } = await supabaseClient
+      .from('quiz_autosaves')
+      .delete()
+      .eq('id', autosaveId)
+      .eq('user_id', user.id);
+
+    const { error: legacyError } = await supabaseClient
       .from('quiz_autosaves')
       .delete()
       .eq('id', user.id)
       .eq('user_id', user.id);
-      
+
+    const error = modeError && legacyError ? modeError : null;
     if (error) throw error;
     return { success: true };
   } catch (error) {
@@ -589,48 +645,20 @@ async function deleteUserAccount() {
       throw userError;
     }
 
-    // Delete the user from auth system using admin API
-    // This requires service role key, so we'll use a server function if available
-    // For now, we'll use the client-side method which has limitations
-    try {
-      const { error: deleteAuthError } = await supabaseClient.auth.admin.deleteUser(
-        user.id
-      );
-      
-      if (deleteAuthError) {
-        console.warn('Admin delete failed (expected with client key):', deleteAuthError.message);
-        // Fallback: try to delete user using RPC function if available
-        const { error: rpcError } = await supabaseClient.rpc('delete_user_account', {
-          user_id_to_delete: user.id
-        });
-        
-        if (rpcError) {
-          console.warn('RPC delete failed:', rpcError.message);
-          // As a last resort, we'll at least sign out the user
-          console.log('Cannot delete auth user with client permissions - signing out only');
-        } else {
-          console.log('User deleted via RPC function successfully');
-        }
-      } else {
-        console.log('User deleted from auth system successfully');
-      }
-    } catch (adminError) {
-      console.warn('Admin API not available:', adminError.message);
-      // Try RPC fallback
-      try {
-        const { error: rpcError } = await supabaseClient.rpc('delete_user_account', {
-          user_id_to_delete: user.id
-        });
-        
-        if (rpcError) {
-          console.warn('RPC delete also failed:', rpcError.message);
-        } else {
-          console.log('User deleted via RPC function successfully');
-        }
-      } catch (rpcError) {
-        console.warn('RPC fallback failed:', rpcError.message);
-      }
+    // Use the server-side RPC function instead of the browser-inaccessible
+    // admin API. This keeps account deletion working with the anon key.
+    const { error: rpcError } = await supabaseClient.rpc('delete_user_account', {
+      user_id_to_delete: user.id
+    });
+
+    if (rpcError) {
+      console.warn('RPC delete failed:', rpcError.message);
+      console.log('Cannot delete auth user with client permissions - signing out only');
+    } else {
+      console.log('User deleted via RPC function successfully');
     }
+
+    await supabaseClient.auth.signOut();
 
     return { success: true };
   } catch (error) {

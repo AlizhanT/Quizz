@@ -243,6 +243,7 @@ function setupTextareaAutoResize(textarea) {
 
 
 function updatePlaceholder(element) {
+    if (!element || typeof element.querySelector !== 'function') return;
 
     const hasContent = (element.textContent && element.textContent.trim() !== '') || element.querySelector('img');
 
@@ -476,7 +477,7 @@ async function checkUnsavedChanges() {
 
         const currentData = collectTestData();
 
-        const autosaveData = await window.loadAutosaveFromSupabase();
+        const autosaveData = await window.loadAutosaveFromSupabase('single');
 
         
 
@@ -621,8 +622,6 @@ async function goToSavedQuizzes() {
 async function saveAndGoHome() {
 
     await saveQuiz();
-
-    
 
     // Wait a moment for save to complete
 
@@ -1160,9 +1159,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // Update URL to include the ID
 
-                const newUrl = `${window.location.origin}${window.location.pathname}?id=${quizId}`;
-
-                window.history.replaceState({}, '', newUrl);
+                window.history.replaceState({}, '', `?id=${quizId}`);
 
                 console.log('Quiz loaded successfully');
 
@@ -1328,9 +1325,10 @@ function populateQuestionBlock(block, questionData) {
 
     const questionTextElement = block.querySelector('.rich-text-input.question-text');
 
-    if (questionTextElement && questionData.question) {
+    const questionText = questionData.question ?? questionData.text ?? questionData.prompt ?? '';
+    if (questionTextElement && questionText) {
 
-        questionTextElement.innerHTML = questionData.question;
+        questionTextElement.innerHTML = questionText;
 
         updatePlaceholder(questionTextElement);
 
@@ -1378,6 +1376,9 @@ function populateMultipleChoice(block, questionData) {
 
     answersGrid.innerHTML = '';
 
+    const correctAnswerIndex = Number(questionData.correctAnswer);
+    const hasValidCorrectAnswer = Number.isFinite(correctAnswerIndex) && correctAnswerIndex >= 0;
+
     
 
     if (questionData.options && questionData.options.length > 0) {
@@ -1394,23 +1395,27 @@ function populateMultipleChoice(block, questionData) {
 
             const input = lastOption.querySelector('.rich-text-input.answer-input');
 
-            if (input && optionData.text) {
+            const optionText = optionData?.text ?? optionData?.answer ?? optionData?.value ?? optionData ?? '';
+            if (input && optionText) {
 
-                input.innerHTML = optionData.text;
+                input.innerHTML = optionText;
 
                 updatePlaceholder(input);
 
             }
 
-            
+
 
             // Set correct answer
 
-            if (questionData.correctAnswer === index) {
+            if (hasValidCorrectAnswer && correctAnswerIndex === index) {
 
                 const correctBtn = lastOption.querySelector('.correct-answer-btn');
 
-                if (correctBtn) correctBtn.classList.add('selected');
+                if (correctBtn) {
+                    correctBtn.classList.add('selected', 'bg-primary', 'text-on-primary', 'border-primary');
+                    correctBtn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/20');
+                }
 
             }
 
@@ -3132,28 +3137,29 @@ function runTest() {
 
         
 
-        // Save test data to sessionStorage for test runner
+        // Save test data to storage for test runner (shared across tabs)
 
-        sessionStorage.setItem('testData', JSON.stringify(testData));
+        const testDataString = JSON.stringify(testData);
 
-        console.log('Test data saved to sessionStorage, size:', JSON.stringify(testData).length);
+        console.log('Single-player test data string length:', testDataString.length);
 
-        console.log('SessionStorage contents:', sessionStorage.getItem('testData'));
+        console.log('Single-player test data string preview:', testDataString.substring(0, 200) + '...');
 
-        
+        if (!testDataString || testDataString === '{}' || testDataString === '{"title":"","instructions":"","questions":[],"quiz_type":"single"}') {
 
-        // Open test runner in a new window
+            alert('Error: Test data is empty or invalid. Please add valid questions before running the test.');
 
-        const newWindow = window.open('test-runner.html', '_blank');
+            return;
 
-        console.log('Opening test runner window:', newWindow);
+        }
 
-        
-
+        localStorage.setItem('testData', testDataString);
+        sessionStorage.setItem('testData', testDataString);
+        const url = 'test-runner.html#' + encodeURIComponent(testDataString);
+        const newWindow = window.open(url, '_blank');
         if (!newWindow) {
-
             alert('Popup blocked! Please allow popups for this site and try again.');
-
+            return;
         }
 
     } catch (error) {
@@ -3342,7 +3348,7 @@ async function saveQuiz() {
 
             if (!currentEditingQuizId) {
 
-                await window.clearAutosaveFromSupabase();
+                await window.clearAutosaveFromSupabase('single');
 
                 console.log('Autosave cleared after manual save');
 
@@ -3358,9 +3364,7 @@ async function saveQuiz() {
 
             // Update URL to include the quiz ID
 
-            const newUrl = `${window.location.origin}${window.location.pathname}?id=${result.data.id}`;
-
-            window.history.replaceState({}, '', newUrl);
+            window.history.replaceState({}, '', `?id=${result.data.id}`);
 
 
 
@@ -3450,13 +3454,11 @@ function collectTestData() {
 
             const options = [];
 
-            const correctAnswer = block.querySelector('.correct-answer-btn.selected');
-
             let correctIndex = -1;
 
             
 
-            block.querySelectorAll('.answer-option').forEach((option, index) => {
+            block.querySelectorAll('.answer-option').forEach((option) => {
 
                 const input = option.querySelector('.rich-text-input.answer-input');
 
@@ -3470,13 +3472,13 @@ function collectTestData() {
 
                     
 
-                    options.push(optionData);
-
                     if (option.querySelector('.correct-answer-btn.selected')) {
 
-                        correctIndex = index;
+                        correctIndex = options.length;
 
                     }
+
+                    options.push(optionData);
 
                 }
 
@@ -3657,7 +3659,9 @@ function validateMultipleChoiceQuestions(testData) {
 
             // Check if question has a correct answer
 
-            if (question.correctAnswer === undefined || question.correctAnswer === -1) {
+            const correctAnswer = Number(question.correctAnswer);
+            const optionCount = Array.isArray(question.options) ? question.options.length : 0;
+            if (!Number.isInteger(correctAnswer) || correctAnswer < 0 || correctAnswer >= optionCount) {
 
                 validationErrors.push({
 

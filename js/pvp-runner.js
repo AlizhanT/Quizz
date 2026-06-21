@@ -37,23 +37,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 function loadTestData() {
     console.log('loadTestData() called for PvP');
 
-    // Try to get test data from sessionStorage first (from pvpedit page)
-    const savedData = sessionStorage.getItem('pvpTestData');
-    console.log('SessionStorage data found:', !!savedData);
-    console.log('Raw sessionStorage data:', savedData);
+    // Try to get test data from localStorage first (from pvpedit page)
+    const savedData = localStorage.getItem('pvpTestData');
+    console.log('LocalStorage data found:', !!savedData);
+    console.log('Raw localStorage data:', savedData);
 
     if (savedData) {
         // Check if data is empty object
         if (savedData.trim() === '{}' || savedData.trim() === '') {
-            console.error('SessionStorage contains empty object or empty string');
-            sessionStorage.removeItem('pvpTestData'); // Clean up invalid data
+            console.error('LocalStorage contains empty object or empty string');
+            localStorage.removeItem('pvpTestData'); // Clean up invalid data
             document.getElementById('questionContainer1').innerHTML = '<p>Error: Invalid test data (empty). Please go back and create a valid quiz with questions.</p>';
             document.getElementById('questionContainer2').innerHTML = '<p>Error: Invalid test data (empty). Please go back and create a valid quiz with questions.</p>';
             return;
         }
 
         try {
-            console.log('Attempting to parse sessionStorage data...');
+            console.log('Attempting to parse localStorage data...');
             globalTestData = JSON.parse(savedData);
             console.log('Parsed PvP test data:', globalTestData);
             console.log('Test data questions count:', globalTestData?.questions?.length);
@@ -73,7 +73,7 @@ function loadTestData() {
                 throw new Error('No valid questions found in test data');
             }
 
-            sessionStorage.removeItem('pvpTestData'); // Clean up
+            localStorage.removeItem('pvpTestData'); // Clean up
 
             // Initialize both players
             initializePlayer(1);
@@ -81,12 +81,12 @@ function loadTestData() {
         } catch (error) {
             console.error('Error parsing PvP test data:', error);
             console.error('Error details:', error.message);
-            sessionStorage.removeItem('pvpTestData'); // Clean up invalid data
+            localStorage.removeItem('pvpTestData'); // Clean up invalid data
             document.getElementById('questionContainer1').innerHTML = '<p>Error loading test data: ' + error.message + '. Please go back and create a valid quiz.</p>';
             document.getElementById('questionContainer2').innerHTML = '<p>Error loading test data: ' + error.message + '. Please go back and create a valid quiz.</p>';
         }
     } else {
-        console.log('No PvP test data found in sessionStorage');
+        console.log('No PvP test data found in localStorage');
         document.getElementById('questionContainer1').innerHTML = '<p>No test data found. Please go back and create a quiz first.</p>';
         document.getElementById('questionContainer2').innerHTML = '<p>No test data found. Please go back and create a quiz first.</p>';
     }
@@ -129,7 +129,7 @@ function createPlayerQuestion(question, playerNum) {
     // Create a copy of the question with player-specific data
     const playerQuestion = {
         type: question.type,
-        question: question[playerKey]?.question || question.question,
+        question: question[playerKey]?.question || question.question || question.text || question.prompt,
         options: question[playerKey]?.options || question.options,
         correctAnswer: question[playerKey]?.correctAnswer !== undefined ? question[playerKey].correctAnswer : question.correctAnswer,
         sentence: question[playerKey]?.sentence || question.sentence,
@@ -185,8 +185,9 @@ function createQuestionText(question, playerNum) {
     const questionDiv = document.createElement('div');
     questionDiv.className = 'question-text';
     
-    if (question.question) {
-        questionDiv.innerHTML = question.question;
+    const questionText = getQuestionText(question);
+    if (questionText) {
+        questionDiv.innerHTML = questionText;
     }
     
     if (question.images && question.images.length > 0) {
@@ -203,6 +204,7 @@ function createQuestionText(question, playerNum) {
 }
 
 function createAnswerOption(option, index, playerNum) {
+    const optionText = getOptionText(option);
     const optionDiv = document.createElement('div');
     optionDiv.className = 'answer-option';
     optionDiv.onclick = () => selectAnswer(index, playerNum);
@@ -212,10 +214,10 @@ function createAnswerOption(option, index, playerNum) {
     const optionContent = document.createElement('div');
     optionContent.className = 'option-content';
     
-    if (option.text) {
+    if (optionText) {
         const textSpan = document.createElement('span');
         textSpan.className = 'option-text';
-        textSpan.innerHTML = option.text;
+        textSpan.innerHTML = optionText;
         optionContent.appendChild(textSpan);
     }
     
@@ -236,6 +238,16 @@ function createAnswerOption(option, index, playerNum) {
     
     optionDiv.appendChild(optionContent);
     return optionDiv;
+}
+
+function getQuestionText(question) {
+    return question?.question ?? question?.text ?? question?.prompt ?? '';
+}
+
+function getOptionText(option) {
+    if (option == null) return '';
+    if (typeof option === 'string') return option;
+    return option.text ?? option.answer ?? option.value ?? '';
 }
 
 // Question Type Display Functions
@@ -308,12 +320,13 @@ function checkMultipleChoiceAnswer(playerNum) {
     
     if (userAnswer === null || userAnswer === undefined) return;
     
-    const isCorrect = userAnswer === question.correctAnswer;
+    const correctAnswerIndex = Number(question.correctAnswer);
+    const isCorrect = userAnswer === correctAnswerIndex;
     
     // Update UI with feedback
     const options = document.querySelectorAll(`#questionContainer${playerNum} .answer-option`);
     options.forEach((opt, i) => {
-        if (i === question.correctAnswer) {
+        if (Number.isFinite(correctAnswerIndex) && i === correctAnswerIndex) {
             opt.classList.add('correct');
         } else if (i === userAnswer && !isCorrect) {
             opt.classList.add('incorrect');
@@ -433,12 +446,14 @@ function validateCurrentQuestion(playerNum) {
         return errors;
     }
 
-    if (!question.question || question.question.trim() === '') {
+    const questionText = getQuestionText(question);
+    if (!questionText || questionText.trim() === '') {
         errors.push('Question text is empty');
     }
 
     if (question.type === 'multiple') {
-        if (question.correctAnswer === undefined || question.correctAnswer === null || question.correctAnswer === -1) {
+        const correctAnswer = Number(question.correctAnswer);
+        if (!Number.isFinite(correctAnswer) || correctAnswer < 0) {
             errors.push('No correct answer selected for this multiple choice question');
         }
     }
@@ -598,7 +613,7 @@ function finishTest(playerNum) {
         const userAnswer = state.userAnswers[index];
         
         if (question.type === 'multiple' && userAnswer !== null) {
-            if (userAnswer === question.correctAnswer) {
+            if (userAnswer === Number(question.correctAnswer)) {
                 correctCount++;
             }
         } else if (question.type === 'fill') {

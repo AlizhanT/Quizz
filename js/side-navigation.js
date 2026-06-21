@@ -58,8 +58,8 @@ function goToAbout() {
 
 function logout() {
     // Clear session/storage
-    if (typeof supabase !== 'undefined') {
-        supabase.auth.signOut().then(() => {
+    if (window.supabaseClient && window.supabaseClient.auth) {
+        window.supabaseClient.auth.signOut().then(() => {
             // window.location.href = 'welcome.html'; // Temporarily disabled
         }).catch(error => {
             console.error('Error signing out:', error);

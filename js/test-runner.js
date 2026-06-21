@@ -1,10 +1,28 @@
-// Test Runner State Management
 let testData = null;
 let currentQuestionIndex = 0;
 let userAnswers = [];
 let confirmedQuestions = new Set();
 let validationErrors = [];
 let resizeTimeout = null;
+
+function safeTranslate(key, fallback) {
+    try {
+        if (typeof window.t === 'function') {
+            const translated = window.t(key);
+            if (translated && translated !== key) return translated;
+        }
+    } catch (error) {
+        console.warn('Translation unavailable:', error);
+    }
+    return fallback || key;
+}
+
+function setQuestionContainerMessage(message) {
+    const container = document.getElementById('questionContainer');
+    if (container) {
+        container.innerHTML = `<p>${message}</p>`;
+    }
+}
 
 // Dynamic Font Scaling Functions
 function calculateOptimalScale(questionType, questionData) {
@@ -145,13 +163,16 @@ function validateCurrentQuestion() {
     }
 
     // Check if question area is empty
-    if (!question.question || question.question.trim() === '') {
+    const questionText = getQuestionText(question);
+    if (!questionText || questionText.trim() === '') {
         errors.push('Question text is empty');
     }
 
     // Check for missing correct answer in multiple choice
     if (question.type === 'multiple') {
-        if (question.correctAnswer === undefined || question.correctAnswer === null || question.correctAnswer === -1) {
+        const correctAnswer = Number(question.correctAnswer);
+        const optionCount = Array.isArray(question.options) ? question.options.length : 0;
+        if (!Number.isInteger(correctAnswer) || correctAnswer < 0 || correctAnswer >= optionCount) {
             errors.push('No correct answer selected for this multiple choice question');
         }
     }
@@ -223,36 +244,55 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function loadTestData() {
     console.log('loadTestData() called');
-    console.log('SessionStorage available:', typeof Storage !== 'undefined');
-    console.log('SessionStorage keys:', Object.keys(sessionStorage));
-    
-    // Try to get test data from sessionStorage first (from saved-quizzes page)
-    const savedData = sessionStorage.getItem('testData');
-    console.log('SessionStorage data found:', !!savedData);
-    console.log('SessionStorage data length:', savedData ? savedData.length : 0);
-    console.log('SessionStorage data type:', typeof savedData);
+    console.log('LocalStorage available:', typeof Storage !== 'undefined');
+    console.log('LocalStorage keys:', Object.keys(localStorage));
+
+    const hashData = window.location.hash.length > 1
+        ? decodeURIComponent(window.location.hash.substring(1))
+        : null;
+    const savedData = hashData || localStorage.getItem('testData') || sessionStorage.getItem('testData');
+    console.log('LocalStorage data found:', !!savedData);
+    console.log('LocalStorage data length:', savedData ? savedData.length : 0);
+    console.log('LocalStorage data type:', typeof savedData);
     
     if (savedData) {
+        if (savedData.trim() === '{}' || savedData.trim() === '') {
+            console.error('LocalStorage contains empty test data');
+            localStorage.removeItem('testData');
+            sessionStorage.removeItem('testData');
+            setQuestionContainerMessage('Error: Invalid test data. Please go back and create a valid quiz with questions.');
+            return;
+        }
+
         try {
-            console.log('Attempting to parse sessionStorage data...');
+            console.log('Attempting to parse localStorage data...');
             testData = JSON.parse(savedData);
             console.log('Parsed test data:', testData);
             console.log('Test data questions count:', testData?.questions?.length);
             console.log('Test data title:', testData?.title);
             console.log('Test data structure:', Object.keys(testData || {}));
+
+            if (!testData || typeof testData !== 'object') {
+                throw new Error('Parsed data is not a valid object');
+            }
+
+            if (!Array.isArray(testData.questions) || testData.questions.length === 0) {
+                throw new Error('No valid questions found in test data');
+            }
             
-            sessionStorage.removeItem('testData'); // Clean up
             initializeTest();
+            localStorage.removeItem('testData'); // Clean up only after a successful render
+            sessionStorage.removeItem('testData');
         } catch (error) {
             console.error('Error parsing test data:', error);
-            console.error('Raw sessionStorage data:', savedData);
-            document.getElementById('questionContainer').innerHTML = '<p>' + t('testRunner.errorLoading') + '</p>';
+            console.error('Raw localStorage data:', savedData);
+            setQuestionContainerMessage('Error loading test data: ' + error.message + '. Please go back and create a valid quiz.');
         }
     } else {
         // Fallback for direct access (shouldn't happen with our flow)
-        console.log('No test data found in sessionStorage');
-        console.log('Current sessionStorage contents:', sessionStorage);
-        document.getElementById('questionContainer').innerHTML = '<p>' + t('testRunner.noTestData') + '</p>';
+        console.log('No test data found in localStorage');
+        console.log('Current localStorage contents:', localStorage);
+        setQuestionContainerMessage(safeTranslate('testRunner.noTestData', 'No test data found. Please go back and create a quiz first.'));
     }
 }
 
@@ -276,7 +316,7 @@ function handleKeyboardNavigation(e) {
 
 function initializeTest() {
     if (!testData || !testData.questions || testData.questions.length === 0) {
-        document.getElementById('questionContainer').innerHTML = '<p>' + t('testRunner.noQuestions') + '</p>';
+        setQuestionContainerMessage(safeTranslate('testRunner.noQuestions', 'No questions available in this test.'));
         return;
     }
 
@@ -284,12 +324,12 @@ function initializeTest() {
     testData.questions = testData.questions.filter(question => question.type !== 'typing');
 
     if (testData.questions.length === 0) {
-        document.getElementById('questionContainer').innerHTML = '<p>' + t('testRunner.noScorableQuestions') + '</p>';
+        setQuestionContainerMessage(safeTranslate('testRunner.noScorableQuestions', 'No scorable questions available in this test.'));
         return;
     }
 
     // Set page title and initialize
-    document.getElementById('pageTitle').textContent = testData.title || t('testRunner.test');
+    document.getElementById('pageTitle').textContent = testData.title || safeTranslate('testRunner.test', 'Test');
     userAnswers = new Array(testData.questions.length).fill(null);
     displayQuestion();
     updateProgress();
@@ -312,7 +352,7 @@ function displayQuestion() {
     const errors = validateCurrentQuestion();
     if (errors.length > 0) {
         applyValidationErrors(errors);
-        // Don't display question if it has validation errors
+        setQuestionContainerMessage(errors.join('<br>'));
         return;
     }
 
@@ -330,7 +370,12 @@ function displayQuestion() {
     };
     
     const displayer = questionDisplayers[question.type];
-    if (displayer) displayer(question, container);
+    if (displayer) {
+        displayer(question, container);
+    } else {
+        setQuestionContainerMessage(`Unsupported question type: ${question.type || 'unknown'}`);
+        return;
+    }
     
     // Lock confirmed questions
     lockConfirmedQuestion();
@@ -343,8 +388,9 @@ function createQuestionText(question) {
     questionDiv.className = 'question-text';
     
     // Handle question text with images
-    if (question.question) {
-        questionDiv.innerHTML = question.question;
+    const questionText = getQuestionText(question);
+    if (questionText) {
+        questionDiv.innerHTML = questionText;
     }
     
     // Add question images if they exist
@@ -362,6 +408,7 @@ function createQuestionText(question) {
 }
 
 function createAnswerOption(option, index) {
+    const optionText = getOptionText(option);
     const optionDiv = document.createElement('div');
     optionDiv.className = 'answer-option';
     optionDiv.onclick = () => selectAnswer(index);
@@ -373,10 +420,10 @@ function createAnswerOption(option, index) {
     optionContent.className = 'option-content';
     
     // Create a text span for the option text
-    if (option.text) {
+    if (optionText) {
         const textSpan = document.createElement('span');
         textSpan.className = 'option-text';
-        textSpan.innerHTML = option.text;
+        textSpan.innerHTML = optionText;
         optionContent.appendChild(textSpan);
     }
     
@@ -398,6 +445,16 @@ function createAnswerOption(option, index) {
     
     optionDiv.appendChild(optionContent);
     return optionDiv;
+}
+
+function getQuestionText(question) {
+    return question?.question ?? question?.text ?? question?.prompt ?? '';
+}
+
+function getOptionText(option) {
+    if (option == null) return '';
+    if (typeof option === 'string') return option;
+    return option.text ?? option.answer ?? option.value ?? '';
 }
 
 
@@ -1177,7 +1234,8 @@ function selectAnswer(index) {
 
 function checkMultipleChoiceAnswer() {
     const question = testData.questions[currentQuestionIndex];
-    const isCorrect = userAnswers[currentQuestionIndex] === question.correctAnswer;
+    const correctAnswerIndex = Number(question.correctAnswer);
+    const isCorrect = userAnswers[currentQuestionIndex] === correctAnswerIndex;
     
     // Mark this question as confirmed
     confirmedQuestions.add(currentQuestionIndex);
@@ -1191,7 +1249,7 @@ function checkMultipleChoiceAnswer() {
         option.style.cursor = 'default';
         
         // Show feedback
-        if (index === question.correctAnswer) {
+        if (Number.isFinite(correctAnswerIndex) && index === correctAnswerIndex) {
             option.classList.add('correct');
         } else if (index === userAnswers[currentQuestionIndex] && !isCorrect) {
             option.classList.add('incorrect');
@@ -1215,13 +1273,14 @@ function lockConfirmedQuestion() {
     // If this question was already confirmed, lock it
     if (confirmedQuestions.has(currentQuestionIndex)) {
         if (question.type === 'multiple') {
+            const correctAnswerIndex = Number(question.correctAnswer);
             // Lock multiple choice options
             document.querySelectorAll('.answer-option').forEach((option, index) => {
                 option.style.pointerEvents = 'none';
                 option.style.cursor = 'default';
                 
                 // Show feedback for confirmed answer
-                if (index === question.correctAnswer) {
+                if (Number.isFinite(correctAnswerIndex) && index === correctAnswerIndex) {
                     option.classList.add('correct');
                 } else if (index === userAnswers[currentQuestionIndex]) {
                     option.classList.add('incorrect');
@@ -1338,7 +1397,7 @@ function calculateResults() {
     testData.questions.forEach((question, index) => {
         const userAnswer = userAnswers[index];
         
-        if (question.type === 'multiple' && userAnswer === question.correctAnswer) {
+        if (question.type === 'multiple' && userAnswer === Number(question.correctAnswer)) {
             correctCount++;
         } else if (question.type === 'fill' && userAnswer && userAnswer.blanks) {
             // For fill-in-the-blank, check if all blanks are filled correctly
@@ -1466,10 +1525,7 @@ function updateFullscreenButton() {
 }
 
 // Touch event handling for immediate response on touch devices
-let touchItem = null;
-let touchOffset = { x: 0, y: 0 };
-let touchClone = null;
-let isDragging = false;
+// Variables declared in fill-in-blank.js to avoid duplicates
 
 // Touch event handlers for matching right items
 function handleTouchStart(e) {

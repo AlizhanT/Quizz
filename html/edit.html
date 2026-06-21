@@ -213,6 +213,8 @@
             const questionCountElement = document.getElementById('questionCount');
             const maxPointsElement = document.getElementById('maxPoints');
             const avgTimeElement = document.getElementById('avgTime');
+
+            if (!questionCountElement || !maxPointsElement || !avgTimeElement) return;
             
             questionCountElement.textContent = questionCount;
             maxPointsElement.textContent = questionCount * 5; // Assuming 5 points per question

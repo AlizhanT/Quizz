@@ -233,8 +233,8 @@ async function runQuiz(index) {
     const quiz = currentFilteredQuizzes[index];
     const quizType = quiz.quiz_type || 'single'; // Default to single if not specified
     
-    // Store quiz data in sessionStorage for test runner
-    sessionStorage.setItem('testData', JSON.stringify(quiz));
+    // Store quiz data in localStorage for test runner (shared across tabs)
+    localStorage.setItem('testData', JSON.stringify(quiz));
     
     // Navigate to the appropriate runner based on quiz type
     if (quizType === 'pvp') {

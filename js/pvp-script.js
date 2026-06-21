@@ -476,7 +476,7 @@ async function checkUnsavedChanges() {
 
         const currentData = collectTestData();
 
-        const autosaveData = await window.loadAutosaveFromSupabase();
+        const autosaveData = await window.loadAutosaveFromSupabase('pvp');
 
         
 
@@ -1160,9 +1160,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // Update URL to include the ID
 
-                const newUrl = `${window.location.origin}${window.location.pathname}?id=${quizId}`;
-
-                window.history.replaceState({}, '', newUrl);
+                window.history.replaceState({}, '', `?id=${quizId}`);
 
                 console.log('Quiz loaded successfully');
 
@@ -1329,7 +1327,7 @@ function populateQuestionBlock(block, questionData) {
 
     if (questionTextElements[0]) {
         // Player 1 question text
-        const player1Question = questionData.player1?.question || questionData.question || '';
+        const player1Question = questionData.player1?.question || questionData.question || questionData.text || questionData.prompt || '';
         if (player1Question) {
             questionTextElements[0].innerHTML = player1Question;
             updatePlaceholder(questionTextElements[0]);
@@ -1338,7 +1336,7 @@ function populateQuestionBlock(block, questionData) {
 
     if (questionTextElements[1]) {
         // Player 2 question text
-        const player2Question = questionData.player2?.question || questionData.question || '';
+        const player2Question = questionData.player2?.question || questionData.question || questionData.text || questionData.prompt || '';
         if (player2Question) {
             questionTextElements[1].innerHTML = player2Question;
             updatePlaceholder(questionTextElements[1]);
@@ -1397,7 +1395,12 @@ function populateMultipleChoice(block, questionData) {
             answersGrid1.innerHTML = '';
 
             const options1 = questionData.player1?.options || questionData.options || [];
-            const correctAnswer1 = questionData.player1?.correctAnswer !== undefined ? questionData.player1.correctAnswer : questionData.correctAnswer;
+            const correctAnswer1 = Number(
+                questionData.player1?.correctAnswer !== undefined
+                    ? questionData.player1.correctAnswer
+                    : questionData.correctAnswer
+            );
+            const hasValidCorrectAnswer1 = Number.isFinite(correctAnswer1) && correctAnswer1 >= 0;
 
             console.log('Player 1 - options:', options1, 'correctAnswer:', correctAnswer1, 'type:', typeof correctAnswer1);
 
@@ -1407,13 +1410,14 @@ function populateMultipleChoice(block, questionData) {
                     const lastOption = answersGrid1.lastElementChild;
 
                     const input = lastOption.querySelector('.rich-text-input.answer-input');
-                    if (input && optionData.text) {
-                        input.innerHTML = optionData.text;
+                    const optionText = optionData?.text ?? optionData?.answer ?? optionData?.value ?? optionData ?? '';
+                    if (input && optionText) {
+                        input.innerHTML = optionText;
                         updatePlaceholder(input);
                     }
 
                     // Convert to number for comparison (in case it's stored as string)
-                    if (Number(correctAnswer1) === index) {
+                    if (hasValidCorrectAnswer1 && correctAnswer1 === index) {
                         const correctBtn = lastOption.querySelector('.correct-answer-btn');
                         if (correctBtn) {
                             correctBtn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/20');
@@ -1433,7 +1437,8 @@ function populateMultipleChoice(block, questionData) {
             answersGrid2.innerHTML = '';
 
             const options2 = questionData.player2?.options || [];
-            const correctAnswer2 = questionData.player2?.correctAnswer !== undefined ? questionData.player2.correctAnswer : -1;
+            const correctAnswer2 = Number(questionData.player2?.correctAnswer);
+            const hasValidCorrectAnswer2 = Number.isFinite(correctAnswer2) && correctAnswer2 >= 0;
 
             console.log('Player 2 - options:', options2, 'correctAnswer:', correctAnswer2, 'type:', typeof correctAnswer2);
 
@@ -1443,13 +1448,14 @@ function populateMultipleChoice(block, questionData) {
                     const lastOption = answersGrid2.lastElementChild;
 
                     const input = lastOption.querySelector('.rich-text-input.answer-input');
-                    if (input && optionData.text) {
-                        input.innerHTML = optionData.text;
+                    const optionText = optionData?.text ?? optionData?.answer ?? optionData?.value ?? optionData ?? '';
+                    if (input && optionText) {
+                        input.innerHTML = optionText;
                         updatePlaceholder(input);
                     }
 
                     // Convert to number for comparison (in case it's stored as string)
-                    if (Number(correctAnswer2) === index) {
+                    if (hasValidCorrectAnswer2 && correctAnswer2 === index) {
                         const correctBtn = lastOption.querySelector('.correct-answer-btn');
                         if (correctBtn) {
                             correctBtn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/20');
@@ -3227,7 +3233,7 @@ function runTest() {
 
         
 
-        // Save test data to sessionStorage for PvP test runner
+        // Save test data to localStorage for PvP test runner (shared across tabs)
 
         const testDataString = JSON.stringify(testData);
 
@@ -3243,11 +3249,11 @@ function runTest() {
 
         }
 
-        sessionStorage.setItem('pvpTestData', testDataString);
+        localStorage.setItem('pvpTestData', testDataString);
 
-        console.log('PvP test data saved to sessionStorage');
+        console.log('PvP test data saved to localStorage');
 
-        console.log('SessionStorage verification:', sessionStorage.getItem('pvpTestData'));
+        console.log('LocalStorage verification:', localStorage.getItem('pvpTestData'));
 
 
 
@@ -3451,7 +3457,7 @@ async function saveQuiz() {
 
             if (!currentEditingQuizId) {
 
-                await window.clearAutosaveFromSupabase();
+                await window.clearAutosaveFromSupabase('pvp');
 
                 console.log('Autosave cleared after manual save');
 
@@ -3467,9 +3473,7 @@ async function saveQuiz() {
 
             // Update URL to include the quiz ID
 
-            const newUrl = `${window.location.origin}${window.location.pathname}?id=${result.data.id}`;
-
-            window.history.replaceState({}, '', newUrl);
+            window.history.replaceState({}, '', `?id=${result.data.id}`);
 
 
 
@@ -3819,7 +3823,8 @@ function validateMultipleChoiceQuestions(testData) {
 
             // Check if question has a correct answer
 
-            if (question.correctAnswer === undefined || question.correctAnswer === -1) {
+            const correctAnswer = Number(question.correctAnswer);
+            if (!Number.isFinite(correctAnswer) || correctAnswer < 0) {
 
                 validationErrors.push({
 
