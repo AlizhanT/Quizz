@@ -209,6 +209,12 @@ function createAnswerOption(option, index, playerNum) {
     optionDiv.className = 'answer-option';
     optionDiv.onclick = () => selectAnswer(index, playerNum);
     
+    // Generate random color for this option
+    const clearHues = [30, 60, 80, 180, 200, 240, 280, 320];
+    const randomHue = clearHues[Math.floor(Math.random() * clearHues.length)];
+    const randomColor = `hsl(${randomHue}, 70%, 50%)`;
+    optionDiv.style.setProperty('--option-color', randomColor);
+    
     optionDiv.addEventListener('click', () => clearValidationErrors(playerNum), { passive: true });
     
     const optionContent = document.createElement('div');
@@ -330,6 +336,8 @@ function checkMultipleChoiceAnswer(playerNum) {
             opt.classList.add('correct');
         } else if (i === userAnswer && !isCorrect) {
             opt.classList.add('incorrect');
+        } else {
+            opt.classList.add('unchosen');
         }
     });
     
@@ -428,10 +436,31 @@ function disableNavigationButtons(playerNum) {
 function lockConfirmedQuestion(playerNum) {
     const state = playerStates[playerNum];
     if (state.confirmedQuestions.has(state.currentQuestionIndex)) {
-        // Disable all interactions for confirmed questions
-        const container = document.getElementById(`questionContainer${playerNum}`);
-        container.style.pointerEvents = 'none';
-        container.style.opacity = '0.7';
+        const question = state.testData.questions[state.currentQuestionIndex];
+        
+        if (question.type === 'multiple') {
+            const correctAnswerIndex = Number(question.correctAnswer);
+            // Lock multiple choice options and show feedback
+            const options = document.querySelectorAll(`#questionContainer${playerNum} .answer-option`);
+            options.forEach((option, index) => {
+                option.style.pointerEvents = 'none';
+                option.style.cursor = 'default';
+                
+                // Show feedback for confirmed answer
+                if (Number.isFinite(correctAnswerIndex) && index === correctAnswerIndex) {
+                    option.classList.add('correct');
+                } else if (index === state.userAnswers[state.currentQuestionIndex] && state.userAnswers[state.currentQuestionIndex] !== correctAnswerIndex) {
+                    option.classList.add('incorrect');
+                } else {
+                    option.classList.add('unchosen');
+                }
+            });
+        } else {
+            // Disable all interactions for other question types
+            const container = document.getElementById(`questionContainer${playerNum}`);
+            container.style.pointerEvents = 'none';
+            container.style.opacity = '0.7';
+        }
     }
 }
 
@@ -653,6 +682,18 @@ function createMatchingContainer(question, playerNum) {
     const rightItems = [];
     
     question.pairs.forEach((pair, index) => {
+        // Generate different random colors for each element to avoid giving hints
+        const clearHues = [30, 60, 80, 180, 200, 240, 280, 320];
+        
+        const leftHue = clearHues[Math.floor(Math.random() * clearHues.length)];
+        const leftColor = `hsl(${leftHue}, 70%, 50%)`;
+        
+        const dropHue = clearHues[Math.floor(Math.random() * clearHues.length)];
+        const dropColor = `hsl(${dropHue}, 70%, 50%)`;
+        
+        const rightHue = clearHues[Math.floor(Math.random() * clearHues.length)];
+        const rightColor = `hsl(${rightHue}, 70%, 50%)`;
+        
         const leftGroup = document.createElement('div');
         leftGroup.className = 'matching-left-group';
         
@@ -660,6 +701,7 @@ function createMatchingContainer(question, playerNum) {
         leftItem.className = 'matching-left-item';
         leftItem.dataset.originalIndex = index;
         leftItem.dataset.playerNum = playerNum;
+        leftItem.style.setProperty('--option-color', leftColor);
         
         const leftContent = document.createElement('div');
         if (pair.left) {
@@ -673,6 +715,7 @@ function createMatchingContainer(question, playerNum) {
         dropZone.dataset.occupied = 'false';
         dropZone.dataset.droppedIndex = '';
         dropZone.dataset.playerNum = playerNum;
+        dropZone.style.setProperty('--option-color', dropColor);
         
         dropZone.addEventListener('dragover', handleMatchingDragOver, { passive: false });
         dropZone.addEventListener('drop', (e) => handleMatchingDrop(e, playerNum), { passive: false });
@@ -689,6 +732,7 @@ function createMatchingContainer(question, playerNum) {
         rightItem.dataset.originalIndex = index;
         rightItem.dataset.playerNum = playerNum;
         rightItem.draggable = true;
+        rightItem.style.setProperty('--option-color', rightColor);
         
         const rightContent = document.createElement('div');
         if (pair.right) {
@@ -863,25 +907,14 @@ function checkNewPairs(question, playerNum) {
             existingStatus.remove();
         }
         
-        const status = document.createElement('div');
-        status.className = 'pair-status';
-        
         if (droppedIndex !== null && correctIndex === droppedIndex) {
             dropZone.classList.add('correct');
             dropZone.classList.remove('incorrect');
-            status.classList.add('correct');
-            status.classList.remove('incorrect');
-            status.textContent = '✓';
             correctPairs++;
         } else {
             dropZone.classList.add('incorrect');
             dropZone.classList.remove('correct');
-            status.classList.add('incorrect');
-            status.classList.remove('correct');
-            status.textContent = '✗';
         }
-        
-        dropZone.appendChild(status);
     });
     
     state.userAnswers[state.currentQuestionIndex].checked = true;

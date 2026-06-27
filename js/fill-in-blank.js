@@ -4,6 +4,34 @@
 let draggedFillElement = null;
 let draggedBlankElement = null;
 
+// Helper function to get question text
+function getQuestionText(question) {
+    return question?.question ?? question?.text ?? question?.prompt ?? '';
+}
+
+// Helper function to create question text element
+function createQuestionText(question, playerNum = null) {
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question-text';
+    
+    const questionText = getQuestionText(question);
+    if (questionText) {
+        questionDiv.innerHTML = questionText;
+    }
+    
+    if (question.images && question.images.length > 0) {
+        question.images.forEach(imageData => {
+            const img = document.createElement('img');
+            img.src = imageData.src;
+            img.className = 'question-image';
+            img.alt = imageData.name || 'Question image';
+            questionDiv.appendChild(img);
+        });
+    }
+    
+    return questionDiv;
+}
+
 // Touch event handling variables
 let touchItem = null;
 let touchOffset = { x: 0, y: 0 };
@@ -16,9 +44,9 @@ window.draggedBlankElement = draggedBlankElement;
 
 // Main display function for fill-in-the-blank questions
 function displayFillInBlank(question, container, playerNum = null) {
-    // Removed question text display - only show sentence and words
-    // const questionText = createQuestionText(question);
-    // container.appendChild(questionText);
+    // Display question text like other question types
+    const questionText = createQuestionText(question, playerNum);
+    container.appendChild(questionText);
 
     // Set player-specific context if provided
     if (playerNum) {
@@ -127,6 +155,12 @@ function displayFillInBlank(question, container, playerNum = null) {
         dropZone.style.minWidth = Math.max(80, blank.word ? blank.word.length * 8 : 80) + 'px';
         dropZone.draggable = true;
         
+        // Generate random color for this drop zone
+        const clearHues = [30, 60, 80, 180, 200, 240, 280, 320];
+        const randomHue = clearHues[Math.floor(Math.random() * clearHues.length)];
+        const randomColor = `hsl(${randomHue}, 70%, 50%)`;
+        dropZone.style.setProperty('--option-color', randomColor);
+        
         // Add drop event listeners
         dropZone.addEventListener('dragover', handleFillDragOver);
         dropZone.addEventListener('drop', handleFillDrop);
@@ -200,6 +234,12 @@ function displayFillInBlank(question, container, playerNum = null) {
                 optionChip.dataset.originalIndex = `${index}-${i}`; // Use compound index to handle duplicates
                 optionChip.dataset.playerNum = playerNum || '';
                 optionChip.textContent = option;
+                
+                // Generate random color for this option chip
+                const clearHues = [30, 60, 80, 180, 200, 240, 280, 320];
+                const randomHue = clearHues[Math.floor(Math.random() * clearHues.length)];
+                const randomColor = `hsl(${randomHue}, 70%, 50%)`;
+                optionChip.style.setProperty('--option-color', randomColor);
                 
                 // Add drag event listeners
                 optionChip.addEventListener('dragstart', handleFillDragStart);
@@ -376,13 +416,16 @@ function handleFillDrop(e) {
 function restoreFillAnswers(playerNum = null) {
     let state;
     let currentQuestionIndex;
+    let confirmedQuestions;
     
     if (playerNum && typeof playerStates !== 'undefined' && playerStates[playerNum]) {
         state = playerStates[playerNum];
         currentQuestionIndex = state.currentQuestionIndex;
+        confirmedQuestions = state.confirmedQuestions;
     } else {
         state = { userAnswers: userAnswers };
         currentQuestionIndex = window.currentQuestionIndex;
+        confirmedQuestions = window.confirmedQuestions;
     }
     
     const answer = state.userAnswers[currentQuestionIndex];
@@ -391,6 +434,7 @@ function restoreFillAnswers(playerNum = null) {
     const selector = playerNum ? `[data-player-num="${playerNum}"]` : '';
     const dropZones = document.querySelectorAll(`.blank-drop-zone${selector}`);
     const optionChips = document.querySelectorAll(`.fill-option-chip${selector}`);
+    const isConfirmed = confirmedQuestions && confirmedQuestions.has(currentQuestionIndex);
     
     answer.blanks.forEach((filledText, index) => {
         const dropZone = Array.from(dropZones).find(zone => 
@@ -401,6 +445,20 @@ function restoreFillAnswers(playerNum = null) {
             dropZone.dataset.occupied = 'true';
             dropZone.classList.add('filled');
             
+            // If question is confirmed, add visual feedback
+            if (isConfirmed) {
+                const correctWord = dropZone.dataset.correctWord ? dropZone.dataset.correctWord.toLowerCase().trim() : '';
+                const droppedWord = filledText ? filledText.toLowerCase().trim() : '';
+                
+                if (correctWord === droppedWord) {
+                    dropZone.classList.add('correct');
+                    dropZone.classList.remove('incorrect');
+                } else {
+                    dropZone.classList.add('incorrect');
+                    dropZone.classList.remove('correct');
+                }
+            }
+            
             optionChips.forEach(chip => {
                 if (chip.dataset.optionText === filledText) {
                     chip.style.display = 'none';
@@ -409,6 +467,19 @@ function restoreFillAnswers(playerNum = null) {
             });
         }
     });
+    
+    // If confirmed, disable interaction
+    if (isConfirmed) {
+        document.querySelectorAll(`.fill-option-chip${selector}`).forEach(chip => {
+            chip.draggable = false;
+            chip.style.cursor = 'default';
+        });
+        
+        document.querySelectorAll(`.blank-drop-zone${selector}`).forEach(zone => {
+            zone.style.cursor = 'default';
+            zone.classList.add('confirmed');
+        });
+    }
     
     checkAllFillBlanksFilled(playerNum);
 }
@@ -583,24 +654,13 @@ function confirmFillBlank(playerNum = null) {
             existingStatus.remove();
         }
         
-        const status = document.createElement('div');
-        status.className = 'word-status';
-        
         if (correctWord === droppedWord) {
             zone.classList.add('correct');
             zone.classList.remove('incorrect');
-            status.classList.add('correct');
-            status.classList.remove('incorrect');
-            status.textContent = '✓';
         } else {
             zone.classList.add('incorrect');
             zone.classList.remove('correct');
-            status.classList.add('incorrect');
-            status.classList.remove('correct');
-            status.textContent = '✗';
         }
-        
-        zone.appendChild(status);
     });
     
     state.userAnswers[currentQuestionIndex].completed = true;

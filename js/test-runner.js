@@ -413,6 +413,16 @@ function createAnswerOption(option, index) {
     optionDiv.className = 'answer-option';
     optionDiv.onclick = () => selectAnswer(index);
     
+    // Generate random color for this option
+    const clearHues = [30, 60, 80, 180, 200, 240, 280, 320];
+
+// Выбираем случайный градус из массива
+    const randomHue = clearHues[Math.floor(Math.random() * clearHues.length)];
+
+// Подставляем в твою формулу
+    const randomColor = `hsl(${randomHue}, 70%, 50%)`;;
+    optionDiv.style.setProperty('--option-color', randomColor);
+    
     // Add event listener to clear validation errors when user interacts
     optionDiv.addEventListener('click', clearValidationErrors, { passive: true });
     
@@ -476,6 +486,18 @@ function createMatchingContainer(question) {
     
     // Add pairs to columns
     question.pairs.forEach((pair, index) => {
+        // Generate different random colors for each element to avoid giving hints
+        const clearHues = [30, 60, 80, 180, 200, 240, 280, 320];
+        
+        const leftHue = clearHues[Math.floor(Math.random() * clearHues.length)];
+        const leftColor = `hsl(${leftHue}, 70%, 50%)`;
+        
+        const dropHue = clearHues[Math.floor(Math.random() * clearHues.length)];
+        const dropColor = `hsl(${dropHue}, 70%, 50%)`;
+        
+        const rightHue = clearHues[Math.floor(Math.random() * clearHues.length)];
+        const rightColor = `hsl(${rightHue}, 70%, 50%)`;
+        
         // Left item + container group
         const leftGroup = document.createElement('div');
         leftGroup.className = 'matching-left-group';
@@ -484,6 +506,7 @@ function createMatchingContainer(question) {
         const leftItem = document.createElement('div');
         leftItem.className = 'matching-left-item';
         leftItem.dataset.originalIndex = index;
+        leftItem.style.setProperty('--option-color', leftColor);
         
         const leftContent = document.createElement('div');
         
@@ -510,6 +533,7 @@ function createMatchingContainer(question) {
         dropZone.dataset.correctIndex = index;
         dropZone.dataset.occupied = 'false';
         dropZone.dataset.droppedIndex = '';
+        dropZone.style.setProperty('--option-color', dropColor);
         
         // Add drop event listeners
         dropZone.addEventListener('dragover', handleMatchingDragOver, { passive: false });
@@ -545,6 +569,7 @@ function createMatchingContainer(question) {
         rightItem.className = 'matching-right-item';
         rightItem.dataset.originalIndex = index;
         rightItem.draggable = true;
+        rightItem.style.setProperty('--option-color', rightColor);
         
         const rightContent = document.createElement('div');
         
@@ -880,28 +905,16 @@ function checkNewPairs(question) {
             existingStatus.remove();
         }
         
-        // Add status indicator
-        const status = document.createElement('div');
-        status.className = 'pair-status';
-        
         if (droppedIndex !== null && correctIndex === droppedIndex) {
             // Correct pair
             dropZone.classList.add('correct');
             dropZone.classList.remove('incorrect');
-            status.classList.add('correct');
-            status.classList.remove('incorrect');
-            status.textContent = '✓';
             correctPairs++;
         } else {
             // Incorrect pair
             dropZone.classList.add('incorrect');
             dropZone.classList.remove('correct');
-            status.classList.add('incorrect');
-            status.classList.remove('correct');
-            status.textContent = '✗';
         }
-        
-        dropZone.appendChild(status);
     });
     
     // Mark as checked
@@ -1165,28 +1178,16 @@ function checkPairs(question) {
                 existingStatus.remove();
             }
             
-            // Add status indicator
-            const status = document.createElement('div');
-            status.className = 'pair-status';
-            
             if (leftOriginalIndex === rightOriginalIndex) {
                 // Correct pair
                 rightItem.classList.add('correct');
                 rightItem.classList.remove('incorrect');
-                status.classList.add('correct');
-                status.classList.remove('incorrect');
-                status.textContent = '✓';
                 correctPairs++;
             } else {
                 // Incorrect pair
                 rightItem.classList.add('incorrect');
                 rightItem.classList.remove('correct');
-                status.classList.add('incorrect');
-                status.classList.remove('correct');
-                status.textContent = '✗';
             }
-            
-            rightItem.appendChild(status);
         }
     });
     
@@ -1253,6 +1254,8 @@ function checkMultipleChoiceAnswer() {
             option.classList.add('correct');
         } else if (index === userAnswers[currentQuestionIndex] && !isCorrect) {
             option.classList.add('incorrect');
+        } else {
+            option.classList.add('unchosen');
         }
     });
     
@@ -1282,8 +1285,10 @@ function lockConfirmedQuestion() {
                 // Show feedback for confirmed answer
                 if (Number.isFinite(correctAnswerIndex) && index === correctAnswerIndex) {
                     option.classList.add('correct');
-                } else if (index === userAnswers[currentQuestionIndex]) {
+                } else if (index === userAnswers[currentQuestionIndex] && userAnswers[currentQuestionIndex] !== correctAnswerIndex) {
                     option.classList.add('incorrect');
+                } else {
+                    option.classList.add('unchosen');
                 }
             });
         } else if (question.type === 'fill') {

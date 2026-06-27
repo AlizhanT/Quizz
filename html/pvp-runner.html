@@ -51,8 +51,12 @@
 
             <!-- Navigation Buttons -->
             <div class="navigation-buttons">
-                <button class="nav-btn btn-prev" onclick="previousQuestion(1)" title="Previous">Previous</button>
-                <button class="nav-btn btn-next" onclick="nextQuestion(1)" title="Next">Next</button>
+                <button class="nav-btn btn-prev" onclick="previousQuestion(1)" title="Previous">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>
+                </button>
+                <button class="nav-btn btn-next" onclick="nextQuestion(1)" title="Next">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"/></svg>
+                </button>
             </div>
         </div>
 
@@ -64,6 +68,9 @@
                 <div class="top-controls">
                     <button class="restart-btn" onclick="restartTest(2)" title="Restart Test">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#6c757d"><path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/></svg>
+                    </button>
+                    <button class="fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#6c757d"><path d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z"/></svg>
                     </button>
                 </div>
 
@@ -94,19 +101,17 @@
 
             <!-- Navigation Buttons -->
             <div class="navigation-buttons">
-                <button class="nav-btn btn-prev" onclick="previousQuestion(2)" title="Previous">Previous</button>
-                <button class="nav-btn btn-next" onclick="nextQuestion(2)" title="Next">Next</button>
+                <button class="nav-btn btn-prev" onclick="previousQuestion(2)" title="Previous">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>
+                </button>
+                <button class="nav-btn btn-next" onclick="nextQuestion(2)" title="Next">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"/></svg>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Global Controls -->
-    <div class="global-controls">
-        <button class="fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#6c757d"><path d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z"/></svg>
-        </button>
-        <button class="nav-btn btn-close" onclick="closeTest()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></button>
-    </div>
+
 
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

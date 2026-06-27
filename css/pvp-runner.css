@@ -79,6 +79,44 @@ body {
 .player-section .answer-option {
     max-width: 100%;
     box-sizing: border-box;
+    background: var(--option-color, var(--background-light));
+    border: 15px solid color-mix(in srgb, var(--option-color, var(--border-light)), black 30%);
+    color: white;
+}
+
+.player-section .answer-option:hover {
+    border-color: color-mix(in srgb, var(--option-color, var(--border-light)), black 40%);
+}
+
+.player-section .answer-option.selected {
+    border-color: color-mix(in srgb, var(--option-color, var(--border-light)), black 50%);
+    background: var(--option-color, var(--background-light));
+}
+
+.player-section .answer-option.correct {
+    border-color: color-mix(in srgb, #4ade80, black 50%);
+    background: #4ade80;
+    animation: correctPulse 0.6s ease;
+}
+
+.player-section .answer-option.incorrect {
+    border-color: color-mix(in srgb, #f87171, black 50%);
+    background: #f87171;
+    animation: shake 0.5s ease;
+}
+
+.player-section .answer-option.unchosen {
+    background: color-mix(in srgb, var(--option-color, var(--background-light)), white 70%);
+    border-color: color-mix(in srgb, var(--option-color, var(--border-light)), black 30%);
+    opacity: 0.6;
+}
+
+.player-section .answer-text {
+    color: white;
+}
+
+.player-section .option-content {
+    color: white;
 }
 
 .player-section .matching-container-new {
@@ -94,6 +132,53 @@ body {
     justify-content: space-between;
 }
 
+.player-section .matching-left-item {
+    background: var(--option-color, var(--background-light));
+    border: 2px solid color-mix(in srgb, var(--option-color, var(--border-light)), black 30%);
+    color: white;
+}
+
+.player-section .matching-drop-zone {
+    border: 2px dashed color-mix(in srgb, var(--option-color, var(--border-light)), black 30%);
+    background: var(--option-color, var(--background-light));
+    color: white;
+}
+
+.player-section .matching-drop-zone:hover {
+    border-color: color-mix(in srgb, var(--option-color, var(--primary-color)), black 40%);
+    background: var(--option-color, var(--background-light));
+}
+
+.player-section .matching-drop-zone.drag-over {
+    border-color: color-mix(in srgb, var(--option-color, var(--primary-color)), black 40%);
+    background: var(--option-color, var(--background-light));
+}
+
+.player-section .matching-drop-zone.filled {
+    border: 2px solid color-mix(in srgb, var(--option-color, var(--border-light)), black 30%);
+    background: var(--option-color, var(--background-light));
+    color: white;
+}
+
+.player-section .matching-drop-zone.correct {
+    border-color: color-mix(in srgb, #4ade80, black 50%);
+    background: #4ade80;
+    color: white;
+    animation: correctPulse 0.5s ease;
+}
+
+.player-section .matching-drop-zone.incorrect {
+    border-color: color-mix(in srgb, #f87171, black 50%);
+    background: #f87171;
+    color: white;
+    animation: shake 0.5s ease;
+}
+
+.player-section .matching-right-item {
+    background: var(--option-color, var(--primary-color));
+    border: 2px solid color-mix(in srgb, var(--option-color, var(--primary-color)), black 30%);
+}
+
 .player-section .fill-options-container {
     max-width: 100%;
     overflow-wrap: break-word;
@@ -101,6 +186,47 @@ body {
 
 .player-section .blank-drop-zone {
     position: relative;
+    border: 2px dashed color-mix(in srgb, var(--option-color, var(--border-light)), black 30%);
+    background: var(--option-color, var(--background-light));
+    color: white;
+}
+
+.player-section .blank-drop-zone:hover {
+    border-color: color-mix(in srgb, var(--option-color, var(--primary-color)), black 40%);
+    background: var(--option-color, var(--background-light));
+}
+
+.player-section .blank-drop-zone.drag-over {
+    border-color: color-mix(in srgb, var(--option-color, var(--primary-color)), black 40%);
+    background: var(--option-color, var(--background-light));
+}
+
+.player-section .blank-drop-zone.filled {
+    border: 2px solid color-mix(in srgb, var(--option-color, var(--primary-color)), black 30%);
+    background: var(--option-color, var(--background-light));
+    color: white;
+}
+
+.player-section .blank-drop-zone.correct {
+    border-color: color-mix(in srgb, #4ade80, black 50%);
+    background: #4ade80;
+    color: white;
+    animation: correctPulse 0.5s ease;
+}
+
+.player-section .blank-drop-zone.incorrect {
+    border-color: color-mix(in srgb, #f87171, black 50%);
+    background: #f87171;
+    color: white;
+    animation: shake 0.5s ease;
+}
+
+.player-section .fill-option-chip {
+    background: var(--option-color, var(--primary-color));
+}
+
+.player-section .fill-option-chip:hover {
+    background: color-mix(in srgb, var(--option-color, var(--primary-color)), black 20%);
 }
 
 .player-section .blank-drop-zone .word-status {
