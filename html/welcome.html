@@ -3,7 +3,7 @@
 <html class="light" lang="kk"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>QuizMaster - Білімді ойын арқылы тексеріңіз</title>
+<title>Oimergen - Білімді ойын арқылы тексеріңіз</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Roboto:wght@400;500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -119,7 +119,7 @@
 <!-- Top Navigation Bar -->
 <header class="bg-[#f9f9ff]/80 backdrop-blur-xl docked full-width top-0 sticky z-50 shadow-[0_32px_64px_-15px_rgba(99,102,241,0.08)]">
 <div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
-<div class="text-2xl font-extrabold text-indigo-600 tracking-tighter">QuizMaster</div>
+<div class="text-2xl font-extrabold text-indigo-600 tracking-tighter">Oimergen</div>
 <nav class="hidden md:flex gap-8 items-center font-plusJakartaSans font-bold tracking-tight text-sm">
 <a class="text-indigo-600 border-b-2 border-indigo-600 pb-1" href="#" onclick="scrollToSection('features')" data-translate="nav.teachers">Мұғалімдер</a>
 <a class="text-slate-600 hover:text-indigo-500 transition-colors" href="#" onclick="scrollToSection('students')" data-translate="nav.students">Студенттер</a>
@@ -160,78 +160,77 @@
 <section class="relative pt-20 pb-32 overflow-hidden bg-surface">
 <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
 <div class="z-10">
-<span class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest uppercase bg-primary-fixed text-on-primary-fixed-variant rounded-full" data-translate="hero.platformType">БІЛІМ БЕРУ ПЛАТФОРМАСЫ</span>
 <h1 class="text-5xl md:text-7xl font-extrabold text-on-surface leading-[1.1] tracking-tight mb-8">
                         <span data-translate="hero.title">Білімді ойын арқылы</span> <span class="text-primary italic" data-translate="hero.titleHighlight">тексеріңіз</span>
 </h1>
 <p class="text-xl text-on-surface-variant mb-10 max-w-lg font-body leading-relaxed" data-translate="hero.subtitle">
-                        QuizMaster мұғалімдер мен студенттер үшін оқу процесін қызықты шытырман оқиғаға айналдырады. Викториналарды оңай жасап, нәтижелерді нақты уақытта бақылаңыз.
+                        Оқуды ойынға айналдырыңыз! Интерактивті тесттер арқылы оқушылардың білімге деген құштарлығын оятып, сабақты қызықты саяхатқа айналдырыңыз.
                     </p>
 <div class="flex flex-col sm:flex-row gap-4">
 <button class="bg-primary text-on-primary px-8 py-4 rounded-xl font-headline font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/25" onclick="showSignupModal()" data-translate="hero.getStarted">Тегін бастау</button>
-<button class="bg-surface-container-high text-on-surface px-8 py-4 rounded-xl font-headline font-bold text-lg hover:scale-105 active:scale-95 transition-all" onclick="scrollToSection('features')" data-translate="hero.viewDemo">Демо көру</button>
 </div>
 </div>
 <div class="relative">
 <div class="absolute -top-20 -right-20 w-96 h-96 bg-secondary-container/30 blur-[100px] rounded-full"></div>
 <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-primary-container/20 blur-[80px] rounded-full"></div>
 <div class="relative bg-surface-container-lowest p-4 rounded-[2.5rem] shadow-2xl rotate-2">
-<img class="rounded-[2rem] w-full object-cover aspect-[4/3] shadow-inner" data-alt="Modern tablet interface showing a colorful quiz game with dynamic charts, cheerful characters, and vibrant educational UI elements" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMkm__ndns7U9AOVnBLLj8N7JPPf6Bz84r2H9Zs6nnHAm_l7u-wkzQeXURUUjo84BKxZJZq9I7qxCzhOKvI-DOL7hwF9UOwRtbgzvhx3nXA2d6AvLQmjNJAQdgxH2MHULiXrU62w2AomC2i2FsecOIIifMPtWc4_bN-quWq0zTJPJfIXx72jUxjEyJWA4xPQk8PIOpI_oOM9ZDol0nn4TdH2_zp6qYnKtYB2Fa9cNqd9ANEK43aLQcaJdrnqfMUojlInv8miflXQE"/>
+<div class="rounded-[2rem] bg-white p-6 shadow-inner aspect-[4/3] flex flex-col" id="landingQuiz">
+<div class="flex-1 flex flex-col justify-center">
+<h3 class="text-2xl font-bold text-gray-800 mb-6 text-center" id="quizQuestion">Loading question...</h3>
+<div class="grid grid-cols-2 gap-3" id="quizOptions">
+<!-- Options will be inserted here by JavaScript -->
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </section>
-<!-- Features for Teachers (Bento Grid) -->
+<!-- Benefits for Teachers -->
 <section id="features" class="py-24 bg-surface-container-low">
 <div class="max-w-7xl mx-auto px-6">
 <div class="mb-16 max-w-2xl">
-<h2 class="text-4xl font-extrabold mb-4 text-on-background tracking-tight" data-translate="features.title">Мұғалімдерге арналған қуатты құралдар</h2>
-<p class="text-on-surface-variant font-body" data-translate="features.subtitle">Сабақты тиімді жоспарлауға және студенттердің үлгерімін бағалауға қажетті барлық мүмкіндіктер бір жерде.</p>
+<h2 class="text-4xl font-extrabold mb-4 text-on-background tracking-tight" data-translate="features.title">Мұғалімдерге арналған артықшылықтар</h2>
+<p class="text-on-surface-variant font-body" data-translate="features.subtitle">Сабақты тиімді және қызықты өткізуге көмектесетін құралдар.</p>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<div class="md:col-span-2 bg-surface-container-lowest p-10 rounded-3xl group hover:shadow-xl transition-shadow border border-outline-variant/15">
-<div class="flex flex-col md:flex-row gap-10 items-center">
-<div class="flex-1">
-<div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-6">
-<span class="material-symbols-outlined text-3xl">edit_note</span>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="bg-surface-container-lowest p-8 rounded-3xl group hover:shadow-2xl transition-all duration-300 border border-outline-variant/15 hover:-translate-y-2">
+<div class="w-16 h-16 bg-gradient-to-br from-primary to-primary-container rounded-2xl flex items-center justify-center text-on-primary mb-6 shadow-lg">
+<span class="material-symbols-outlined text-4xl">speed</span>
 </div>
-<h3 class="text-2xl font-bold mb-4" data-translate="features.quizCreation.title">Жылдам викторина жасау</h3>
-<p class="text-on-surface-variant font-body mb-6" data-translate="features.quizCreation.description">Біздің интеллектуалды конструктор арқылы бірнеше минут ішінде кез келген пәннен тест дайындаңыз. Дайын шаблондарды пайдаланыңыз.</p>
-<ul class="space-y-3 font-label text-sm text-on-surface-variant">
-<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span> <span data-translate="features.quizCreation.multimedia">Мультимедиалық сұрақтар</span></li>
-<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span> <span data-translate="features.quizCreation.formulas">Математикалық формулалар</span></li>
-</ul>
+<h3 class="text-2xl font-bold mb-4 text-on-background" data-translate="features.efficiency.title">Жылдам және интуитивті құрал</h3>
+<p class="text-on-surface-variant font-body mb-6" data-translate="features.efficiency.description">Біздің қарапайым интерфейс арқылы бірнеше минут ішінде кез келген пәннен тест дайындаңыз. Уақытты үнемдеңіз және оқыту процесін жеңілдетіңіз.</p>
+<div class="space-y-3">
+<div class="flex items-center gap-3 bg-primary/5 p-3 rounded-xl">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label text-sm text-on-surface-variant" data-translate="features.efficiency.easy">Қолданғанда оңай</span>
 </div>
-<div class="flex-1 w-full bg-surface-container rounded-2xl overflow-hidden aspect-video">
-<img class="w-full h-full object-cover" data-alt="Close up of a clean digital interface for creating quizzes with drag and drop elements and vivid purple accent colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2RM0Mc0RMmuPzvtVXUX3cN14Q-x2dIKjSxlGu-4K-YAOtWxD-gnmE_c2hg0bOt7KW21YvuhLasyMCpW-K9myfhmPikMoOpMd6_9lNf90gROFgbWKv4iygxeyPwpXgsEIf6UqmymgTIuug_2R4A-Ybd1YD4LG7ZR7SpcrZ3u0ngXWRh5zwgSiO42sbUwCYwRaoo_YYYCqMu8FKuByS4RbLb9N3DvOiv9Z7cVdb4J-rSV1-32RIcxrq3ADaFY0jOCZrhZLvBnI1GvU"/>
-</div>
+<div class="flex items-center gap-3 bg-primary/5 p-3 rounded-xl">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label text-sm text-on-surface-variant" data-translate="features.efficiency.fast">Тез тапсырма жасау</span>
 </div>
 </div>
-<div class="bg-tertiary text-on-tertiary p-10 rounded-3xl flex flex-col justify-between hover:scale-[1.02] transition-transform">
-<div>
-<div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
-<span class="material-symbols-outlined text-3xl">insights</span>
 </div>
-<h3 class="text-2xl font-bold mb-4" data-translate="features.analytics.title">Нақты уақыттағы аналитика</h3>
+<div class="bg-gradient-to-br from-tertiary to-tertiary-container p-8 rounded-3xl group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+<div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-on-tertiary mb-6 shadow-lg">
+<span class="material-symbols-outlined text-4xl">emoji_events</span>
 </div>
-<p class="font-body opacity-90" data-translate="features.analytics.description">Әр студенттің қиналған тұстарын бірден анықтап, сабақ барысында түзетулер енгізіңіз. Толық есептерді жүктеп алыңыз.</p>
+<h3 class="text-2xl font-bold mb-4 text-on-tertiary" data-translate="features.engagement.title">Оқушылардың назарын аудару</h3>
+<p class="font-body opacity-90 mb-6" data-translate="features.engagement.description">Интерактивті тесттер арқылы сабақты қызықты өткізіңіз. Оқушылардың білімге деген құштарлығын оятып, белсенділікке жетеліңіз.</p>
+<div class="flex items-center gap-3 bg-white/10 p-3 rounded-xl">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label text-sm opacity-90" data-translate="features.engagement.format">Интерактивті формат</span>
 </div>
-<div class="bg-surface-container-highest p-10 rounded-3xl group hover:shadow-xl transition-shadow border border-outline-variant/15 flex flex-col justify-between">
-<div>
-<div class="w-14 h-14 bg-secondary-container text-on-secondary-container rounded-2xl flex items-center justify-center mb-6">
-<span class="material-symbols-outlined text-3xl">groups</span>
 </div>
-<h3 class="text-2xl font-bold mb-4" data-translate="features.classroom.title">Сыныпты басқару</h3>
+<div class="bg-surface-container-highest p-8 rounded-3xl group hover:shadow-2xl transition-all duration-300 border border-outline-variant/15 hover:-translate-y-2">
+<div class="w-16 h-16 bg-gradient-to-br from-secondary-container to-secondary rounded-2xl flex items-center justify-center text-on-secondary-container mb-6 shadow-lg">
+<span class="material-symbols-outlined text-4xl">visibility</span>
 </div>
-<p class="text-on-surface-variant font-body" data-translate="features.classroom.description">Студенттерді топқа бөліңіз, үй тапсырмаларын тағайындаңыз және олардың белсенділік деңгейін қадағалаңыз.</p>
-</div>
-<div class="md:col-span-2 bg-primary-container text-on-primary-container p-10 rounded-3xl relative overflow-hidden group">
-<div class="relative z-10">
-<h3 class="text-2xl font-bold mb-4" data-translate="features.autoGrading.title">Автоматты тексеру</h3>
-<p class="font-body opacity-90 max-w-md" data-translate="features.autoGrading.description">Уақытты үнемдеңіз! Жүйе тесттерді өзі тексереді және бағалау журналын автоматты түрде толтырады.</p>
-</div>
-<div class="absolute -right-10 -bottom-10 opacity-20 transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
-<span class="material-symbols-outlined text-[12rem]">task_alt</span>
+<h3 class="text-2xl font-bold mb-4 text-on-background" data-translate="features.understanding.title">Түсіністікті бақылау</h3>
+<p class="text-on-surface-variant font-body mb-6" data-translate="features.understanding.description">Нақты уақыттағы аналитика арқылы әр оқушының сабақты қаншалықты түсінгенін оңай анықтаңыз.</p>
+<div class="flex items-center gap-3 bg-secondary-container/20 p-3 rounded-xl">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="font-label text-sm text-on-surface-variant" data-translate="features.understanding.data">Нақты уақыттағы деректер</span>
 </div>
 </div>
 </div>
@@ -239,53 +238,45 @@
 </section>
 <!-- Student Experience Section -->
 <section id="students" class="py-24 bg-surface">
-<div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
-<div class="order-2 lg:order-1 relative">
-<div class="relative bg-surface-container-lowest p-6 rounded-[2.5rem] shadow-2xl -rotate-3 overflow-hidden">
-<img class="rounded-[1.5rem] w-full shadow-lg" data-alt="Mobile phone screen showing a bright interface where a student enters a 6-digit game code to join a fun quiz" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABmW5EF4MZ_m85xsNlJpbBQU008HP_ydhmWfHpdoTmYYs10H6AdTZAK_bu2oI1oWjbHr2u3P79tx-9iq-s48stb325K0G1cZ7fWuYGSLi_jJLE_qcy-55jmtXcAwd2kKDh3vbRloyNWy8A4PABhKiSLLtw2o6CZz9OYQsACTMCDhHokvXAYGP55JNb_FSGGaonisl63f_WPSJT7Ngk6-IekGFvjnK_IXEP1ccnRcAiEZjrbYC3iVViymZxiIPKsBmDpCyw-wRdAV4"/>
-<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20">
-<div class="text-center font-headline font-extrabold text-3xl tracking-[0.5em] text-primary">842 109</div>
+<div class="max-w-7xl mx-auto px-6">
+<div class="mb-16 max-w-2xl">
+<h2 class="text-4xl font-extrabold mb-4 text-on-background tracking-tight" data-translate="students.title">Оқушыларға арналған мүмкіндіктер</h2>
+<p class="text-on-surface-variant font-body" data-translate="students.subtitle">Оқуды қызықты және тиімді ететін мүмкіндіктер.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="bg-surface-container-lowest p-8 rounded-3xl group hover:shadow-2xl transition-all duration-300 border border-outline-variant/15 hover:-translate-y-2">
+<div class="w-16 h-16 bg-gradient-to-br from-secondary to-secondary-container rounded-2xl flex items-center justify-center text-on-secondary mb-6 shadow-lg">
+<span class="material-symbols-outlined text-4xl">psychology</span>
+</div>
+<h3 class="text-2xl font-bold mb-4 text-on-background" data-translate="students.selfTest.title">Өз білімін тексеру</h3>
+<p class="text-on-surface-variant font-body mb-6" data-translate="students.selfTest.description">Кез келген тақырып бойынша өз біліміңізді тексеріп, прогресіңізді бақылаңыз.</p>
+<div class="flex items-center gap-3 bg-secondary/10 p-3 rounded-xl">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<span class="font-label text-sm text-on-surface-variant" data-translate="students.selfTest.progress">Прогресті бақылау</span>
 </div>
 </div>
+<div class="bg-gradient-to-br from-primary to-primary-container p-8 rounded-3xl group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+<div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-on-primary mb-6 shadow-lg">
+<span class="material-symbols-outlined text-4xl">sports_esports</span>
 </div>
-<div class="order-1 lg:order-2">
-<span class="text-secondary font-headline font-bold text-sm tracking-wider uppercase mb-4 block" data-translate="students.tagline">СТУДЕНТТЕРГЕ ҚЫЗЫҚТЫ</span>
-<h2 class="text-4xl md:text-5xl font-extrabold mb-8 tracking-tight" data-translate="students.title">Оқуды жарысқа айналдырыңыз</h2>
-<div class="space-y-8">
-<div class="flex gap-6">
-<div class="flex-shrink-0 w-12 h-12 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center font-bold">1</div>
-<div>
-<h4 class="text-xl font-bold mb-2" data-translate="students.quickJoin.title">Код арқылы жылдам қосылу</h4>
-<p class="text-on-surface-variant font-body" data-translate="students.quickJoin.description">Тіркелудің қажеті жоқ! Мұғалім берген 6 таңбалы кодты енгізіп, ойынды бірден бастаңыз.</p>
-</div>
-</div>
-<div class="flex gap-6">
-<div class="flex-shrink-0 w-12 h-12 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center font-bold">2</div>
-<div>
-<h4 class="text-xl font-bold mb-2" data-translate="students.interactive.title">Интерактивті жарыс</h4>
-<p class="text-on-surface-variant font-body" data-translate="students.interactive.description">Лидерлер тақтасы, аватарлар мен қызықты дыбыстық эффектілер оқуды ойынға айналдырады.</p>
+<h3 class="text-2xl font-bold mb-4 text-on-primary" data-translate="students.pvp.title">Сыныптастармен білім жарысы</h3>
+<p class="font-body opacity-90 mb-6" data-translate="students.pvp.description">PvP режімінде сыныптастарыңызбен білім жарысын өткізіп, ойын түрінде оқыңыз.</p>
+<div class="flex items-center gap-3 bg-white/10 p-3 rounded-xl">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+<span class="font-label text-sm opacity-90" data-translate="students.pvp.mode">Жарыс режімі</span>
 </div>
 </div>
-<div class="flex gap-6">
-<div class="flex-shrink-0 w-12 h-12 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center font-bold">3</div>
-<div>
-<h4 class="text-xl font-bold mb-2" data-translate="students.feedback.title">Жедел кері байланыс</h4>
-<p class="text-on-surface-variant font-body" data-translate="students.feedback.description">Әр сұраққа жауап бергеннен кейін қатеңізді көріп, тақырыпты жақсырақ меңгеріңіз.</p>
+<div class="bg-surface-container-highest p-8 rounded-3xl group hover:shadow-2xl transition-all duration-300 border border-outline-variant/15 hover:-translate-y-2">
+<div class="w-16 h-16 bg-gradient-to-br from-tertiary to-tertiary-container rounded-2xl flex items-center justify-center text-on-tertiary mb-6 shadow-lg">
+<span class="material-symbols-outlined text-4xl">school</span>
+</div>
+<h3 class="text-2xl font-bold mb-4 text-on-background" data-translate="students.understanding.title">Сабақты жақсырақ түсіну</h3>
+<p class="text-on-surface-variant font-body mb-6" data-translate="students.understanding.description">Қызықты және интерактивті формат арқылы сабақты жақсырақ түсініп, білімді жеңіл игеріңіз.</p>
+<div class="flex items-center gap-3 bg-tertiary/10 p-3 rounded-xl">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+<span class="font-label text-sm text-on-surface-variant" data-translate="students.understanding.easy">Жеңіл игеру</span>
 </div>
 </div>
-</div>
-</div>
-</div>
-</section>
-<!-- Social Proof -->
-<section class="py-20 border-y border-outline-variant/10">
-<div class="max-w-7xl mx-auto px-6 text-center">
-<p class="text-sm font-label text-on-surface-variant uppercase tracking-[0.2em] mb-10" data-translate="socialProof.title">БІЗГЕ СЕНІМ БІЛДІРЕТІН ОҚУ ОРЫНДАРЫ</p>
-<div class="flex flex-wrap justify-center gap-12 md:gap-24 grayscale opacity-60">
-<div class="flex items-center gap-2 font-headline font-extrabold text-2xl">EDU<span class="text-primary">TECH</span></div>
-<div class="flex items-center gap-2 font-headline font-extrabold text-2xl">SMART<span class="text-primary">SCHOOL</span></div>
-<div class="flex items-center gap-2 font-headline font-extrabold text-2xl">KAZ<span class="text-primary">LEARN</span></div>
-<div class="flex items-center gap-2 font-headline font-extrabold text-2xl">UNI<span class="text-primary">CORE</span></div>
 </div>
 </div>
 </section>
@@ -296,10 +287,9 @@
 <div class="absolute bottom-0 left-0 w-64 h-64 bg-tertiary-container/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
 <div class="relative z-10">
 <h2 class="text-4xl md:text-5xl font-extrabold mb-8" data-translate="cta.title">Болашақтың оқу форматына бүгін қосылыңыз</h2>
-<p class="text-lg opacity-90 mb-12 max-w-xl mx-auto font-body" data-translate="cta.description">Мыңдаған мұғалімдер QuizMaster көмегімен сабақтарын қызықтырақ өткізуде. Сіздің кезегіңіз келді.</p>
+<p class="text-lg opacity-90 mb-12 max-w-xl mx-auto font-body" data-translate="cta.description">Oimergen-ге қосылып, заманауи құралдармен оқу барысын жеңілдетіңіз.</p>
 <div class="flex flex-col sm:flex-row justify-center gap-4">
 <button class="bg-white text-primary px-10 py-5 rounded-2xl font-headline font-extrabold text-lg hover:scale-105 active:scale-95 transition-all shadow-xl" onclick="showSignupModal()" data-translate="auth.signup">Тіркелу</button>
-<button class="bg-primary-container border border-white/20 text-white px-10 py-5 rounded-2xl font-headline font-extrabold text-lg hover:scale-105 active:scale-95 transition-all" data-translate="cta.contact">Байланысқа шығу</button>
 </div>
 </div>
 </div>
@@ -309,7 +299,7 @@
 <footer class="bg-[#f0f3ff] py-12">
 <div class="w-full px-8 flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto">
 <div class="flex flex-col items-center md:items-start gap-4">
-<div class="font-plusJakartaSans font-bold text-indigo-700 text-2xl">QuizMaster</div>
+<div class="font-plusJakartaSans font-bold text-indigo-700 text-2xl">Oimergen</div>
 <p class="font-manrope text-sm text-slate-500 max-w-xs text-center md:text-left" data-translate="footer.tagline">Оқытуды жеңілдету және қызықты ету үшін жасалған заманауи платформа.</p>
 </div>
 <nav class="flex gap-8 font-manrope text-sm">
@@ -319,7 +309,7 @@
 <a class="text-slate-500 hover:text-indigo-500 underline-offset-4 hover:underline transition-opacity" href="#" data-translate="footer.about">Біз туралы</a>
 </nav>
 <div class="text-slate-500 font-manrope text-sm text-center md:text-right" data-translate="footer.copyright">
-                © 2024 QuizMaster. Барлық құқықтар қорғалған / Все права защищены.
+                © 2026 Oimergen. Барлық құқықтар қорғалған / Все права защищены.
             </div>
 </div>
 </footer>
@@ -329,7 +319,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="modal-icon success">✓</div>
-                <h3 data-translate="modal.auth.success.title">Welcome to QuizMaster Pro!</h3>
+                <h3 data-translate="modal.auth.success.title">Welcome to Oimergen!</h3>
                 <p data-translate="modal.auth.success.description">You're all set! You will be redirected to the quiz editor to start creating amazing quizzes.</p>
             </div>
             <div class="modal-footer">
@@ -343,7 +333,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <h3 data-translate="modal.auth.login.title">Welcome Back!</h3>
-                <p data-translate="modal.auth.login.description">Log in to your QuizMaster Pro account</p>
+                <p data-translate="modal.auth.login.description">Log in to your Oimergen account</p>
                 <form id="loginForm" class="auth-form">
                     <div class="form-group">
                         <label for="loginEmail" data-translate="modal.auth.login.email">Email Address</label>
@@ -372,7 +362,7 @@
     <div id="signupModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-body">
-                <h3 data-translate="modal.auth.signup.title">Join QuizMaster Pro!</h3>
+                <h3 data-translate="modal.auth.signup.title">Join Oimergen!</h3>
                 <p data-translate="modal.auth.signup.description">Create your account and start creating amazing quizzes</p>
                 <form id="signupForm" class="auth-form">
                     <div class="form-group">
@@ -435,9 +425,140 @@
 
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="../js/loading-manager.js"></script>
     <script src="../js/supabase-config.js"></script>
     <script src="../js/language.js"></script>
     <script src="../js/email-verification.js"></script>
     <script src="../js/welcome.js"></script>
+    
+    <!-- Landing Page Quiz Script -->
+    <script>
+        const quizQuestions = [
+            {
+                question: "landing.quiz.q1.question",
+                options: ["landing.quiz.q1.option1", "landing.quiz.q1.option2", "landing.quiz.q1.option3", "landing.quiz.q1.option4"],
+                correct: 0
+            },
+            {
+                question: "landing.quiz.q2.question",
+                options: ["landing.quiz.q2.option1", "landing.quiz.q2.option2", "landing.quiz.q2.option3", "landing.quiz.q2.option4"],
+                correct: 1
+            },
+            {
+                question: "landing.quiz.q3.question",
+                options: ["landing.quiz.q3.option1", "landing.quiz.q3.option2", "landing.quiz.q3.option3", "landing.quiz.q3.option4"],
+                correct: 2
+            },
+            {
+                question: "landing.quiz.q4.question",
+                options: ["landing.quiz.q4.option1", "landing.quiz.q4.option2", "landing.quiz.q4.option3", "landing.quiz.q4.option4"],
+                correct: 3
+            },
+            {
+                question: "landing.quiz.q5.question",
+                options: ["landing.quiz.q5.option1", "landing.quiz.q5.option2", "landing.quiz.q5.option3", "landing.quiz.q5.option4"],
+                correct: 0
+            }
+        ];
+
+        let answered = false;
+
+        function initLandingQuiz() {
+            const randomIndex = Math.floor(Math.random() * quizQuestions.length);
+            const question = quizQuestions[randomIndex];
+            
+            const questionEl = document.getElementById('quizQuestion');
+            const optionsEl = document.getElementById('quizOptions');
+            
+            // Get translation function from language manager if available
+            const getTranslation = (key) => {
+                if (window.languageManager && window.languageManager.t) {
+                    return window.languageManager.t(key);
+                }
+                // Fallback to direct translation object
+                if (window.translations && window.translations[key]) {
+                    return window.translations[key];
+                }
+                return key;
+            };
+            
+            // Set question text with translation support
+            questionEl.textContent = getTranslation(question.question);
+            
+            // Clear and add options
+            optionsEl.innerHTML = '';
+            question.options.forEach((optionKey, index) => {
+                const button = document.createElement('button');
+                button.className = 'quiz-option-btn';
+                button.style.cssText = `
+                    background-color: #2196F3;
+                    color: white;
+                    padding: 16px 24px;
+                    border-radius: 12px;
+                    font-weight: 600;
+                    font-size: 18px;
+                    border: none;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    text-align: center;
+                    min-width: 120px;
+                `;
+                button.textContent = getTranslation(optionKey);
+                button.onclick = () => handleAnswer(index, question.correct, button);
+                optionsEl.appendChild(button);
+            });
+        }
+
+        function handleAnswer(selectedIndex, correctIndex, button) {
+            if (answered) return;
+            answered = true;
+            
+            const buttons = document.querySelectorAll('.quiz-option-btn');
+            
+            buttons.forEach((btn, index) => {
+                btn.style.cursor = 'default';
+                if (index === correctIndex) {
+                    btn.style.backgroundColor = '#4ade80';
+                } else if (index === selectedIndex && index !== correctIndex) {
+                    btn.style.backgroundColor = '#f87171';
+                }
+            });
+            
+            // Trigger confetti if answer is correct
+            if (selectedIndex === correctIndex && typeof confetti !== 'undefined') {
+                const rect = button.getBoundingClientRect();
+                const x = (rect.left + rect.width / 2) / window.innerWidth;
+                const y = (rect.top + rect.height / 2) / window.innerHeight;
+                
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { x: x, y: y },
+                    colors: ['#2196F3', '#4ade80', '#FFD700', '#FF6B6B'],
+                    disableForReducedMotion: true
+                });
+            }
+        }
+
+        // Initialize quiz when language is loaded and DOM is ready
+        function initQuizWhenReady() {
+            if (window.languageManager && window.languageManager.translations[window.languageManager.currentLanguage]) {
+                initLandingQuiz();
+                
+                // Listen for language changes and reinitialize quiz
+                const originalSetLanguage = window.languageManager.setLanguage;
+                window.languageManager.setLanguage = async function(lang) {
+                    await originalSetLanguage.call(this, lang);
+                    answered = false; // Reset answered state
+                    initLandingQuiz();
+                };
+            } else {
+                // Wait for language manager to load
+                setTimeout(initQuizWhenReady, 100);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuizWhenReady);
+    </script>
 </body></html>

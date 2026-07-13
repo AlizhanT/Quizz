@@ -413,14 +413,9 @@ function createAnswerOption(option, index) {
     optionDiv.className = 'answer-option';
     optionDiv.onclick = () => selectAnswer(index);
     
-    // Generate random color for this option
-    const clearHues = [30, 60, 80, 180, 200, 240, 280, 320];
-
-// Выбираем случайный градус из массива
-    const randomHue = clearHues[Math.floor(Math.random() * clearHues.length)];
-
-// Подставляем в твою формулу
-    const randomColor = `hsl(${randomHue}, 70%, 50%)`;;
+    // Generate random brightness for blue color
+    const randomBrightness = Math.random() * 40 + 40; // 40% to 80% lightness
+    const randomColor = `hsl(207, 90%, ${randomBrightness}%)`;
     optionDiv.style.setProperty('--option-color', randomColor);
     
     // Add event listener to clear validation errors when user interacts
@@ -486,17 +481,15 @@ function createMatchingContainer(question) {
     
     // Add pairs to columns
     question.pairs.forEach((pair, index) => {
-        // Generate different random colors for each element to avoid giving hints
-        const clearHues = [30, 60, 80, 180, 200, 240, 280, 320];
+        // Generate different random brightness for each element to avoid giving hints
+        const leftBrightness = Math.random() * 40 + 40;
+        const leftColor = `hsl(207, 90%, ${leftBrightness}%)`;
         
-        const leftHue = clearHues[Math.floor(Math.random() * clearHues.length)];
-        const leftColor = `hsl(${leftHue}, 70%, 50%)`;
+        const dropBrightness = Math.random() * 40 + 40;
+        const dropColor = `hsl(207, 90%, ${dropBrightness}%)`;
         
-        const dropHue = clearHues[Math.floor(Math.random() * clearHues.length)];
-        const dropColor = `hsl(${dropHue}, 70%, 50%)`;
-        
-        const rightHue = clearHues[Math.floor(Math.random() * clearHues.length)];
-        const rightColor = `hsl(${rightHue}, 70%, 50%)`;
+        const rightBrightness = Math.random() * 40 + 40;
+        const rightColor = `hsl(207, 90%, ${rightBrightness}%)`;
         
         // Left item + container group
         const leftGroup = document.createElement('div');

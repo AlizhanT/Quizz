@@ -155,10 +155,9 @@ function displayFillInBlank(question, container, playerNum = null) {
         dropZone.style.minWidth = Math.max(80, blank.word ? blank.word.length * 8 : 80) + 'px';
         dropZone.draggable = true;
         
-        // Generate random color for this drop zone
-        const clearHues = [30, 60, 80, 180, 200, 240, 280, 320];
-        const randomHue = clearHues[Math.floor(Math.random() * clearHues.length)];
-        const randomColor = `hsl(${randomHue}, 70%, 50%)`;
+        // Generate random brightness for blue color
+        const randomBrightness = Math.random() * 40 + 40; // 40% to 80% lightness
+        const randomColor = `hsl(207, 90%, ${randomBrightness}%)`;
         dropZone.style.setProperty('--option-color', randomColor);
         
         // Add drop event listeners
@@ -235,10 +234,9 @@ function displayFillInBlank(question, container, playerNum = null) {
                 optionChip.dataset.playerNum = playerNum || '';
                 optionChip.textContent = option;
                 
-                // Generate random color for this option chip
-                const clearHues = [30, 60, 80, 180, 200, 240, 280, 320];
-                const randomHue = clearHues[Math.floor(Math.random() * clearHues.length)];
-                const randomColor = `hsl(${randomHue}, 70%, 50%)`;
+                // Generate random brightness for blue color
+                const randomBrightness = Math.random() * 40 + 40; // 40% to 80% lightness
+                const randomColor = `hsl(207, 90%, ${randomBrightness}%)`;
                 optionChip.style.setProperty('--option-color', randomColor);
                 
                 // Add drag event listeners

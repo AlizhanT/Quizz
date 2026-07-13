@@ -25,6 +25,16 @@
       "profileSettingsComingSoon": "Profile settings feature coming soon!",
       "logoutFailed": "Failed to sign out. Please try again."
     },
+    "navigation": {
+      "createNewQuiz": "+ Create New Quiz",
+      "savedQuizzes": "Saved Quizzes",
+      "saveQuiz": "Save Quiz",
+      "downloadPDF": "Download PDF",
+      "run": "▶ RUN",
+      "main": "Main",
+      "language": "Language",
+      "about": "About"
+    },
     "nav": {
       "teachers": "Teachers",
       "students": "Students",
@@ -32,71 +42,106 @@
       "pricing": "Pricing"
     },
     "hero": {
-      "platformType": "EDUCATION PLATFORM",
       "title": "Test Knowledge Through",
       "titleHighlight": "Gamification",
-      "subtitle": "QuizMaster makes learning fun and engaging for teachers and students. Create quizzes easily and track results in real-time.",
-      "getStarted": "Get Started Free",
-      "viewDemo": "View Demo"
+      "subtitle": "Oimergen makes learning fun and engaging for teachers and students. Create quizzes easily and track results in real-time.",
+      "getStarted": "Get Started"
+    },
+    "landing": {
+      "quiz": {
+        "q1": {
+          "question": "What is the capital of France?",
+          "option1": "Paris",
+          "option2": "Berlin",
+          "option3": "London",
+          "option4": "Madrid"
+        },
+        "q2": {
+          "question": "Which planet is known as the Red Planet?",
+          "option1": "Venus",
+          "option2": "Mars",
+          "option3": "Jupiter",
+          "option4": "Saturn"
+        },
+        "q3": {
+          "question": "What is 22 + 37?",
+          "option1": "48",
+          "option2": "67",
+          "option3": "59",
+          "option4": "57"
+        },
+        "q4": {
+          "question": "Which is the largest ocean?",
+          "option1": "Atlantic",
+          "option2": "Indian",
+          "option3": "Arctic",
+          "option4": "Pacific"
+        },
+        "q5": {
+          "question": "What is apple in kazakh?",
+          "option1": "алма",
+          "option2": "алмұрт",
+          "option3": "өрік",
+          "option4": "жүзім"
+        }
+      }
     },
     "features": {
-      "title": "Powerful Tools for Teachers",
-      "subtitle": "Everything you need to effectively plan lessons and assess student progress.",
-      "quizCreation": {
-        "title": "Quick Quiz Creation",
-        "description": "Create tests for any subject in minutes with our intelligent constructor. Use ready-made templates.",
-        "multimedia": "Multimedia Questions",
-        "formulas": "Mathematical Formulas"
+      "title": "Benefits for Teachers",
+      "subtitle": "Tools to help you conduct lessons effectively and engagingly.",
+      "efficiency": {
+        "title": "Fast and Intuitive Tool",
+        "description": "Create tests for any subject in minutes with our simple interface. Save time and streamline your teaching process.",
+        "easy": "Easy to use",
+        "fast": "Fast task creation"
       },
-      "analytics": {
-        "title": "Real-time Analytics",
-        "description": "Instantly identify where students struggle and make corrections during lessons. Download full reports."
+      "engagement": {
+        "title": "Capture Student Attention",
+        "description": "Make lessons engaging with interactive quizzes. Spark students' enthusiasm for learning and drive active participation.",
+        "format": "Interactive Format"
       },
-      "classroom": {
-        "title": "Classroom Management",
-        "description": "Organize students into groups, assign homework, and monitor their activity levels."
-      },
-      "autoGrading": {
-        "title": "Automatic Grading",
-        "description": "Save time! The system automatically grades tests and fills the grade journal automatically."
+      "understanding": {
+        "title": "Monitor Understanding",
+        "description": "Easily identify how well each student understood the lesson with real-time analytics.",
+        "data": "Real-time Data"
       }
     },
     "students": {
-      "tagline": "FUN FOR STUDENTS",
-      "title": "Turn Learning into Competition",
-      "quickJoin": {
-        "title": "Quick Code Join",
-        "description": "No registration needed! Enter the 6-digit code provided by the teacher and start the game immediately."
+      "title": "Benefits for Students",
+      "subtitle": "Features that make learning fun and effective.",
+      "selfTest": {
+        "title": "Test Your Knowledge",
+        "description": "Test your knowledge on any topic and track your progress.",
+        "progress": "Track Progress"
       },
-      "interactive": {
-        "title": "Interactive Competition",
-        "description": "Leaderboards, avatars and fun sound effects turn learning into a game."
+      "pvp": {
+        "title": "Knowledge Battles with Classmates",
+        "description": "Compete in knowledge battles with your classmates in PvP mode and learn through gamification.",
+        "mode": "Competition Mode"
       },
-      "feedback": {
-        "title": "Instant Feedback",
-        "description": "See your mistakes after answering each question and master the topic better."
+      "understanding": {
+        "title": "Better Understanding of Lessons",
+        "description": "Understand lessons better and absorb knowledge easily through fun and interactive formats.",
+        "easy": "Easy Absorption"
       }
     },
     "socialProof": {
       "title": "TRUSTED BY EDUCATIONAL INSTITUTIONS"
     },
     "cta": {
-      "title": "Join the Future of Learning Today",
-      "description": "Thousands of teachers are making their lessons more engaging with QuizMaster. It's your turn.",
+      "title": "Modern tools for modern teachers",
+      "description": "Oimergen helps teachers quickly create interactive tests, save time on preparation, and make learning more engaging. Start using for free and grow with us.",
       "contact": "Contact Us"
-    },
-    "footer": {
-      "tagline": "Modern platform designed to make teaching easier and more engaging.",
-      "privacy": "Privacy",
-      "terms": "Terms",
-      "help": "Help",
-      "about": "About",
-      "copyright": "© 2024 QuizMaster. All rights reserved."
     },
     "quiz": {
       "title": "Test Title",
       "titlePlaceholder": "e.g., Math Quiz, Biology Test",
       "instructions": "Instructions (optional)",
+      "instructionsPlaceholder": "Add instructions for your quiz (optional)...",
+      "downloadPDF": "Download PDF",
+      "saveQuiz": "Save Quiz",
+      "runQuiz": "▶ RUN",
+      "goHome": "Home",
       "addQuestion": "Add Question",
       "questionType": "Question Type",
       "multipleChoice": "Multiple Choice",
@@ -139,6 +184,7 @@
       "mostQuestions": "Most Questions",
       "leastQuestions": "Least Questions",
       "edit": "Edit",
+      "delete": "Delete",
       "deleteSuccess": "Quiz deleted successfully!",
       "deleteError": "Error deleting quiz",
       "duplicateSuccess": "Quiz duplicated successfully!",
@@ -157,8 +203,8 @@
     },
     "page": {
       "title": "Multiple Choice Test Generator",
-      "profileSettings": "Profile Settings - QuizMaster Pro",
-      "resetPassword": "Reset Password - QuizMaster Pro"
+      "profileSettings": "Profile Settings - Oimergen",
+      "resetPassword": "Reset Password - Oimergen"
     },
     "modal": {
       "notification": "Notification",
@@ -189,13 +235,13 @@
       },
       "auth": {
         "success": {
-          "title": "Welcome to QuizMaster Pro!",
+          "title": "Welcome to Oimergen!",
           "description": "You're all set! You will be redirected to the quiz editor to start creating amazing quizzes.",
           "startCreating": "Start Creating Quizzes"
         },
         "login": {
           "title": "Welcome Back!",
-          "description": "Log in to your QuizMaster Pro account",
+          "description": "Log in to your Oimergen account",
           "email": "Email Address",
           "password": "Password",
           "submit": "Log In",
@@ -226,7 +272,7 @@
           "login": "Log In"
         },
         "signup": {
-          "title": "Join QuizMaster Pro!",
+          "title": "Join Oimergen!",
           "description": "Create your account and start creating amazing quizzes",
           "fullName": "Full Name",
           "email": "Email Address",
@@ -285,7 +331,12 @@
       "noTestData": "No test data found. Please create a test first.",
       "noQuestions": "No questions available in this test.",
       "noScorableQuestions": "No scorable questions available in this test (all questions are typing questions).",
-      "test": "Test"
+      "test": "Test",
+      "player1": "Player 1",
+      "player2": "Player 2",
+      "restartTest": "Restart Test",
+      "previous": "Previous",
+      "next": "Next"
     },
     "profile": {
       "backToEditor": "Back to Editor",
@@ -326,46 +377,6 @@
         "saveLanguage": "Save Language Preference"
       }
     },
-    "nav": {
-      "features": "Features",
-      "classroom": "Classroom",
-      "about": "About"
-    },
-    "hero": {
-      "title": "Create Professional Quizzes in Minutes",
-      "subtitle": "The ultimate platform for educators, trainers, and content creators to design, manage, and deliver engaging multiple-choice assessments.",
-      "learnMore": "Learn More",
-      "sampleTitle": "Math Quiz - Sample",
-      "sampleQuestion": "What is 2 + 2?"
-    },
-    "features": {
-      "title": "Powerful Features for Modern Assessment",
-      "subtitle": "Everything you need to create engaging and effective quizzes",
-      "multipleQuestionTypes": {
-        "title": "Multiple Question Types",
-        "description": "Support for multiple choice, true/false, fill-in-the-blank, and matching questions with rich text and image support."
-      },
-      "instantResults": {
-        "title": "Instant Results",
-        "description": "Real-time scoring and detailed analytics to track performance and identify knowledge gaps."
-      },
-      "saveManage": {
-        "title": "Save & Manage",
-        "description": "Organize your quizzes with our intuitive management system. Save, edit, and reuse assessments anytime."
-      },
-      "pdfExport": {
-        "title": "PDF Export",
-        "description": "Generate professional PDF documents with customizable layouts for printing and distribution."
-      },
-      "richMedia": {
-        "title": "Rich Media Support",
-        "description": "Embed images, diagrams, and visual content directly into your questions for enhanced learning."
-      },
-      "responsiveDesign": {
-        "title": "Responsive Design",
-        "description": "Create and take quizzes on any device. Our platform works seamlessly on desktop, tablet, and mobile."
-      }
-    },
     "classroom": {
       "title": "Perfect for Interactive Classroom Desks",
       "subtitle": "Transform your classroom into an engaging learning environment with our interactive quiz platform",
@@ -395,18 +406,30 @@
       },
       "cta": {
         "title": "Ready to Transform Your Classroom?",
-        "description": "Join thousands of teachers already using QuizMaster Pro for interactive learning"
+        "description": "Join thousands of teachers already using Oimergen for interactive learning"
       }
     },
     "about": {
       "title": "Designed for Educators, Built for Excellence",
-      "description": "QuizMaster Pro was created by educators who understand the challenges of modern assessment. We've combined powerful features with an intuitive interface to help you create professional quizzes that engage students and provide meaningful insights.",
+      "description": "Oimergen was created by educators who understand the challenges of modern assessment. We've combined powerful features with an intuitive interface to help you create professional quizzes that engage students and provide meaningful insights.",
       "activeUsers": "Active Users",
       "quizzesCreated": "Quizzes Created",
       "questionsAnswered": "Questions Answered",
-      "testimonial": "\"QuizMaster Pro has transformed how I create assessments. The intuitive interface and powerful features save me hours every week!\"",
+      "testimonial": "\"Oimergen has transformed how I create assessments. The intuitive interface and powerful features save me hours every week!\"",
       "authorName": "Sarah Johnson",
       "authorTitle": "High School Math Teacher"
+    },
+    "pvp": {
+      "title": "PvP Test",
+      "titlePlaceholder": "Enter PvP quiz title...",
+      "instructionsPlaceholder": "Add instructions for your PvP quiz (optional)...",
+      "downloadPDF": "Download PDF",
+      "saveQuiz": "Save Quiz",
+      "runQuiz": "▶ RUN",
+      "goHome": "Home",
+      "addQuestion": "Add Question",
+      "publishQuiz": "Publish PvP Quiz",
+      "publishSuccess": "Your PvP quiz has been published successfully!"
     },
     "footer": {
       "tagline": "Empowering educators with modern assessment tools",
@@ -424,7 +447,12 @@
       "documentation": "Documentation",
       "community": "Community",
       "status": "Status",
-      "copyright": "© 2024 QuizMaster Pro. All rights reserved.",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "help": "Help",
+      "about": "About",
+      "copyright": "© 2026 Oimergen. All rights reserved.",
+      "companyMessage": "Site was developed and shared by Company. Thank you for your usage and support!",
       "privacyPolicy": "Privacy Policy",
       "termsOfService": "Terms of Service",
       "cookiePolicy": "Cookie Policy"
@@ -440,6 +468,7 @@
         "editQuiz": "Edit Quiz",
         "deleteQuiz": "Delete Quiz",
         "runQuiz": "▶ Run Quiz",
+        "typingWarning": "!",
         "questionNumber": "Question {number}",
         "remove": "Remove"
       },
