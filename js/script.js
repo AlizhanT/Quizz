@@ -3071,7 +3071,7 @@ function copyMatchingPairs(sourceBlock, newBlock) {
 
 
 
-function runTest() {
+async function runTest() {
 
     console.log('runTest() called');
 
@@ -3137,25 +3137,19 @@ function runTest() {
 
         
 
-        // Save test data to storage for test runner (shared across tabs)
-
-        const testDataString = JSON.stringify(testData);
-
-        console.log('Single-player test data string length:', testDataString.length);
-
-        console.log('Single-player test data string preview:', testDataString.substring(0, 200) + '...');
-
-        if (!testDataString || testDataString === '{}' || testDataString === '{"title":"","instructions":"","questions":[],"quiz_type":"single"}') {
-
-            alert('Error: Test data is empty or invalid. Please add valid questions before running the test.');
-
+        // Save quiz to Supabase for test runner
+        const saveResult = await window.saveQuizForRun(testData);
+        
+        if (!saveResult.success) {
+            alert('Error saving quiz: ' + saveResult.error);
             return;
-
         }
-
-        localStorage.setItem('testData', testDataString);
-        sessionStorage.setItem('testData', testDataString);
-        const url = 'test-runner.html#' + encodeURIComponent(testDataString);
+        
+        const quizId = saveResult.quizId;
+        console.log('Quiz saved with ID:', quizId);
+        
+        // Open test runner with quiz ID
+        const url = 'test-runner.html?id=' + quizId;
         const newWindow = window.open(url, '_blank');
         if (!newWindow) {
             alert('Popup blocked! Please allow popups for this site and try again.');

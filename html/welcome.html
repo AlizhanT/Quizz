@@ -134,7 +134,7 @@
 <span class="text-xs font-bold">KK</span>
 <span class="material-symbols-outlined text-sm">expand_more</span>
 </button>
-<div class="absolute right-0 top-full mt-2 w-32 bg-white rounded-xl shadow-xl border border-outline-variant/20 py-2 hidden z-50 animate-in fade-in slide-in-from-top-1 duration-200">
+<div class="absolute right-0 top-full mt-0 w-32 bg-white rounded-xl shadow-xl border border-outline-variant/20 py-2 hidden z-50 animate-in fade-in slide-in-from-top-1 duration-200" id="languageDropdownMenu">
 <a class="flex items-center gap-3 px-4 py-2 hover:bg-primary/5 text-sm font-medium text-on-surface hover:text-primary transition-colors" href="#" onclick="changeLanguage('kk')">
 <span class="w-2 h-2 rounded-full bg-primary"></span>
       Қазақша
@@ -317,6 +317,9 @@
     <!-- Success Modal -->
     <div id="successModal" class="modal" style="display: none;">
         <div class="modal-content">
+            <div class="modal-logo">
+                <div class="modal-logo-text">Oimergen</div>
+            </div>
             <div class="modal-body">
                 <div class="modal-icon success">✓</div>
                 <h3 data-translate="modal.auth.success.title">Welcome to Oimergen!</h3>
@@ -331,17 +334,34 @@
     <!-- Login Modal -->
     <div id="loginModal" class="modal" style="display: none;">
         <div class="modal-content">
+            <div class="modal-logo">
+                <div class="modal-logo-text">Oimergen</div>
+            </div>
             <div class="modal-body">
                 <h3 data-translate="modal.auth.login.title">Welcome Back!</h3>
                 <p data-translate="modal.auth.login.description">Log in to your Oimergen account</p>
                 <form id="loginForm" class="auth-form">
                     <div class="form-group">
                         <label for="loginEmail" data-translate="modal.auth.login.email">Email Address</label>
-                        <input type="email" id="loginEmail" name="email" required>
+                        <div class="input-wrapper">
+                            <span class="input-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </span>
+                            <input type="email" id="loginEmail" name="email" required placeholder="Enter your email">
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="loginPassword" data-translate="modal.auth.login.password">Password</label>
-                        <input type="password" id="loginPassword" name="password" required>
+                        <div class="password-input-wrapper">
+                            <span class="input-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </span>
+                            <input type="password" id="loginPassword" name="password" required placeholder="Enter your password">
+                        </div>
                     </div>
                     <div class="forgot-password">
                         <a href="#" onclick="showForgotPasswordModal()" data-translate="modal.auth.login.forgotPassword">Forgot Password?</a>
@@ -349,8 +369,10 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn-secondary" onclick="closeModal('loginModal')">Cancel</button>
                 <button type="submit" form="loginForm" class="btn-primary" data-translate="modal.auth.login.submit">Log In</button>
+            </div>
+            <div class="auth-divider">
+                <span>или</span>
             </div>
             <div class="auth-switch">
                 <p data-translate="modal.auth.login.noAccount">Don't have an account? <a href="#" onclick="switchToSignup()">Sign Up</a></p>
@@ -361,38 +383,68 @@
     <!-- Signup Modal -->
     <div id="signupModal" class="modal" style="display: none;">
         <div class="modal-content">
+            <div class="modal-logo">
+                <div class="modal-logo-text">Oimergen</div>
+            </div>
             <div class="modal-body">
                 <h3 data-translate="modal.auth.signup.title">Join Oimergen!</h3>
                 <p data-translate="modal.auth.signup.description">Create your account and start creating amazing quizzes</p>
                 <form id="signupForm" class="auth-form">
                     <div class="form-group">
                         <label for="signupName" data-translate="modal.auth.signup.fullName">Full Name</label>
-                        <input type="text" id="signupName" name="name" required>
+                        <div class="input-wrapper">
+                            <span class="input-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </span>
+                            <input type="text" id="signupName" name="name" required placeholder="Enter your full name">
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="signupEmail" data-translate="modal.auth.signup.email">Email Address</label>
-                        <input type="email" id="signupEmail" name="email" required>
+                        <div class="input-wrapper">
+                            <span class="input-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </span>
+                            <input type="email" id="signupEmail" name="email" required placeholder="Enter your email">
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="signupPassword" data-translate="modal.auth.signup.password">Password</label>
                         <div class="password-input-wrapper">
-                            <input type="password" id="signupPassword" name="password" required maxlength="50">
+                            <span class="input-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </span>
+                            <input type="password" id="signupPassword" name="password" required maxlength="50" placeholder="Create a password">
                             <span class="char-counter" id="passwordCounter">0/6</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="signupConfirmPassword" data-translate="modal.auth.signup.confirmPassword">Confirm Password</label>
-                        <input type="password" id="signupConfirmPassword" name="confirmPassword" required>
+                        <div class="password-input-wrapper">
+                            <span class="input-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </span>
+                            <input type="password" id="signupConfirmPassword" name="confirmPassword" required placeholder="Confirm your password">
+                        </div>
                         <div class="password-indicator" id="confirmIndicator">
                             <span class="indicator-text" data-translate="modal.auth.signup.passwordMatch">Passwords must match</span>
-                            <span class="indicator-icon" id="passwordMatchIcon">✗</span>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn-secondary" onclick="closeModal('signupModal')">Cancel</button>
                 <button type="submit" form="signupForm" class="btn-primary" id="signupSubmitBtn" disabled data-translate="modal.auth.signup.submit">Sign Up</button>
+            </div>
+            <div class="auth-divider">
+                <span>или</span>
             </div>
             <div class="auth-switch">
                 <p data-translate="modal.auth.signup.hasAccount">Already have an account? <a href="#" onclick="switchToLogin()">Log In</a></p>
@@ -403,22 +455,31 @@
     <!-- Forgot Password Modal -->
     <div id="forgotPasswordModal" class="modal" style="display: none;">
         <div class="modal-content">
+            <div class="modal-logo">
+                <div class="modal-logo-text">Oimergen</div>
+            </div>
             <div class="modal-body">
                 <h3 data-translate="modal.auth.forgotPassword.title">Reset Your Password</h3>
                 <p data-translate="modal.auth.forgotPassword.description">Enter your email address and we'll send you a link to reset your password.</p>
                 <form id="forgotPasswordForm" class="auth-form">
                     <div class="form-group">
                         <label for="forgotPasswordEmail" data-translate="modal.auth.forgotPassword.email">Email Address</label>
-                        <input type="email" id="forgotPasswordEmail" name="email" required>
+                        <div class="input-wrapper">
+                            <span class="input-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </span>
+                            <input type="email" id="forgotPasswordEmail" name="email" required placeholder="Enter your email">
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn-secondary" onclick="closeModal('forgotPasswordModal')">Cancel</button>
                 <button type="submit" form="forgotPasswordForm" class="btn-primary" data-translate="modal.auth.forgotPassword.submit">Send Reset Link</button>
             </div>
             <div class="auth-switch">
-                <p data-translate="modal.auth.forgotPassword.backToLogin">Remember your password? <a href="#" onclick="closeModal('forgotPasswordModal'); showLoginModal()">Log In</a></p>
+                <button type="button" class="btn-secondary" onclick="closeModal('forgotPasswordModal'); showLoginModal()">Назад</button>
             </div>
         </div>
     </div>

@@ -233,7 +233,7 @@ function applyValidationErrors(errors) {
 
 // Initialize test runner
 document.addEventListener('DOMContentLoaded', async () => {
-    loadTestData();
+    await loadTestData();
     
     // Add keyboard navigation
     document.addEventListener('keydown', handleKeyboardNavigation, { passive: false });
@@ -242,57 +242,88 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.addEventListener('resize', debounceFitContent, { passive: true });
 });
 
-function loadTestData() {
+async function loadTestData() {
     console.log('loadTestData() called');
-    console.log('LocalStorage available:', typeof Storage !== 'undefined');
-    console.log('LocalStorage keys:', Object.keys(localStorage));
-
-    const hashData = window.location.hash.length > 1
-        ? decodeURIComponent(window.location.hash.substring(1))
-        : null;
-    const savedData = hashData || localStorage.getItem('testData') || sessionStorage.getItem('testData');
-    console.log('LocalStorage data found:', !!savedData);
-    console.log('LocalStorage data length:', savedData ? savedData.length : 0);
-    console.log('LocalStorage data type:', typeof savedData);
     
-    if (savedData) {
-        if (savedData.trim() === '{}' || savedData.trim() === '') {
-            console.error('LocalStorage contains empty test data');
-            localStorage.removeItem('testData');
-            sessionStorage.removeItem('testData');
-            setQuestionContainerMessage('Error: Invalid test data. Please go back and create a valid quiz with questions.');
-            return;
-        }
-
+    // Try to get quiz ID from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const quizId = urlParams.get('id');
+    
+    console.log('Quiz ID from URL:', quizId);
+    
+    if (quizId) {
+        // Load quiz from Supabase using ID
         try {
-            console.log('Attempting to parse localStorage data...');
-            testData = JSON.parse(savedData);
-            console.log('Parsed test data:', testData);
-            console.log('Test data questions count:', testData?.questions?.length);
-            console.log('Test data title:', testData?.title);
-            console.log('Test data structure:', Object.keys(testData || {}));
-
+            console.log('Loading quiz from Supabase with ID:', quizId);
+            testData = await window.loadQuizForRun(quizId);
+            console.log('Quiz loaded from Supabase:', testData);
+            
             if (!testData || typeof testData !== 'object') {
-                throw new Error('Parsed data is not a valid object');
+                throw new Error('Invalid quiz data received from Supabase');
             }
 
             if (!Array.isArray(testData.questions) || testData.questions.length === 0) {
-                throw new Error('No valid questions found in test data');
+                throw new Error('No valid questions found in quiz');
             }
             
             initializeTest();
-            localStorage.removeItem('testData'); // Clean up only after a successful render
-            sessionStorage.removeItem('testData');
         } catch (error) {
-            console.error('Error parsing test data:', error);
-            console.error('Raw localStorage data:', savedData);
-            setQuestionContainerMessage('Error loading test data: ' + error.message + '. Please go back and create a valid quiz.');
+            console.error('Error loading quiz from Supabase:', error);
+            setQuestionContainerMessage('Error loading quiz: ' + error.message + '. Please check the quiz ID and try again.');
         }
     } else {
-        // Fallback for direct access (shouldn't happen with our flow)
-        console.log('No test data found in localStorage');
-        console.log('Current localStorage contents:', localStorage);
-        setQuestionContainerMessage(safeTranslate('testRunner.noTestData', 'No test data found. Please go back and create a quiz first.'));
+        // Fallback to localStorage/sessionStorage for backward compatibility
+        console.log('No quiz ID in URL, checking localStorage/sessionStorage');
+        console.log('LocalStorage available:', typeof Storage !== 'undefined');
+        console.log('LocalStorage keys:', Object.keys(localStorage));
+
+        const hashData = window.location.hash.length > 1
+            ? decodeURIComponent(window.location.hash.substring(1))
+            : null;
+        const savedData = hashData || localStorage.getItem('testData') || sessionStorage.getItem('testData');
+        console.log('LocalStorage data found:', !!savedData);
+        console.log('LocalStorage data length:', savedData ? savedData.length : 0);
+        console.log('LocalStorage data type:', typeof savedData);
+        
+        if (savedData) {
+            if (savedData.trim() === '{}' || savedData.trim() === '') {
+                console.error('LocalStorage contains empty test data');
+                localStorage.removeItem('testData');
+                sessionStorage.removeItem('testData');
+                setQuestionContainerMessage('Error: Invalid test data. Please go back and create a valid quiz with questions.');
+                return;
+            }
+
+            try {
+                console.log('Attempting to parse localStorage data...');
+                testData = JSON.parse(savedData);
+                console.log('Parsed test data:', testData);
+                console.log('Test data questions count:', testData?.questions?.length);
+                console.log('Test data title:', testData?.title);
+                console.log('Test data structure:', Object.keys(testData || {}));
+
+                if (!testData || typeof testData !== 'object') {
+                    throw new Error('Parsed data is not a valid object');
+                }
+
+                if (!Array.isArray(testData.questions) || testData.questions.length === 0) {
+                    throw new Error('No valid questions found in test data');
+                }
+                
+                initializeTest();
+                localStorage.removeItem('testData'); // Clean up only after a successful render
+                sessionStorage.removeItem('testData');
+            } catch (error) {
+                console.error('Error parsing test data:', error);
+                console.error('Raw localStorage data:', savedData);
+                setQuestionContainerMessage('Error loading test data: ' + error.message + '. Please go back and create a valid quiz.');
+            }
+        } else {
+            // No quiz data found
+            console.log('No test data found in localStorage');
+            console.log('Current localStorage contents:', localStorage);
+            setQuestionContainerMessage(safeTranslate('testRunner.noTestData', 'No test data found. Please go back and create a quiz first.'));
+        }
     }
 }
 

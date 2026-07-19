@@ -720,6 +720,42 @@ window.addEventListener('scroll', function() {
     }
 });
 
+// Language dropdown toggle with delay
+let dropdownTimeout;
+const languageDropdown = document.querySelector('.language-dropdown');
+const dropdownButton = languageDropdown?.querySelector('button');
+const dropdownMenu = document.getElementById('languageDropdownMenu');
+
+if (languageDropdown && dropdownButton && dropdownMenu) {
+    // Show dropdown on button click
+    dropdownButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        clearTimeout(dropdownTimeout);
+        dropdownMenu.classList.remove('hidden');
+    });
+
+    // Keep dropdown open when hovering over it
+    languageDropdown.addEventListener('mouseenter', function() {
+        clearTimeout(dropdownTimeout);
+        dropdownMenu.classList.remove('hidden');
+    });
+
+    // Hide dropdown with delay when leaving
+    languageDropdown.addEventListener('mouseleave', function() {
+        dropdownTimeout = setTimeout(() => {
+            dropdownMenu.classList.add('hidden');
+        }, 300);
+    });
+
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!languageDropdown.contains(e.target)) {
+            clearTimeout(dropdownTimeout);
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+}
+
 // Language change function
 function changeLanguage(lang) {
     if (window.languageManager) {

@@ -1015,3 +1015,277 @@ window.closeForgotPasswordModal = closeForgotPasswordModal;
 window.uploadImageToSupabase = uploadImageToSupabase;
 window.deleteImageFromSupabase = deleteImageFromSupabase;
 window.processQuizImages = processQuizImages;
+
+// Quiz sharing functions for test runner (public access)
+async function saveQuizForRun(testData) {
+  try {
+    console.log('saveQuizForRun() called with test data:', testData);
+    
+    // Validate the data
+    if (!testData || typeof testData !== 'object') {
+      throw new Error('Invalid test data: must be an object');
+    }
+    
+    if (!testData.questions || !Array.isArray(testData.questions) || testData.questions.length === 0) {
+      throw new Error('Invalid test data: must have at least one question');
+    }
+    
+    // Process images to upload data URLs to Supabase Storage (without user_id for public quizzes)
+    const processedQuizData = await processQuizImagesForPublic(testData);
+
+    const quizToSave = {
+      title: processedQuizData.title || 'Untitled Quiz',
+      instructions: processedQuizData.instructions || '',
+      quiz_data: {
+        title: processedQuizData.title || 'Untitled Quiz',
+        instructions: processedQuizData.instructions || '',
+        questions: processedQuizData.questions,
+        quiz_type: processedQuizData.quiz_type || 'single'
+      },
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    
+    console.log('Quiz to save for run:', quizToSave);
+    
+    // Insert into public_quizzes table
+    const { data, error } = await supabaseClient
+      .from('public_quizzes')
+      .insert(quizToSave)
+      .select()
+      .single();
+      
+    if (error) throw error;
+    
+    console.log('Quiz saved for run successfully:', data);
+    return { success: true, quizId: data.id, data };
+  } catch (error) {
+    console.error('Error saving quiz for run:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+async function loadQuizForRun(quizId) {
+  try {
+    console.log('loadQuizForRun() called with ID:', quizId);
+    
+    if (!quizId) {
+      throw new Error('Quiz ID is required');
+    }
+    
+    // Load from public_quizzes table (no authentication required)
+    const { data, error } = await supabaseClient
+      .from('public_quizzes')
+      .select('*')
+      .eq('id', quizId)
+      .single();
+      
+    if (error) {
+      console.error('Database error in loadQuizForRun:', error);
+      throw error;
+    }
+    
+    if (!data) {
+      throw new Error('Quiz not found');
+    }
+    
+    console.log('Raw quiz data from database:', data);
+    
+    // Extract the quiz_data field
+    let quizData = data.quiz_data;
+    
+    // Handle quiz_data - Supabase might return it as string or object
+    if (quizData && typeof quizData === 'string') {
+      try {
+        quizData = JSON.parse(quizData);
+        console.log('Parsed quiz_data from JSON string:', quizData);
+      } catch (parseError) {
+        console.error('Error parsing quiz_data JSON:', parseError);
+        throw new Error('Invalid quiz data format');
+      }
+    }
+    
+    if (!quizData) {
+      throw new Error('Quiz data is empty');
+    }
+    
+    console.log('Final quiz data to return:', quizData);
+    return quizData;
+  } catch (error) {
+    console.error('Error in loadQuizForRun:', error);
+    throw error;
+  }
+}
+
+// Process quiz images for public quizzes (without user authentication)
+async function processQuizImagesForPublic(quizData) {
+  try {
+    const processedQuiz = JSON.parse(JSON.stringify(quizData)); // Deep copy
+    
+    // Process question images
+    for (const question of processedQuiz.questions) {
+      if (question.images && question.images.length > 0) {
+        const processedImages = [];
+        for (const imageData of question.images) {
+          if (imageData.src && imageData.src.startsWith('data:')) {
+            // Convert data URL to blob and upload
+            const response = await fetch(imageData.src);
+            const blob = await response.blob();
+            const file = new File([blob], imageData.name || 'image', { type: blob.type });
+            
+            // Upload to public storage
+            const uploadResult = await uploadImageToSupabasePublic(file, processedQuiz.id);
+            if (uploadResult.success) {
+              processedImages.push({
+                src: uploadResult.url,
+                path: uploadResult.path,
+                name: imageData.name || 'image'
+              });
+            } else {
+              console.error('Failed to upload question image:', uploadResult.error);
+              // Keep original data URL as fallback
+              processedImages.push(imageData);
+            }
+          } else {
+            // Already a URL, keep as is
+            processedImages.push(imageData);
+          }
+        }
+        question.images = processedImages;
+      }
+
+      // Process option images for multiple choice
+      if (question.options && Array.isArray(question.options)) {
+        for (const option of question.options) {
+          if (option.images && option.images.length > 0) {
+            const processedImages = [];
+            for (const imageData of option.images) {
+              if (imageData.src && imageData.src.startsWith('data:')) {
+                const response = await fetch(imageData.src);
+                const blob = await response.blob();
+                const file = new File([blob], imageData.name || 'image', { type: blob.type });
+                
+                const uploadResult = await uploadImageToSupabasePublic(file, processedQuiz.id);
+                if (uploadResult.success) {
+                  processedImages.push({
+                    src: uploadResult.url,
+                    path: uploadResult.path,
+                    name: imageData.name || 'image'
+                  });
+                } else {
+                  console.error('Failed to upload option image:', uploadResult.error);
+                  processedImages.push(imageData);
+                }
+              } else {
+                processedImages.push(imageData);
+              }
+            }
+            option.images = processedImages;
+          }
+        }
+      }
+
+      // Process matching pair images
+      if (question.pairs && Array.isArray(question.pairs)) {
+        for (const pair of question.pairs) {
+          // Process left images
+          if (pair.leftImages && pair.leftImages.length > 0) {
+            const processedImages = [];
+            for (const imageData of pair.leftImages) {
+              if (imageData.src && imageData.src.startsWith('data:')) {
+                const response = await fetch(imageData.src);
+                const blob = await response.blob();
+                const file = new File([blob], imageData.name || 'image', { type: blob.type });
+                
+                const uploadResult = await uploadImageToSupabasePublic(file, processedQuiz.id);
+                if (uploadResult.success) {
+                  processedImages.push({
+                    src: uploadResult.url,
+                    path: uploadResult.path,
+                    name: imageData.name || 'image'
+                  });
+                } else {
+                  console.error('Failed to upload left image:', uploadResult.error);
+                  processedImages.push(imageData);
+                }
+              } else {
+                processedImages.push(imageData);
+              }
+            }
+            pair.leftImages = processedImages;
+          }
+
+          // Process right images
+          if (pair.rightImages && pair.rightImages.length > 0) {
+            const processedImages = [];
+            for (const imageData of pair.rightImages) {
+              if (imageData.src && imageData.src.startsWith('data:')) {
+                const response = await fetch(imageData.src);
+                const blob = await response.blob();
+                const file = new File([blob], imageData.name || 'image', { type: blob.type });
+                
+                const uploadResult = await uploadImageToSupabasePublic(file, processedQuiz.id);
+                if (uploadResult.success) {
+                  processedImages.push({
+                    src: uploadResult.url,
+                    path: uploadResult.path,
+                    name: imageData.name || 'image'
+                  });
+                } else {
+                  console.error('Failed to upload right image:', uploadResult.error);
+                  processedImages.push(imageData);
+                }
+              } else {
+                processedImages.push(imageData);
+              }
+            }
+            pair.rightImages = processedImages;
+          }
+        }
+      }
+    }
+
+    return processedQuiz;
+  } catch (error) {
+    console.error('Error processing quiz images for public:', error);
+    return quizData; // Return original data if processing fails
+  }
+}
+
+// Upload image to Supabase Storage for public access (without user folder structure)
+async function uploadImageToSupabasePublic(file, quizId = null) {
+  try {
+    // Generate unique file name without user folder
+    const fileExt = file.name.split('.').pop();
+    const fileName = `public/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+    
+    // Upload to Supabase Storage
+    const { data, error } = await supabaseClient.storage
+      .from('quiz-images')
+      .upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (error) throw error;
+
+    // Get public URL
+    const { data: { publicUrl } } = supabaseClient.storage
+      .from('quiz-images')
+      .getPublicUrl(fileName);
+
+    return {
+      success: true,
+      path: fileName,
+      url: publicUrl,
+      name: file.name
+    };
+  } catch (error) {
+    console.error('Error uploading image to public storage:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Export new functions for global access
+window.saveQuizForRun = saveQuizForRun;
+window.loadQuizForRun = loadQuizForRun;

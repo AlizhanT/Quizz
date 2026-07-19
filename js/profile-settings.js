@@ -470,6 +470,10 @@ function goToSavedQuizzes() {
     window.location.href = 'saved-quizzes.html';
 }
 
+function goToAbout() {
+    window.location.href = 'about-us.html';
+}
+
 function goToMainApp() {
     window.location.href = 'saved-quizzes.html';
 }

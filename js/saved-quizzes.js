@@ -76,7 +76,7 @@ function renderQuizzes(quizzesToRender = quizzes) {
     currentFilteredQuizzes = quizzesToRender;
 
     if (quizzes.length === 0) {
-        emptyState.style.display = 'block';
+        emptyState.style.display = 'flex';
         noResults.style.display = 'none';
         return;
     }
@@ -233,19 +233,25 @@ async function runQuiz(index) {
     const quiz = currentFilteredQuizzes[index];
     const quizType = quiz.quiz_type || 'single'; // Default to single if not specified
     
-    // Store quiz data in localStorage for test runner (shared across tabs)
-    // Use different keys for different quiz types
-    if (quizType === 'pvp') {
+    // Use the new Supabase-based system for single-player quizzes
+    if (quizType === 'single') {
+        // Save quiz to public_quizzes table for sharing
+        const saveResult = await window.saveQuizForRun(quiz);
+        
+        if (!saveResult.success) {
+            showNotification('Error saving quiz: ' + saveResult.error, 'error');
+            return;
+        }
+        
+        const quizId = saveResult.quizId;
+        console.log('Quiz saved with ID:', quizId);
+        
+        // Open test runner with quiz ID
+        window.open('test-runner.html?id=' + quizId, '_blank');
+    } else {
+        // For PvP quizzes, keep using the old localStorage system for now
         localStorage.setItem('pvpTestData', JSON.stringify(quiz));
-    } else {
-        localStorage.setItem('testData', JSON.stringify(quiz));
-    }
-    
-    // Navigate to the appropriate runner based on quiz type
-    if (quizType === 'pvp') {
         window.open('pvp-runner.html', '_blank');
-    } else {
-        window.open('test-runner.html', '_blank');
     }
 }
 

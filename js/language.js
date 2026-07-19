@@ -237,6 +237,7 @@ window.t = (key, params) => window.languageManager.t(key, params);
 // При загрузке страницы
 document.addEventListener('DOMContentLoaded', async () => {
     const lang = localStorage.getItem('selectedLanguage') || 'kk';
+    languageManager.currentLanguage = lang; // Установить язык перед загрузкой
     await languageManager.loadLanguage(); // Ждем загрузки языка
     
     // При выборе языка пользователем
