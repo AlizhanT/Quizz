@@ -538,54 +538,51 @@ function goToMainApp() {
 
 // Show notification
 function showNotification(message, type = 'info') {
-    // Create notification element
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
     
-    // Style the notification
+    // Определяем цвет фона в зависимости от типа (ошибка - оранжевый, остальное - синий)
+    const bgColor = (type === 'error') ? '#FF5722' : '#2196F3';
+    // Добавляем простую иконку для красоты
+    const icon = (type === 'error') ? '⚠️' : '✓';
+
+    notification.innerHTML = `<span style="margin-right: 12px; font-size: 16px;">${icon}</span> <span>${message}</span>`;
+    
+    // Современные стили для блока
     notification.style.cssText = `
         position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        border-radius: 10px;
-        color: white;
-        font-weight: 600;
-        z-index: 3000;
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
-        max-width: 300px;
-        border: 2px solid black;
+        top: 30px;
+        right: 30px;
+        background-color: ${bgColor};
+        color: #ffffff;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        z-index: 9999;
+        /* Настройки анимации */
+        opacity: 0;
+        transform: translateX(100px);
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     `;
-    
-    // Set background color based on type
-    switch(type) {
-        case 'error':
-            notification.style.background = 'black';
-            break;
-        case 'success':
-            notification.style.background = 'black';
-            break;
-        default:
-            notification.style.background = 'black';
-    }
-    
-    // Add to DOM
+
     document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => {
+
+    // Запускаем анимацию появления (нужен небольшой таймаут для срабатывания transition)
+    requestAnimationFrame(() => {
+        notification.style.opacity = '1';
         notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Remove after 3 seconds
+    });
+
+    // Прячем и удаляем через 3.5 секунды
     setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 300);
-    }, 3000);
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(100px)';
+        setTimeout(() => notification.remove(), 400); // ждем окончания анимации
+    }, 3500);
 }
 
 // Close modal when clicking outside

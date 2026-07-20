@@ -33,7 +33,11 @@
       "run": "▶ RUN",
       "main": "Main",
       "language": "Language",
-      "about": "About"
+      "about": "About",
+      "teacherDashboard": "Teacher Dashboard",
+      "all": "All",
+      "single": "Single",
+      "pvp": "PvP"
     },
     "nav": {
       "teachers": "Teachers",
@@ -174,7 +178,7 @@
       "noResultsDesc": "Try adjusting your search criteria",
       "search": "Search",
       "searchPlaceholder": "Search quizzes...",
-      "clearSearch": "✖",
+      "clearSearch": "Clear search",
       "filter": "Filter",
       "sortBy": "Sort by",
       "newest": "Newest",
@@ -207,6 +211,13 @@
       "resetPassword": "Reset Password - Oimergen"
     },
     "modal": {
+      "quizMode": {
+        "title": "Select Quiz Mode",
+        "message": "Choose the mode for your new quiz",
+        "singlePlayer": "Single Player",
+        "pvp": "PvP (Player vs Player)",
+        "cancel": "Cancel"
+      },
       "notification": "Notification",
       "messagePlaceholder": "Message goes here",
       "delete": {
@@ -339,6 +350,17 @@
       "next": "Next"
     },
     "profile": {
+      "settingsTitle": "Profile Settings",
+      "settingsSubtitle": "Manage your profile, security, and preferences for Oimergen.",
+      "userProfile": "User Profile",
+      "security": "Security and Password",
+      "dangerZone": "Danger Zone",
+      "dangerZoneWarning": "Irreversible actions",
+      "deleteAccountWarning": "Permanently delete your account and all data",
+      "helpNeeded": "Need help with settings or have questions?",
+      "support": "Support",
+      "documentation": "Documentation",
+      "cancel": "Cancel",
       "backToEditor": "Back to Editor",
       "changeDisplayName": {
         "title": "Change Display Name",
@@ -419,6 +441,23 @@
       "authorName": "Sarah Johnson",
       "authorTitle": "High School Math Teacher"
     },
+    "aboutUs": "About Us",
+    "aboutPage": {
+      "title": "About Us",
+      "intro": "Oimergen is a Kazakhstani platform for creating modern interactive assignments and tests.",
+      "missionTitle": "Our Mission",
+      "mission": "We create a simple tool that helps teachers prepare lesson materials faster, and students learn with greater interest. Instead of complex editors and monotonous assignments, we want to offer a convenient service where creating a quality test takes just a few minutes.",
+      "goalTitle": "Our Goal",
+      "goal": "Our goal is to make digital education more accessible and convenient for every school, college, and university in Kazakhstan.",
+      "communityTitle": "Our Community",
+      "community": "We are just starting our journey and actively developing the platform. Therefore, ideas, feedback, and suggestions from users are especially important to us — they help make Oimergen better with every update.",
+      "valuesTitle": "What we believe in:",
+      "simplicity": "Simplicity is more important than complexity.",
+      "engagement": "Learning should be interesting.",
+      "efficiency": "Good tools save teacher time.",
+      "technology": "Technology should help learning, not complicate the process.",
+      "closing": "Thank you for becoming part of Oimergen. Together we are creating more modern education."
+    },
     "pvp": {
       "title": "PvP Test",
       "titlePlaceholder": "Enter PvP quiz title...",
@@ -488,6 +527,7 @@
         "failedToDeleteAccount": "Failed to delete account. Please try again."
       },
       "savedQuizzes": {
+        "description": "Manage and organize your quiz collection.",
         "noResultsFound": "No Results Found",
         "tryAdjustingSearch": "Try adjusting your search criteria",
         "clearSearch": "Clear",

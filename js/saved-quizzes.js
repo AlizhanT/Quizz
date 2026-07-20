@@ -185,8 +185,68 @@ function searchQuizzes() {
     renderQuizzes(filteredQuizzes);
 }
 
+// Toggle About Us section
+function toggleAboutUs() {
+    const aboutSection = document.getElementById('aboutSection');
+    const quizzesGrid = document.getElementById('quizzesGrid');
+    const emptyState = document.getElementById('emptyState');
+    const noResults = document.getElementById('noResults');
+    const pageTitle = document.querySelector('h1[data-translate="savedQuizzes"]');
+    const aboutButton = document.querySelector('a[onclick="toggleAboutUs()"]');
+    const headerSection = document.querySelector('.mb-10.flex.items-end.justify-between');
+    
+    // Hide quiz-related elements
+    quizzesGrid.style.display = 'none';
+    emptyState.style.display = 'none';
+    noResults.style.display = 'none';
+    if (headerSection) {
+        headerSection.style.display = 'none';
+    }
+    
+    // Show About Us section
+    aboutSection.classList.remove('hidden');
+    
+    // Update page title
+    if (pageTitle) {
+        pageTitle.textContent = 'About Us';
+    }
+    
+    // Add active state to About button
+    if (aboutButton) {
+        aboutButton.classList.add('bg-primary/10', 'text-primary');
+    }
+    
+    // Remove active state from filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+}
+
 // Filter quizzes by type
 function filterQuizzes(filterType) {
+    // Hide About Us section and show quiz elements
+    const aboutSection = document.getElementById('aboutSection');
+    const quizzesGrid = document.getElementById('quizzesGrid');
+    const pageTitle = document.querySelector('h1[data-translate="savedQuizzes"]');
+    const aboutButton = document.querySelector('a[onclick="toggleAboutUs()"]');
+    const headerSection = document.querySelector('.mb-10.flex.items-end.justify-between');
+    
+    aboutSection.classList.add('hidden');
+    quizzesGrid.style.display = 'grid';
+    if (headerSection) {
+        headerSection.style.display = 'flex';
+    }
+    
+    // Restore page title
+    if (pageTitle) {
+        pageTitle.textContent = 'Saved Quizzes';
+    }
+    
+    // Remove active state from About button
+    if (aboutButton) {
+        aboutButton.classList.remove('bg-primary/10', 'text-primary');
+    }
+    
     // Update active button state
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.classList.remove('active');

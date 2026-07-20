@@ -99,6 +99,8 @@
         }
     </style>
     
+    <link rel="stylesheet" href="../css/welcome.css">
+    
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -106,22 +108,22 @@
 <!-- SideNavBar -->
 <aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-lowest border-r border-outline-variant/30 flex flex-col p-6 z-50" id="sideNavbar">
 <div class="mb-10">
-<div class="text-2xl font-extrabold text-indigo-600 tracking-tighter">QuizMaster Pro</div>
-<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-60">Teacher Dashboard</p>
+<div class="modal-logo-text">Oimergen</div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-60" data-translate="navigation.teacherDashboard">Teacher Dashboard</p>
 </div>
 <nav class="flex-1 space-y-1">
 <div class="flex flex-col gap-1 px-2">
 <button class="px-4 py-2 rounded-lg font-headline font-bold text-sm transition-all filter-btn active text-left" data-filter="all" onclick="filterQuizzes('all')">
 <span class="material-symbols-outlined text-sm align-middle mr-2">apps</span>
-All
+<span data-translate="navigation.all">All</span>
 </button>
 <button class="px-4 py-2 rounded-lg font-headline font-bold text-sm transition-all filter-btn text-left" data-filter="single" onclick="filterQuizzes('single')">
 <span class="material-symbols-outlined text-sm align-middle mr-2">person</span>
-Single
+<span data-translate="navigation.single">Single</span>
 </button>
 <button class="px-4 py-2 rounded-lg font-headline font-bold text-sm transition-all filter-btn text-left" data-filter="pvp" onclick="filterQuizzes('pvp')">
 <span class="material-symbols-outlined text-sm align-middle mr-2">groups</span>
-PvP
+<span data-translate="navigation.pvp">PvP</span>
 </button>
 </div>
 </nav>
@@ -134,7 +136,7 @@ PvP
 <div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs" id="userAvatar">U</div>
 <span class="text-sm font-bold text-on-surface" id="userName">Loading...</span>
 </div>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-all font-headline font-bold rounded-xl" href="#" onclick="goToAbout()">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-all font-headline font-bold rounded-xl" href="#" onclick="toggleAboutUs()">
 <span class="material-symbols-outlined">info</span>
 <span data-translate="navigation.about">About</span>
 </a>
@@ -150,7 +152,7 @@ PvP
 <div class="relative group">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
 <input class="w-full pl-12 pr-12 py-2 bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-primary/20 text-sm font-medium transition-all" id="searchInput" data-translate-placeholder="quiz.searchPlaceholder" placeholder="Search saved quizzes..." type="text" onkeyup="searchQuizzes()"/>
-<button class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-surface-container text-on-surface-variant hover:bg-error/10 hover:text-error transition-colors flex items-center justify-center opacity-0 group-focus-within:opacity-100 transition-opacity" onclick="clearSearch()" title="Clear search">
+<button class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-surface-container text-on-surface-variant hover:bg-error/10 hover:text-error transition-colors flex items-center justify-center opacity-0 group-focus-within:opacity-100 transition-opacity" onclick="clearSearch()" data-translate-title="quiz.clearSearch" title="Clear search">
 <span class="material-symbols-outlined text-lg">close</span>
 </button>
 </div>
@@ -162,7 +164,7 @@ PvP
 <div class="mb-10 flex items-end justify-between">
 <div>
 <h1 class="text-4xl font-extrabold text-on-surface tracking-tight mb-2" data-translate="savedQuizzes">Saved Quizzes</h1>
-<p class="text-on-surface-variant text-lg">Manage and organize your quiz collection.</p>
+<p class="text-on-surface-variant text-lg" data-translate="savedQuizzes.description">Manage and organize your quiz collection.</p>
 </div>
 <div class="text-right">
 <button class="bg-primary text-on-primary px-6 py-3 rounded-xl font-headline font-bold hover:bg-primary-container transition-all shadow-md shadow-primary/10 flex items-center gap-2" onclick="showQuizModeModal()">
@@ -190,12 +192,84 @@ PvP
 </div>
 
 <!-- No Results State -->
-<div class="flex flex-col items-center justify-center py-20" id="noResults" style="display: none;">
-<div class="w-20 h-20 rounded-2xl bg-surface-container flex items-center justify-center text-primary mb-6">
-<span class="material-symbols-outlined text-4xl">search_off</span>
+<div class="flex flex-col items-center justify-center py-20 w-full" id="noResults" style="display: none;">
+  <div class="w-20 h-20 rounded-2xl bg-surface-container flex items-center justify-center text-primary mb-6 mx-auto">
+    <span class="material-symbols-outlined text-4xl">search_off</span>
+  </div>
+  <h2 class="text-2xl font-extrabold text-on-surface mb-2 text-center" data-translate="quiz.noResults">No Results Found</h2>
+  <p class="text-on-surface-variant text-center max-w-md mx-auto" data-translate="quiz.noResultsDesc">Try adjusting your search terms or browse through your complete quiz collection.</p>
 </div>
-<h2 class="text-2xl font-extrabold text-on-surface mb-2" data-translate="quiz.noResults">No Results Found</h2>
-<p class="text-on-surface-variant text-center max-w-md" data-translate="quiz.noResultsDesc">Try adjusting your search terms or browse through your complete quiz collection.</p>
+
+<!-- About Us Section -->
+<div class="hidden" id="aboutSection">
+  <div class="mb-10">
+    <h1 class="text-4xl font-extrabold text-on-surface tracking-tight mb-2" data-translate="aboutPage.title">About Us</h1>
+  </div>
+  
+  <div class="max-w-4xl">
+    <!-- Introduction -->
+    <div class="bg-surface-container-lowest rounded-2xl p-8 mb-8 border border-outline-variant/20 shadow-sm">
+      <p class="text-lg text-on-surface leading-relaxed" data-translate="aboutPage.intro">Oimergen is a Kazakhstani platform for creating modern interactive assignments and tests.</p>
+    </div>
+
+    <!-- Mission -->
+    <div class="bg-gradient-to-br from-primary/5 to-tertiary/5 rounded-2xl p-8 mb-8 border border-primary/20">
+      <h2 class="text-2xl font-bold text-on-surface mb-4 flex items-center gap-3">
+        <span class="material-symbols-outlined text-primary text-3xl">rocket_launch</span>
+        <span data-translate="aboutPage.missionTitle">Our Mission</span>
+      </h2>
+      <p class="text-on-surface-variant leading-relaxed" data-translate="aboutPage.mission">We create a simple tool that helps teachers prepare lesson materials faster, and students learn with greater interest.</p>
+    </div>
+
+    <!-- Goal -->
+    <div class="bg-surface-container-lowest rounded-2xl p-8 mb-8 border border-outline-variant/20 shadow-sm">
+      <h2 class="text-2xl font-bold text-on-surface mb-4 flex items-center gap-3">
+        <span class="material-symbols-outlined text-tertiary text-3xl">flag</span>
+        <span data-translate="aboutPage.goalTitle">Our Goal</span>
+      </h2>
+      <p class="text-on-surface-variant leading-relaxed" data-translate="aboutPage.goal">Our goal is to make digital education more accessible and convenient for every school, college, and university in Kazakhstan.</p>
+    </div>
+
+    <!-- Community -->
+    <div class="bg-surface-container-lowest rounded-2xl p-8 mb-8 border border-outline-variant/20 shadow-sm">
+      <h2 class="text-2xl font-bold text-on-surface mb-4 flex items-center gap-3">
+        <span class="material-symbols-outlined text-secondary text-3xl">groups</span>
+        <span data-translate="aboutPage.communityTitle">Our Community</span>
+      </h2>
+      <p class="text-on-surface-variant leading-relaxed" data-translate="aboutPage.community">We are just starting our journey and actively developing the platform. Therefore, ideas, feedback, and suggestions from users are especially important to us.</p>
+    </div>
+
+    <!-- Values -->
+    <div class="bg-gradient-to-br from-secondary/5 to-primary/5 rounded-2xl p-8 mb-8 border border-secondary/20">
+      <h2 class="text-2xl font-bold text-on-surface mb-6 flex items-center gap-3">
+        <span class="material-symbols-outlined text-secondary text-3xl">favorite</span>
+        <span data-translate="aboutPage.valuesTitle">What we believe in:</span>
+      </h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-secondary text-xl mt-1">check_circle</span>
+          <p class="text-on-surface-variant" data-translate="aboutPage.simplicity">Simplicity is more important than complexity.</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-secondary text-xl mt-1">check_circle</span>
+          <p class="text-on-surface-variant" data-translate="aboutPage.engagement">Learning should be interesting.</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-secondary text-xl mt-1">check_circle</span>
+          <p class="text-on-surface-variant" data-translate="aboutPage.efficiency">Good tools save teacher time.</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-secondary text-xl mt-1">check_circle</span>
+          <p class="text-on-surface-variant" data-translate="aboutPage.technology">Technology should help learning, not complicate the process.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Closing -->
+    <div class="text-center bg-primary/10 rounded-2xl p-8 border border-primary/30">
+      <p class="text-xl font-bold text-primary" data-translate="aboutPage.closing">Thank you for becoming part of Oimergen. Together we are creating more modern education.</p>
+    </div>
+  </div>
 </div>
 </main>
 
