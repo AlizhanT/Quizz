@@ -743,23 +743,8 @@ function closeEmailVerificationModal() {
 // Password reset functions
 async function resetPassword(email) {
   try {
-    // First check if user exists
-    const { data: { users }, error: signInError } = await supabaseClient.auth.signInWithPassword({
-      email: email,
-      password: 'dummy-password-to-check-user-existence'
-    });
-    
-    // If we get "Invalid login credentials", the user exists but password is wrong
-    // If we get other errors, the user might not exist
-    if (signInError && !signInError.message.includes('Invalid login credentials')) {
-      // User likely doesn't exist
-      return { 
-        success: false, 
-        error: 'This email is not registered. Please sign up first.' 
-      };
-    }
-    
-    // User exists, proceed with password reset
+    // Send password reset email directly
+    // Supabase handles non-existent emails gracefully for security
     const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/html/reset-password.html`,
     });

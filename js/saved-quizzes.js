@@ -54,7 +54,7 @@ async function loadQuizzes() {
         console.error('Error loading saved quizzes:', error);
         quizzes = [];
         // Show error notification
-        showNotification('Error loading quizzes. Please try again.', 'error');
+        showNotification(t('js.savedQuizzes.errorLoading'), 'error');
     }
 }
 
@@ -99,7 +99,7 @@ function renderQuizzes(quizzesToRender = quizzes) {
 // Create a quiz card element
 function createQuizCard(quiz, index) {
     const card = document.createElement('div');
-    card.className = 'group bg-surface-container-lowest rounded-[2rem] overflow-hidden border border-outline-variant/20 hover:shadow-xl transition-all';
+    card.className = 'group bg-surface-container-lowest rounded-[2rem] border border-outline-variant/20 hover:shadow-xl transition-all';
     
     let createdDate = t('js.common.unknownDate');
     // Use updated_at if available (shows last edit date), otherwise use created_at
@@ -137,7 +137,7 @@ function createQuizCard(quiz, index) {
     const randomGradient = gradients[index % gradients.length];
     
     card.innerHTML = `
-        <div class="h-44 overflow-hidden relative" style="background: ${randomGradient};">
+        <div class="h-44 relative rounded-t-[2rem] overflow-hidden" style="background: ${randomGradient};">
             <div class="absolute inset-0 flex items-center justify-center">
                 <div class="text-center">
                     <span class="material-symbols-outlined text-6xl text-white/80">quiz</span>
@@ -149,29 +149,66 @@ function createQuizCard(quiz, index) {
                 ${typeLabel}
             </div>
         </div>
-        <div class="p-6">
+        <div class="p-6 relative rounded-b-[2rem]">
+            <div class="absolute top-6 right-6">
+                <div class="relative">
+                    <button class="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors" onclick="toggleQuizMenu(event, ${index})" title="More options">
+                        <span class="material-symbols-outlined text-lg">more_vert</span>
+                    </button>
+                    <div id="quizMenu-${index}" class="absolute right-0 top-full mt-2 w-48 bg-surface-container rounded-xl shadow-lg border border-outline-variant/20 hidden z-50">
+                        <button class="w-full px-4 py-3 text-left text-sm text-on-surface hover:bg-primary/10 hover:text-primary transition-colors flex items-center gap-3" onclick="editQuiz(${index})">
+                            <span class="material-symbols-outlined text-lg">edit</span>
+                            ${t('js.common.editQuiz')}
+                        </button>
+                        <button class="w-full px-4 py-3 text-left text-sm text-on-surface hover:bg-primary/10 hover:text-primary transition-colors flex items-center gap-3" onclick="duplicateQuiz(${index})">
+                            <span class="material-symbols-outlined text-lg">content_copy</span>
+                            ${t('quiz.duplicate')}
+                        </button>
+                        <button class="w-full px-4 py-3 text-left text-sm text-on-surface hover:bg-primary/10 hover:text-primary transition-colors flex items-center gap-3" onclick="shareQuiz(${index})">
+                            <span class="material-symbols-outlined text-lg">link</span>
+                            ${t('js.common.shareQuiz')}
+                        </button>
+                        <button class="w-full px-4 py-3 text-left text-sm text-error hover:bg-error/10 transition-colors flex items-center gap-3" onclick="deleteQuiz(${index})">
+                            <span class="material-symbols-outlined text-lg">delete</span>
+                            ${t('js.common.deleteQuiz')}
+                        </button>
+                    </div>
+                </div>
+            </div>
             <h3 class="text-xl font-extrabold text-on-surface mb-2 group-hover:text-primary transition-colors">${escapeHtml(quiz.title)}</h3>
             <p class="text-sm text-on-surface-variant mb-6">${createdDate}</p>
             ${quiz.instructions ? `<p class="text-sm text-on-surface-variant mb-6 line-clamp-2">${escapeHtml(quiz.instructions.substring(0, 100))}${quiz.instructions.length > 100 ? '...' : ''}</p>` : ''}
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors" title="${t('js.common.editQuiz')}" onclick="editQuiz(${index})">
-                        <span class="material-symbols-outlined text-xl">edit</span>
-                    </button>
-                    <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors" title="${t('quiz.duplicate')}" onclick="duplicateQuiz(${index})">
-                        <span class="material-symbols-outlined text-xl">content_copy</span>
-                    </button>
-                    <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container text-on-surface-variant hover:bg-error/10 hover:text-error transition-colors" title="${t('js.common.deleteQuiz')}" onclick="deleteQuiz(${index})">
-                        <span class="material-symbols-outlined text-xl">delete</span>
-                    </button>
-                </div>
-                <button class="bg-primary text-on-primary px-6 py-2.5 rounded-xl font-headline font-bold text-sm hover:bg-primary-container transition-all shadow-md shadow-primary/10" onclick="runQuiz(${index})">${t('js.common.runQuiz')}</button>
-            </div>
+            <button class="w-full bg-primary text-on-primary px-6 py-2.5 rounded-xl font-headline font-bold text-sm hover:bg-primary-container transition-all shadow-md shadow-primary/10" onclick="runQuiz(${index})">${t('js.common.runQuiz')}</button>
         </div>
     `;
     
     return card;
 }
+
+// Toggle quiz menu dropdown
+function toggleQuizMenu(event, index) {
+    event.stopPropagation();
+    const menu = document.getElementById(`quizMenu-${index}`);
+    const allMenus = document.querySelectorAll('[id^="quizMenu-"]');
+    
+    // Close all other menus
+    allMenus.forEach(m => {
+        if (m.id !== `quizMenu-${index}`) {
+            m.classList.add('hidden');
+        }
+    });
+    
+    // Toggle current menu
+    menu.classList.toggle('hidden');
+}
+
+// Close all quiz menus when clicking outside
+document.addEventListener('click', () => {
+    const allMenus = document.querySelectorAll('[id^="quizMenu-"]');
+    allMenus.forEach(menu => {
+        menu.classList.add('hidden');
+    });
+});
 
 // Search quizzes
 function searchQuizzes() {
@@ -299,7 +336,7 @@ async function runQuiz(index) {
         const saveResult = await window.saveQuizForRun(quiz);
         
         if (!saveResult.success) {
-            showNotification('Error saving quiz: ' + saveResult.error, 'error');
+            showNotification(t('js.savedQuizzes.errorSaving') + ': ' + saveResult.error, 'error');
             return;
         }
         
@@ -324,7 +361,7 @@ async function deleteQuiz(index) {
     const deleteModal = document.getElementById('deleteModal');
     if (!deleteModal) {
         console.error('deleteModal not found in DOM');
-        showNotification('Error: Delete modal not found', 'error');
+        showNotification(t('js.savedQuizzes.errorDeleteModal'), 'error');
         return;
     }
     
@@ -344,7 +381,7 @@ async function deleteQuiz(index) {
             deleteQuizNameElement.textContent = quiz.title;
         } else {
             console.error('Could not create or find deleteQuizName element');
-            showNotification('Error: Cannot update quiz name', 'error');
+            showNotification(t('js.savedQuizzes.errorUpdateQuizName'), 'error');
             return;
         }
     } else {
@@ -354,7 +391,7 @@ async function deleteQuiz(index) {
             deleteQuizNameElement.textContent = quiz.title;
         } else {
             console.error('Neither message paragraph nor deleteQuizName element found');
-            showNotification('Error: Cannot update quiz name', 'error');
+            showNotification(t('js.savedQuizzes.errorUpdateQuizName'), 'error');
             return;
         }
     }
@@ -462,6 +499,34 @@ async function duplicateQuiz(index) {
         const duplicateBtn = document.querySelectorAll('.btn-duplicate')[index];
         duplicateBtn.innerHTML = originalHTML;
         duplicateBtn.disabled = false;
+    }
+}
+
+// Share quiz
+async function shareQuiz(index) {
+    const quiz = currentFilteredQuizzes[index];
+    
+    try {
+        // Save quiz to public_quizzes table for sharing
+        const saveResult = await window.saveQuizForRun(quiz);
+        
+        if (!saveResult.success) {
+            showNotification(t('js.savedQuizzes.errorSaving') + ': ' + saveResult.error, 'error');
+            return;
+        }
+        
+        const quizId = saveResult.quizId;
+        
+        // Generate shareable link
+        const shareLink = `${window.location.origin}/test-runner.html?id=${quizId}`;
+        
+        // Copy to clipboard
+        await navigator.clipboard.writeText(shareLink);
+        showNotification(t('js.savedQuizzes.linkCopied'), 'success');
+        
+    } catch (error) {
+        console.error('Error sharing quiz:', error);
+        showNotification(t('js.savedQuizzes.errorSharing'), 'error');
     }
 }
 

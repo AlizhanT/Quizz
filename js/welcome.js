@@ -363,7 +363,8 @@ document.getElementById('signupForm').addEventListener('submit', async function(
 
         // Check if email confirmation is required
         if (data.user && !data.user.email_confirmed_at) {
-            // Email verification is required, show verification modal (no notification)
+            // Email verification is required, show notification and verification modal
+            showNotification(t('modal.emailVerification.message'), 'info');
             showEmailVerificationModal(email);
         } else {
             // No email verification required, create user record explicitly

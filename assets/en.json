@@ -26,11 +26,11 @@
       "logoutFailed": "Failed to sign out. Please try again."
     },
     "navigation": {
-      "createNewQuiz": "+ Create New Quiz",
+      "createNewQuiz": "Create New Quiz",
       "savedQuizzes": "Saved Quizzes",
       "saveQuiz": "Save Quiz",
       "downloadPDF": "Download PDF",
-      "run": "▶ RUN",
+      "run": "RUN",
       "main": "Main",
       "language": "Language",
       "about": "About",
@@ -507,6 +507,7 @@
         "editQuiz": "Edit Quiz",
         "deleteQuiz": "Delete Quiz",
         "runQuiz": "▶ Run Quiz",
+        "shareQuiz": "Share Quiz",
         "typingWarning": "!",
         "questionNumber": "Question {number}",
         "remove": "Remove"
@@ -532,10 +533,16 @@
         "tryAdjustingSearch": "Try adjusting your search criteria",
         "clearSearch": "Clear",
         "searchQuizzes": "Search quizzes...",
-        "createNewQuiz": "+ Create New Quiz",
+        "createNewQuiz": "Create New Quiz",
         "noSavedQuizzes": "No Saved Quizzes Yet",
         "noSavedQuizzesDesc": "Create your first quiz and save it to see it here!",
-        "createFirstQuiz": "Create Your First Quiz"
+        "createFirstQuiz": "Create Your First Quiz",
+        "errorLoading": "Error loading quizzes. Please try again.",
+        "errorSaving": "Error saving quiz",
+        "errorDeleteModal": "Error: Delete modal not found",
+        "errorUpdateQuizName": "Error: Cannot update quiz name",
+        "linkCopied": "Link copied to clipboard!",
+        "errorSharing": "Error sharing quiz"
       },
       "notifications": {
         "changesSaved": "Your changes have been saved.",
