@@ -284,21 +284,68 @@ body {
 
 .player-section .notification-panel {
     position: absolute;
-    top: 40px;
-    right: 10px;
-    width: 250px;
-    max-height: 300px;
-    background: white;
-    border: 2px solid #e74c3c;
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-lg);
+    top: 50px;
+    right: 12px;
+    width: min(300px, calc(100% - 24px));
+    max-height: 60vh;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
     z-index: 1000;
-    overflow: hidden;
-    transition: var(--transition-medium);
+    overflow: visible;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .player-section .notification-panel.hidden {
-    transform: translateX(270px);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(100px);
+}
+
+.player-section .notification-header {
+    display: none;
+}
+
+.player-section .notification-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.player-section .notification-item {
+    background: #2196F3;
+    color: #ffffff;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.player-section .notification-icon {
+    flex: 0 0 auto;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.player-section .notification-item.error {
+    background: #FF5722;
+}
+
+.player-section .notification-item.warning,
+.player-section .notification-item.info,
+.player-section .notification-item.success {
+    background: #2196F3;
 }
 
 /* Global Controls */

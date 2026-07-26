@@ -563,7 +563,8 @@ function addNotification(playerNum, message, type = 'error') {
     
     const notification = document.createElement('div');
     notification.className = `notification-item ${type}`;
-    notification.textContent = message;
+    const icon = type === 'error' ? '!' : '✓';
+    notification.innerHTML = `<span class="notification-icon">${icon}</span><span>${message}</span>`;
     
     content.appendChild(notification);
     showNotificationPanel(playerNum);
@@ -644,8 +645,16 @@ function finishTest(playerNum) {
             if (userAnswer === Number(question.correctAnswer)) {
                 correctCount++;
             }
-        } else if (question.type === 'fill') {
-            if (userAnswer && userAnswer.completed) {
+        } else if (question.type === 'fill' && userAnswer && userAnswer.blanks) {
+            const correctWords = userAnswer.correctWords || [];
+            const userBlanks = userAnswer.blanks;
+            const allFilled = userBlanks.every(blank => blank !== null && blank !== undefined && blank !== '');
+            const allCorrect = allFilled && userBlanks.every((blank, blankIndex) => {
+                return blank && correctWords[blankIndex] &&
+                    blank.toLowerCase().trim() === correctWords[blankIndex].toLowerCase().trim();
+            });
+
+            if (allCorrect && userBlanks.length === correctWords.length) {
                 correctCount++;
             }
         } else if (question.type === 'matching') {

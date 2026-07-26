@@ -164,10 +164,12 @@ function createQuizCard(quiz, index) {
                             <span class="material-symbols-outlined text-lg">content_copy</span>
                             ${t('quiz.duplicate')}
                         </button>
+                        ${quizType === 'single' ? `
                         <button class="w-full px-4 py-3 text-left text-sm text-on-surface hover:bg-primary/10 hover:text-primary transition-colors flex items-center gap-3" onclick="shareQuiz(${index})">
                             <span class="material-symbols-outlined text-lg">link</span>
                             ${t('js.common.shareQuiz')}
                         </button>
+                        ` : ''}
                         <button class="w-full px-4 py-3 text-left text-sm text-error hover:bg-error/10 transition-colors flex items-center gap-3" onclick="deleteQuiz(${index})">
                             <span class="material-symbols-outlined text-lg">delete</span>
                             ${t('js.common.deleteQuiz')}
@@ -276,7 +278,7 @@ function filterQuizzes(filterType) {
     
     // Restore page title
     if (pageTitle) {
-        pageTitle.textContent = 'Saved Quizzes';
+        pageTitle.textContent = t('savedQuizzes');
     }
     
     // Remove active state from About button
@@ -544,41 +546,49 @@ function escapeHtml(text) {
 
 // Show notification function
 function showNotification(message, type = 'success') {
-    // Create notification element
     const notification = document.createElement('div');
+    const bgColor = type === 'error' ? '#FF5722' : '#2196F3';
+    const icon = type === 'error' ? '!' : '✓';
+
+    notification.innerHTML = `<span style="margin-right: 12px; font-size: 16px;">${icon}</span> <span>${message}</span>`;
     notification.style.cssText = `
         position: fixed;
-        top: 20px;
-        right: 20px;
-        background: black;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 6px;
-        font-size: 14px;
+        top: 30px;
+        right: 30px;
+        background-color: ${bgColor};
+        color: #ffffff;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 15px;
         font-weight: 500;
+        display: flex;
+        align-items: center;
+        max-width: min(360px, calc(100vw - 40px));
+        word-break: break-word;
         z-index: 10000;
-        border: 2px solid black;
+        opacity: 0;
+        transform: translateX(100px);
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     `;
-    notification.textContent = message;
     
     document.body.appendChild(notification);
     
-    // Show notification
-    setTimeout(() => {
+    requestAnimationFrame(() => {
         notification.style.opacity = '1';
-        notification.style.transform = 'translateY(0)';
-    }, 100);
+        notification.style.transform = 'translateX(0)';
+    });
     
-    // Hide after 3 seconds
     setTimeout(() => {
         notification.style.opacity = '0';
-        notification.style.transform = 'translateY(-10px)';
+        notification.style.transform = 'translateX(100px)';
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.parentNode.removeChild(notification);
             }
-        }, 300);
-    }, 3000);
+        }, 400);
+    }, 3500);
 }
 
 // Profile menu functions

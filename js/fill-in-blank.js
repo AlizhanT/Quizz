@@ -74,42 +74,35 @@ function displayFillInBlank(question, container, playerNum = null) {
     const sentence = question.sentence;
     const blanks = [];
     
-    // Create a regex to match whole words from the options
+    // Create a regex to match whole words from the options (same approach as editor)
     if (question.options && question.options.length > 0) {
-        // Split sentence into words and punctuation, including mathematical operators
-        const words = sentence.split(/(\s+|[.,!?;:()[\]{}"']|[+\-*/=])/);
-        
         let blankIndex = 0;
-        let currentPosition = 0;
         
-        words.forEach((word, index) => {
-            // Skip empty strings and pure punctuation/space/operators
-            if (!word.trim() || /^[.,!?;:()[\]{}"']+$/.test(word) || /^\s+$/.test(word) || /^[+\-*/=]+$/.test(word)) {
-                currentPosition += word.length;
-                return;
-            }
+        question.options.forEach((option) => {
+            // Create regex to match exact word with word boundaries, including punctuation
+            // This matches the editor's approach in script.js line 2429
+            const wordRegex = new RegExp(`(?:^|\\s)${option.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?=\\s|[.,!?;:()[\]{}"']|$)`, 'i');
+            const match = wordRegex.exec(sentence);
             
-            // Check if this word matches any option (case-insensitive, exact word match)
-            const cleanWord = word.toLowerCase().replace(/[.,!?;:()[\]{}"'+\-*/=]+$/, ''); // Remove trailing punctuation and operators
-            const trailingPunctuation = word.match(/[.,!?;:()[\]{}"']+$/); // Capture trailing punctuation (not operators)
-            const matchingOption = question.options.find(option => 
-                option.toLowerCase() === cleanWord
-            );
-            
-            if (matchingOption) {
+            if (match) {
+                const position = match.index + (match[0].startsWith(' ') ? 1 : 0); // Adjust for leading space
+                const matchedWord = match[0].trim();
+                
+                // Check for trailing punctuation
+                const trailingPunctuationMatch = matchedWord.match(/[.,!?;:()[\]{}"']+$/);
+                const trailingPunctuation = trailingPunctuationMatch ? trailingPunctuationMatch[0] : '';
+                
                 blanks.push({
-                    word: matchingOption,
-                    position: currentPosition,
-                    length: word.length,
-                    trailingPunctuation: trailingPunctuation ? trailingPunctuation[0] : '',
+                    word: option,
+                    position: position,
+                    length: matchedWord.length,
+                    trailingPunctuation: trailingPunctuation,
                     isValid: true,
                     blankIndex: blankIndex
                 });
                 
                 blankIndex++;
             }
-            
-            currentPosition += word.length;
         });
     }
     
@@ -399,6 +392,8 @@ function handleFillDrop(e) {
     }
     
     const blankIndex = parseInt(dropZone.dataset.blankIndex);
+    const correctWord = dropZone.dataset.correctWord;
+    
     if (!state.userAnswers[currentQuestionIndex]) {
         state.userAnswers[currentQuestionIndex] = {
             blanks: [],
@@ -407,6 +402,11 @@ function handleFillDrop(e) {
         };
     }
     state.userAnswers[currentQuestionIndex].blanks[blankIndex] = optionText;
+    
+    // Store the correct word for this blank index
+    if (correctWord && !state.userAnswers[currentQuestionIndex].correctWords[blankIndex]) {
+        state.userAnswers[currentQuestionIndex].correctWords[blankIndex] = correctWord;
+    }
     
     checkAllFillBlanksFilled(playerNum);
 }
@@ -641,6 +641,23 @@ function confirmFillBlank(playerNum = null) {
         currentQuestionIndex = window.currentQuestionIndex;
         testData = window.testData;
         confirmedQuestions = window.confirmedQuestions;
+        
+        // Initialize confirmedQuestions if it doesn't exist
+        if (!confirmedQuestions) {
+            console.warn('confirmedQuestions not found, initializing new Set');
+            confirmedQuestions = new Set();
+            window.confirmedQuestions = confirmedQuestions;
+        }
+        
+        // Initialize userAnswers array if needed
+        if (!state.userAnswers || !state.userAnswers[currentQuestionIndex]) {
+            console.warn('userAnswers not initialized for current question, initializing');
+            if (!state.userAnswers) {
+                state.userAnswers = new Array(testData.questions.length).fill(null);
+            }
+            state.userAnswers[currentQuestionIndex] = { blanks: [], correctWords: [] };
+            window.userAnswers = state.userAnswers;
+        }
     }
     
     dropZones.forEach((zone) => {
@@ -982,6 +999,8 @@ function handleTouchDrop(item, dropZone, playerNum = null) {
     }
 
     const blankIndex = parseInt(dropZone.dataset.blankIndex);
+    const correctWord = dropZone.dataset.correctWord;
+    
     if (!state.userAnswers[currentQuestionIndex]) {
         state.userAnswers[currentQuestionIndex] = {
             blanks: [],
@@ -990,6 +1009,11 @@ function handleTouchDrop(item, dropZone, playerNum = null) {
         };
     }
     state.userAnswers[currentQuestionIndex].blanks[blankIndex] = optionText;
+    
+    // Store the correct word for this blank index
+    if (correctWord && !state.userAnswers[currentQuestionIndex].correctWords[blankIndex]) {
+        state.userAnswers[currentQuestionIndex].correctWords[blankIndex] = correctWord;
+    }
 
     checkAllFillBlanksFilled(playerNum);
 }

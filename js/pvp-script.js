@@ -618,20 +618,8 @@ async function goToSavedQuizzes() {
 
 // Save quiz and redirect to saved quizzes page
 
-async function saveAndGoHome() {
-
-    await saveQuiz();
-
-    
-
-    // Wait a moment for save to complete
-
-    setTimeout(() => {
-
+function GoHome() {
         window.location.href = 'saved-quizzes.html';
-
-    }, 500);
-
 }
 
 
@@ -1499,11 +1487,16 @@ function populateFillInBlank(block, questionData) {
                 optionsList1.innerHTML = '';
                 options1.forEach(optionText => {
                     const optionChip = document.createElement('div');
-                    optionChip.className = 'fill-option-chip';
+                    optionChip.className = 'fill-option-chip bg-surface-container-highest border border-outline-variant/15 rounded-lg px-3 py-2 flex items-center gap-2 transition-all hover:border-outline-variant/30 group cursor-pointer';
                     optionChip.dataset.isCorrect = 'true';
                     optionChip.innerHTML = `
-                        <span class="option-text">${optionText}</span>
-                        <button class="remove-option-btn" onclick="this.parentElement.remove()">×</button>
+                        <span class="option-text text-sm font-medium">${optionText}</span>
+                        <button class="remove-option-btn w-5 h-5 rounded-full bg-error/10 text-error flex items-center justify-center transition-all hover:bg-error hover:text-on-primary opacity-0 group-hover:opacity-100" onclick="this.parentElement.remove()">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
                     `;
                     optionsList1.appendChild(optionChip);
                 });
@@ -1534,11 +1527,16 @@ function populateFillInBlank(block, questionData) {
                 optionsList2.innerHTML = '';
                 options2.forEach(optionText => {
                     const optionChip = document.createElement('div');
-                    optionChip.className = 'fill-option-chip';
+                    optionChip.className = 'fill-option-chip bg-surface-container-highest border border-outline-variant/15 rounded-lg px-3 py-2 flex items-center gap-2 transition-all hover:border-outline-variant/30 group cursor-pointer';
                     optionChip.dataset.isCorrect = 'true';
                     optionChip.innerHTML = `
-                        <span class="option-text">${optionText}</span>
-                        <button class="remove-option-btn" onclick="this.parentElement.remove()">×</button>
+                        <span class="option-text text-sm font-medium">${optionText}</span>
+                        <button class="remove-option-btn w-5 h-5 rounded-full bg-error/10 text-error flex items-center justify-center transition-all hover:bg-error hover:text-on-primary opacity-0 group-hover:opacity-100" onclick="this.parentElement.remove()">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
                     `;
                     optionsList2.appendChild(optionChip);
                 });

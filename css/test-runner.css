@@ -289,7 +289,7 @@
     margin: 20px 0;
     padding: 20px;
     background: var(--background-light);
-    border-radius: var(--border-radius-md);
+    border-radius: 24px;
     border: 2px solid var(--border-light);
     display: flex;
     flex-direction: column;
@@ -317,7 +317,7 @@
     min-width: 120px;
     min-height: 40px;
     border: 2px dashed color-mix(in srgb, var(--option-color, var(--border-light)), black 30%);
-    border-radius: var(--border-radius-sm);
+    border-radius: 14px;
     background: var(--option-color, var(--background-light));
     display: inline-flex;
     align-items: center;
@@ -409,7 +409,7 @@
     padding: 20px;
     background: var(--background-light);
     border: 2px solid var(--border-light);
-    border-radius: var(--border-radius-md);
+    border-radius: 24px;
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
@@ -560,7 +560,7 @@ body {
 .restart-btn {
     background: transparent;
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: 14px;
     padding: 8px;
     cursor: pointer;
     transition: var(--transition-medium);
@@ -580,7 +580,7 @@ body {
 .fullscreen-btn {
     background: transparent;
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: 14px;
     padding: 8px;
     cursor: pointer;
     transition: var(--transition-medium);
@@ -679,7 +679,7 @@ body {
     margin-bottom: 15px;
     padding: 10px;
     background: var(--background-light);
-    border-radius: var(--border-radius-md);
+    border-radius: 24px;
     border-left: 4px solid var(--primary-color);
     line-height: 1.4;
     word-wrap: break-word;
@@ -690,7 +690,7 @@ body {
 .question-container {
     background: var(--background-light);
     padding: 15px;
-    border-radius: var(--border-radius-md);
+    border-radius: 24px;
     margin-bottom: 15px;
     border: none;
     flex: 1;
@@ -1190,35 +1190,27 @@ body {
 /* Notification Panel Styles */
 .notification-panel {
     position: fixed;
-    top: 60px;
-    right: 20px;
-    width: 300px;
-    max-height: 400px;
-    background: white;
-    border: 2px solid #e74c3c;
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-lg);
-    z-index: 1000;
-    overflow: hidden;
-    transition: var(--transition-medium);
+    top: 30px;
+    right: 30px;
+    width: min(360px, calc(100vw - 40px));
+    max-height: 70vh;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    z-index: 9999;
+    overflow: visible;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .notification-panel.hidden {
-    transform: translateX(320px);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(100px);
 }
 
 .notification-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    background: #e74c3c;
-    color: white;
-    font-weight: 600;
-}
-
-.notification-title {
-    font-size: 14px;
+    display: none;
 }
 
 .notification-close {
@@ -1242,20 +1234,36 @@ body {
 }
 
 .notification-content {
-    padding: 16px;
-    max-height: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0;
+    max-height: 70vh;
     overflow-y: auto;
 }
 
 .notification-item {
-    padding: 12px;
-    margin-bottom: 8px;
-    background: #fdf2f2;
-    border-left: 4px solid #e74c3c;
-    border-radius: var(--border-radius-sm);
-    font-size: 13px;
+    background: #2196F3;
+    color: #ffffff;
+    padding: 16px 24px;
+    margin-bottom: 0;
+    border-left: none;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     line-height: 1.4;
-    color: #333;
+    word-break: break-word;
+}
+
+.notification-icon {
+    flex: 0 0 auto;
+    font-size: 16px;
+    font-weight: 700;
 }
 
 .notification-item:last-child {
@@ -1263,20 +1271,23 @@ body {
 }
 
 .notification-item.error {
-    border-left-color: #e74c3c;
-    background: #fdf2f2;
+    background: #FF5722;
 }
 
 .notification-item.warning {
-    border-left-color: #f39c12;
-    background: #fef9e7;
+    background: #2196F3;
+}
+
+.notification-item.info,
+.notification-item.success {
+    background: #2196F3;
 }
 
 /* Validation Error Styles */
 .question-container.validation-error {
-    border: 2px solid #e74c3c;
-    border-radius: var(--border-radius-md);
-    background: #fdf2f2;
+    border: 2px solid #FF5722;
+    border-radius: 24px;
+    background: #fff7ed;
     padding: 20px;
     animation: validationPulse 2s ease-in-out infinite;
 }
@@ -1294,8 +1305,8 @@ body {
 .answer-option.validation-error,
 .blank-drop-zone.validation-error,
 .matching-stack.validation-error {
-    border-color: #e74c3c !important;
-    background: #fdf2f2 !important;
+    border-color: #FF5722 !important;
+    background: #fff7ed !important;
     animation: validationPulse 2s ease-in-out infinite;
 }
 
@@ -1304,4 +1315,255 @@ body {
 .blank-drop-zone:not(.validation-error),
 .matching-stack:not(.validation-error) {
     animation: none;
+}
+
+/* Phone-first runner layout overrides. Desktop rules above remain unchanged. */
+@media (max-width: 768px) {
+    :root {
+        --question-font-size: 30px;
+        --answer-font-size: 22px;
+        --fill-sentence-font-size: 20px;
+        --fill-option-font-size: 18px;
+        --matching-font-size: 17px;
+    }
+
+    body {
+        height: 100dvh;
+        padding: 0;
+        overflow: hidden;
+        touch-action: pan-y;
+    }
+
+    .test-container {
+        height: 100dvh;
+        padding: 54px 10px 72px;
+    }
+
+    .top-controls {
+        top: max(8px, env(safe-area-inset-top));
+        padding: 0 8px;
+    }
+
+    .restart-btn,
+    .fullscreen-btn {
+        width: 44px;
+        height: 44px;
+        padding: 10px;
+    }
+
+    .question-container {
+        padding: 6px;
+        margin: 0;
+        justify-content: stretch;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
+    }
+
+    .question-text {
+        flex: 0 0 40%;
+        min-height: 40%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-size: calc(var(--question-font-size) * var(--question-scale));
+        line-height: 1.25;
+        margin-bottom: 12px;
+        padding: 4px 6px;
+        overflow-y: auto;
+    }
+
+    .question-image {
+        max-height: 150px;
+    }
+
+    .answer-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex: 1 0 auto;
+        width: 100%;
+        padding: 0;
+        align-content: stretch;
+        justify-content: center;
+    }
+
+    .answer-option {
+        min-height: 72px;
+        padding: 14px 12px;
+        border-width: 6px;
+        border-radius: 16px;
+        font-size: calc(var(--answer-font-size) * var(--options-scale));
+    }
+
+    .answer-option:hover {
+        transform: none;
+    }
+
+    .option-content {
+        flex-direction: column;
+        gap: 8px;
+        font-size: calc(var(--answer-font-size) * var(--options-scale));
+    }
+
+    .option-images {
+        justify-content: center;
+        margin-top: 0;
+    }
+
+    .option-image {
+        max-height: 84px !important;
+        max-width: 120px !important;
+    }
+
+    .navigation-buttons {
+        left: 10px;
+        right: 10px;
+        bottom: max(12px, env(safe-area-inset-bottom));
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .nav-btn {
+        min-width: 56px;
+        min-height: 44px;
+        padding: 8px 14px;
+    }
+
+    .question-counter {
+        bottom: max(22px, calc(env(safe-area-inset-bottom) + 10px));
+        pointer-events: none;
+    }
+
+    .fill-sentence-container,
+    .fill-options-container,
+    .matching-left-column,
+    .matching-right-column {
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .fill-sentence-container {
+        margin: 8px 0;
+    }
+
+    .fill-sentence-text {
+        line-height: 1.35;
+        gap: 6px;
+    }
+
+    .blank-drop-zone {
+        min-width: 78px;
+        min-height: 36px;
+        padding: 6px 8px;
+        margin: 0 2px;
+    }
+
+    .fill-options-container {
+        margin-top: 12px;
+        justify-content: center;
+    }
+
+    .fill-option-chip {
+        min-height: 40px;
+        padding: 8px 12px;
+    }
+
+    .matching-container-new {
+        gap: 12px;
+        margin-top: 8px;
+        min-height: 0;
+        width: 100%;
+    }
+
+    .matching-left-column,
+    .matching-right-column {
+        width: 100%;
+        max-width: none;
+        box-sizing: border-box;
+    }
+
+    .matching-left-group {
+        gap: 8px;
+    }
+
+    .matching-left-item,
+    .matching-right-item,
+    .matching-drop-zone {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .matching-drop-zone {
+        min-height: 42px;
+    }
+
+    .results-container {
+        padding: 20px 12px;
+        border-radius: 16px;
+        overflow-y: auto;
+    }
+
+    .results-title {
+        font-size: 24px;
+    }
+
+    .score-display {
+        font-size: 42px;
+    }
+
+    .results-message {
+        font-size: 16px;
+    }
+
+    .results-buttons {
+        width: 100%;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .notification-panel {
+        top: 56px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        max-height: 50dvh;
+    }
+
+    .notification-panel.hidden {
+        transform: translateY(-120%);
+    }
+}
+
+@media (max-width: 420px) {
+    :root {
+        --question-font-size: 26px;
+        --answer-font-size: 20px;
+        --fill-sentence-font-size: 18px;
+        --fill-option-font-size: 16px;
+        --matching-font-size: 16px;
+    }
+
+    .test-container {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .answer-options {
+        gap: 8px;
+    }
+
+    .answer-option {
+        min-height: 64px;
+        padding: 10px;
+        border-width: 5px;
+        border-radius: 14px;
+    }
+
+    .question-image {
+        max-height: 130px;
+    }
 }

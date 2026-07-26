@@ -5,6 +5,12 @@ let confirmedQuestions = new Set();
 let validationErrors = [];
 let resizeTimeout = null;
 
+// Expose to window for fill-in-blank module
+window.confirmedQuestions = confirmedQuestions;
+window.currentQuestionIndex = currentQuestionIndex;
+window.testData = testData;
+window.userAnswers = userAnswers;
+
 function safeTranslate(key, fallback) {
     try {
         if (typeof window.t === 'function') {
@@ -125,7 +131,8 @@ function addNotification(message, type = 'error') {
     
     const notification = document.createElement('div');
     notification.className = `notification-item ${type}`;
-    notification.textContent = message;
+    const icon = type === 'error' ? '!' : '✓';
+    notification.innerHTML = `<span class="notification-icon">${icon}</span><span>${message}</span>`;
     
     content.appendChild(notification);
     showNotificationPanel();
@@ -362,6 +369,12 @@ function initializeTest() {
     // Set page title and initialize
     document.getElementById('pageTitle').textContent = testData.title || safeTranslate('testRunner.test', 'Test');
     userAnswers = new Array(testData.questions.length).fill(null);
+    
+    // Update window variables for fill-in-blank module
+    window.testData = testData;
+    window.userAnswers = userAnswers;
+    window.currentQuestionIndex = currentQuestionIndex;
+    
     displayQuestion();
     updateProgress();
 }
@@ -1336,14 +1349,19 @@ function lockConfirmedQuestion() {
 function nextQuestion() {
     if (currentQuestionIndex < testData.questions.length - 1) {
         currentQuestionIndex++;
+        window.currentQuestionIndex = currentQuestionIndex; // Update window variable
         displayQuestion();
         updateProgress();
     }
 }
 
+// Expose to window for fill-in-blank module
+window.nextQuestion = nextQuestion;
+
 function previousQuestion() {
     if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
+        window.currentQuestionIndex = currentQuestionIndex; // Update window variable
         displayQuestion();
         updateProgress();
     }
@@ -1355,6 +1373,10 @@ function restartTest() {
     userAnswers = new Array(testData.questions.length).fill(null);
     confirmedQuestions.clear();
     validationErrors = [];
+    
+    // Update window variables for fill-in-blank module
+    window.currentQuestionIndex = currentQuestionIndex;
+    window.userAnswers = userAnswers;
     
     // Hide results container if visible
     const resultsContainer = document.getElementById('resultsContainer');
@@ -1418,6 +1440,9 @@ function updateProgress() {
 function finishTest() {
     calculateResults();
 }
+
+// Expose to window for fill-in-blank module
+window.finishTest = finishTest;
 
 function calculateResults() {
     let correctCount = 0;

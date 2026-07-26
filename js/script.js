@@ -617,20 +617,10 @@ async function goToSavedQuizzes() {
 
 
 
-// Save quiz and redirect to saved quizzes page
+// Go to saved quizzes page without saving
 
-async function saveAndGoHome() {
-
-    await saveQuiz();
-
-    // Wait a moment for save to complete
-
-    setTimeout(() => {
-
-        window.location.href = 'saved-quizzes.html';
-
-    }, 500);
-
+function GoHome() {
+    window.location.href = 'saved-quizzes.html';
 }
 
 
@@ -1477,15 +1467,20 @@ function populateFillInBlank(block, questionData) {
 
             const optionChip = document.createElement('div');
 
-            optionChip.className = 'fill-option-chip';
+            optionChip.className = 'fill-option-chip bg-surface-container-highest border border-outline-variant/15 rounded-lg px-3 py-2 flex items-center gap-2 transition-all hover:border-outline-variant/30 group cursor-pointer';
 
             optionChip.dataset.isCorrect = 'true';
 
             optionChip.innerHTML = `
 
-                <span class="option-text">${optionText}</span>
+                <span class="option-text text-sm font-medium">${optionText}</span>
 
-                <button class="remove-option-btn" onclick="this.parentElement.remove()">×</button>
+                <button class="remove-option-btn w-5 h-5 rounded-full bg-error/10 text-error flex items-center justify-center transition-all hover:bg-error hover:text-on-primary opacity-0 group-hover:opacity-100" onclick="this.parentElement.remove()">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
 
             `;
 
@@ -1510,8 +1505,11 @@ function populateMatching(block, questionData) {
     
 
     if (questionData.pairs && questionData.pairs.length > 0) {
-
-        questionData.pairs.forEach(pairData => {
+        
+        // Limit to maximum 5 pairs when loading
+        const pairsToLoad = questionData.pairs.slice(0, 5);
+        
+        pairsToLoad.forEach(pairData => {
 
             const addPairBtn = block.querySelector('.add-pair-btn');
 
@@ -2413,6 +2411,17 @@ function addFillOptions(button) {
     
 
     options.forEach(optionText => {
+        
+        // Check if option already exists in the container
+        const existingOptions = optionsContainer.querySelectorAll('.fill-option-chip .option-text');
+        const optionExists = Array.from(existingOptions).some(existingOption => 
+            existingOption.textContent.toLowerCase() === optionText.toLowerCase()
+        );
+        
+        // Skip if option already exists
+        if (optionExists) {
+            return;
+        }
 
         const optionChip = document.createElement('div');
 
@@ -2618,6 +2627,10 @@ function renderQuestionContent(type, container) {
         
 
         function addPair() {
+            // Check if maximum limit (5 pairs) is reached
+            if (pairs.children.length >= 5) {
+                return;
+            }
 
             const row = document.createElement("div");
 
@@ -2658,6 +2671,10 @@ function renderQuestionContent(type, container) {
     
 
         function remPair() {
+            // Check if minimum limit (2 pairs) is reached
+            if (pairs.children.length <= 2) {
+                return;
+            }
 
             if (pairs.lastElementChild) {
 
@@ -2669,7 +2686,8 @@ function renderQuestionContent(type, container) {
 
         
 
-        for (let i = 0; i < 3; i++) addPair();
+        // Initialize with 2 pairs (minimum limit)
+        for (let i = 0; i < 2; i++) addPair();
 
         
 
@@ -3029,7 +3047,10 @@ function copyMatchingPairs(sourceBlock, newBlock) {
 
     
 
-    sourceRows.forEach(sourceRow => {
+    // Limit to maximum 5 pairs when copying
+    const rowsToCopy = Array.from(sourceRows).slice(0, 5);
+    
+    rowsToCopy.forEach(sourceRow => {
 
         const sourceLeftElement = sourceRow.querySelector('.rich-text-input.matching-left');
 

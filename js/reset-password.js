@@ -187,56 +187,50 @@ async function goHomeSafely() {
 
 // Show notification function (reuse from welcome.js)
 function showNotification(message, type = 'info') {
-    // Create notification element
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
+    const bgColor = type === 'error' ? '#FF5722' : '#2196F3';
+    const icon = type === 'error' ? '!' : '✓';
+
+    notification.innerHTML = `<span style="margin-right: 12px; font-size: 16px;">${icon}</span> <span>${message}</span>`;
     
-    // Add styles
     notification.style.cssText = `
         position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
+        top: 30px;
+        right: 30px;
+        background-color: ${bgColor};
+        color: #ffffff;
+        padding: 16px 24px;
         border-radius: 8px;
-        color: white;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 15px;
         font-weight: 500;
+        display: flex;
+        align-items: center;
+        max-width: min(360px, calc(100vw - 40px));
+        word-break: break-word;
         z-index: 10000;
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
-        max-width: 300px;
-        word-wrap: break-word;
+        opacity: 0;
+        transform: translateX(100px);
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     `;
-    
-    // Set background color based on type
-    switch (type) {
-        case 'success':
-            notification.style.background = 'var(--success-color)';
-            break;
-        case 'error':
-            notification.style.background = 'var(--error-color)';
-            break;
-        default:
-            notification.style.background = 'var(--primary-color)';
-    }
-    
-    // Add to page
+
     document.body.appendChild(notification);
     
-    // Animate in
-    setTimeout(() => {
+    requestAnimationFrame(() => {
+        notification.style.opacity = '1';
         notification.style.transform = 'translateX(0)';
-    }, 100);
+    });
     
-    // Remove after 3 seconds
     setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(100px)';
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.parentNode.removeChild(notification);
             }
-        }, 300);
-    }, 3000);
+        }, 400);
+    }, 3500);
 }
 
 // Language change function

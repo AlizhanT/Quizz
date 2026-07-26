@@ -28,6 +28,8 @@
     /* TIMING */
     --fast: .15s ease;
     --normal: .25s ease;
+    --notification-info: #2196F3;
+    --notification-error: #FF5722;
 }
 
 /* === BASE BUTTON === */
@@ -1510,9 +1512,9 @@ body.dragging {
 }
 
 .question-block.validation-error {
-    border: 2px solid #e74c3c !important;
+    border: 2px solid #FF5722 !important;
     box-shadow: 0 0 10px rgba(231, 76, 60, 0.3) !important;
-    background: #fdf2f2 !important;
+    background: #fff7ed !important;
     animation: validationPulse 2s ease-in-out infinite;
 }
 
@@ -1950,6 +1952,135 @@ body.dragging {
     .pdf-page {
         border: none;
         box-shadow: none;
+    }
+}
+
+/* Shared notification modal style, matched to welcome page toasts. */
+#notificationModal {
+    background: rgba(17, 24, 39, 0.6) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+#notificationModal.show {
+    display: flex !important;
+}
+
+#notificationModal > div {
+    background: #F8FAFC !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15) !important;
+    max-width: 440px !important;
+    padding: 40px !important;
+}
+
+#notificationModal .modal-header {
+    margin-bottom: 8px !important;
+}
+
+#notificationModal #modalTitle {
+    color: #111827 !important;
+    font-family: 'Montserrat', system-ui, -apple-system, sans-serif !important;
+    font-size: 30px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.5px !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    text-align: center !important;
+}
+
+#notificationModal #modalMessage {
+    color: #6B7280 !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    margin: 0 0 32px 0 !important;
+    text-align: center !important;
+}
+
+#notificationModal #modalButtons {
+    display: flex !important;
+    gap: 12px !important;
+    justify-content: stretch !important;
+}
+
+#notificationModal .modal-btn-primary,
+#notificationModal .modal-btn-success,
+#notificationModal .modal-btn-danger,
+#notificationModal .modal-btn-secondary {
+    align-items: center;
+    border: none !important;
+    border-radius: 14px !important;
+    color: #ffffff !important;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 1 1 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    height: 52px;
+    justify-content: center;
+    padding: 0 18px !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+}
+
+#notificationModal .modal-btn-primary,
+#notificationModal .modal-btn-success {
+    background: var(--notification-info, #2196F3) !important;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3) !important;
+}
+
+#notificationModal .modal-btn-danger {
+    background: var(--notification-error, #FF5722) !important;
+    box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3) !important;
+}
+
+#notificationModal .modal-btn-secondary {
+    background: #ffffff !important;
+    color: #6B7280 !important;
+    box-shadow: inset 0 0 0 1px #E5E7EB !important;
+}
+
+#notificationModal .modal-btn-primary:hover,
+#notificationModal .modal-btn-success:hover {
+    background: #1976D2 !important;
+    box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+#notificationModal .modal-btn-danger:hover {
+    background: #E64A19 !important;
+    box-shadow: 0 6px 16px rgba(255, 87, 34, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+#notificationModal .modal-btn-secondary:hover {
+    background: #F3F4F6 !important;
+    color: #111827 !important;
+    transform: translateY(-1px);
+}
+
+#notificationModal .modal-btn-primary:active,
+#notificationModal .modal-btn-success:active,
+#notificationModal .modal-btn-danger:active,
+#notificationModal .modal-btn-secondary:active {
+    transform: translateY(0) scale(0.98);
+}
+
+@media (max-width: 640px) {
+    #notificationModal > div {
+        margin: 16px !important;
+        padding: 32px 24px !important;
+        width: calc(100% - 32px) !important;
+    }
+
+    #notificationModal #modalTitle {
+        font-size: 24px !important;
+    }
+
+    #notificationModal #modalButtons {
+        flex-direction: column;
     }
 }
 
