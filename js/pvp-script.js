@@ -2477,7 +2477,7 @@ function addAnswer(grid) {
 
     const correctBtn = document.createElement("button");
 
-    correctBtn.className = "correct-answer-btn w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center text-on-surface-variant transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-primary group-hover:border-primary/20 flex-shrink-0";
+    correctBtn.className = "correct-answer-btn w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center text-on-surface-variant transition-all flex-shrink-0";
 
     correctBtn.innerHTML = getSVGIcon('check', 14);
 
@@ -2507,7 +2507,13 @@ function addAnswer(grid) {
 
     removeBtn.innerHTML = getSVGIcon('close', 12);
 
-    removeBtn.onclick = () => option.remove();
+    removeBtn.onclick = () => {
+        const currentAnswers = grid.querySelectorAll('.answer-option');
+        if (currentAnswers.length <= 2) {
+            return;
+        }
+        option.remove();
+    };
 
     
 
@@ -3054,7 +3060,7 @@ function copyMultipleChoiceAnswers(sourceBlock, newBlock) {
             inputContainer.appendChild(input);
 
             const correctBtn = document.createElement("button");
-            correctBtn.className = "correct-answer-btn w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center text-on-surface-variant transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-primary group-hover:border-primary/20 flex-shrink-0";
+            correctBtn.className = "correct-answer-btn w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center text-on-surface-variant transition-all flex-shrink-0";
             correctBtn.innerHTML = getSVGIcon('check', 14);
             correctBtn.onclick = () => {
                 answersGrid.querySelectorAll('.correct-answer-btn').forEach(btn => {
@@ -3111,7 +3117,7 @@ function copyFillInBlank(sourceBlock, newBlock) {
                 optionChip.className = 'fill-option-chip bg-surface-container-highest border border-outline-variant/15 rounded-lg px-3 py-2 flex items-center gap-2 transition-all hover:border-outline-variant/30 group cursor-pointer';
                 optionChip.innerHTML = `
                     <span class="option-text text-sm font-medium">${optionText}</span>
-                    <button class="remove-option-btn w-5 h-5 rounded-full bg-error/10 text-error flex items-center justify-center transition-all hover:bg-error hover:text-on-primary opacity-0 group-hover:opacity-100" onclick="this.parentElement.remove()">${getSVGIcon('close', 10)}</button>
+                    <button class="remove-option-btn w-5 h-5 rounded-full bg-error/10 text-error flex items-center justify-center transition-all hover:bg-error hover:text-on-primary opacity-0 group-hover:opacity-100" onclick="if(this.parentElement.parentElement.querySelectorAll('.fill-option-chip').length <= 2) { return; } this.parentElement.remove()">${getSVGIcon('close', 10)}</button>
                 `;
                 newOptionsList.appendChild(optionChip);
             });

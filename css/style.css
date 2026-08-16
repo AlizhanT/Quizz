@@ -1771,12 +1771,6 @@ body.dragging {
     font-weight: bold;
 }
 
-.correct-answer-btn:hover {
-    background: var(--success-color);
-    color: white;
-    border-color: var(--success-color);
-}
-
 .correct-answer-btn.selected {
     background: var(--success-color);
     color: white;

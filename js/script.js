@@ -10,7 +10,9 @@ function getSVGIcon(iconName, size = 16) {
 
         'plus': `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="navy"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>`,
 
-        'bin': `<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="red"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>`
+        'bin': `<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="red"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>`,
+
+        'image': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`
 
     };
 
@@ -19,6 +21,238 @@ function getSVGIcon(iconName, size = 16) {
 }
 
 
+
+// Image upload functions
+function addImageButton(textInput) {
+    if (!textInput) return;
+    
+    // Check if image button already exists in the parent
+    const parent = textInput.parentElement;
+    if (parent && parent.querySelector('.image-upload-btn')) return;
+    
+    // Wrap the text input in a flex container if not already wrapped
+    if (!parent.classList.contains('input-with-image-btn')) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'input-with-image-btn relative flex items-start';
+        
+        // Move the text input into the wrapper
+        parent.insertBefore(wrapper, textInput);
+        wrapper.appendChild(textInput);
+        
+        // Update parent reference to the wrapper
+        const newParent = wrapper;
+        
+        // Create image upload button
+        const imageBtn = document.createElement('button');
+        imageBtn.className = 'image-upload-btn ml-2 w-8 h-8 rounded-lg bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center text-on-surface-variant transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-primary flex-shrink-0 mt-2';
+        imageBtn.innerHTML = getSVGIcon('image', 16);
+        imageBtn.type = 'button';
+        imageBtn.title = 'Add Image';
+        
+        newParent.appendChild(imageBtn);
+        
+        // Create hidden file input
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.className = 'hidden';
+        fileInput.style.display = 'none';
+        
+        // Handle file selection
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                await handleImageUpload(file, textInput);
+            }
+            fileInput.value = ''; // Reset file input
+        });
+        
+        // Trigger file input on button click
+        imageBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        newParent.appendChild(fileInput);
+        
+        // Update button state initially
+        updateImageButtonState(textInput);
+        
+        // Monitor for image removal
+        textInput.addEventListener('input', () => {
+            updateImageButtonState(textInput);
+        });
+        
+        // For contenteditable, also monitor for DOM changes
+        if (textInput.classList.contains('rich-text-input')) {
+            const observer = new MutationObserver(() => {
+                updateImageButtonState(textInput);
+            });
+            observer.observe(textInput, { childList: true, subtree: true });
+        }
+    } else {
+        // Parent is already a wrapper, just add the button
+        const imageBtn = document.createElement('button');
+        imageBtn.className = 'image-upload-btn ml-2 w-8 h-8 rounded-lg bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center text-on-surface-variant transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-primary flex-shrink-0 mt-2';
+        imageBtn.innerHTML = getSVGIcon('image', 16);
+        imageBtn.type = 'button';
+        imageBtn.title = 'Add Image';
+        
+        parent.appendChild(imageBtn);
+        
+        // Create hidden file input
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.className = 'hidden';
+        fileInput.style.display = 'none';
+        
+        // Handle file selection
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                await handleImageUpload(file, textInput);
+            }
+            fileInput.value = ''; // Reset file input
+        });
+        
+        // Trigger file input on button click
+        imageBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        parent.appendChild(fileInput);
+        
+        // Update button state initially
+        updateImageButtonState(textInput);
+        
+        // Monitor for image removal
+        textInput.addEventListener('input', () => {
+            updateImageButtonState(textInput);
+        });
+        
+        // For contenteditable, also monitor for DOM changes
+        if (textInput.classList.contains('rich-text-input')) {
+            const observer = new MutationObserver(() => {
+                updateImageButtonState(textInput);
+            });
+            observer.observe(textInput, { childList: true, subtree: true });
+        }
+    }
+}
+
+function updateImageButtonState(textInput) {
+    const wrapper = textInput.closest('.input-with-image-btn');
+    if (!wrapper) return;
+    
+    const imageBtn = wrapper.querySelector('.image-upload-btn');
+    if (!imageBtn) return;
+    
+    let hasImage = false;
+    
+    if (textInput.tagName === 'TEXTAREA') {
+        hasImage = textInput.value.includes('![') && textInput.value.includes('](');
+    } else {
+        hasImage = textInput.querySelector('img') !== null;
+    }
+    
+    if (hasImage) {
+        imageBtn.disabled = true;
+        imageBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        imageBtn.title = 'Image limit reached (1 per textarea)';
+    } else {
+        imageBtn.disabled = false;
+        imageBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        imageBtn.title = 'Add Image';
+    }
+}
+
+async function handleImageUpload(file, textInput) {
+    try {
+        // Convert file to data URL for immediate preview
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const dataUrl = e.target.result;
+            
+            // Handle different input types
+            if (textInput.tagName === 'TEXTAREA') {
+                // For textarea, insert markdown-like image syntax
+                const imgMarkdown = `
+![image](${dataUrl})
+`;
+                const startPos = textInput.selectionStart;
+                const endPos = textInput.selectionEnd;
+                
+                textInput.value = textInput.value.substring(0, startPos) + 
+                                  imgMarkdown + 
+                                  textInput.value.substring(endPos);
+                
+                // Trigger input event for autosave
+                textInput.dispatchEvent(new Event('input'));
+                
+                // Update button state
+                updateImageButtonState(textInput);
+                
+                // Manually trigger resize to adapt to new content
+                setTimeout(() => {
+                    textInput.style.height = 'auto';
+                    textInput.style.height = Math.max(textInput.scrollHeight, 44) + 'px';
+                }, 50);
+            } else {
+                // For contenteditable div, insert HTML image
+                const imgHtml = `<img src="${dataUrl}" class="max-w-full h-auto rounded-lg my-2 inline-block" style="max-height: 150px; max-width: 100%; object-fit: contain;" data-temp-image="true">`;
+                
+                if (document.activeElement === textInput) {
+                    // Insert at cursor position
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+                        range.deleteContents();
+                        const fragment = range.createContextualFragment(imgHtml);
+                        range.insertNode(fragment);
+                    } else {
+                        textInput.innerHTML += imgHtml;
+                    }
+                } else {
+                    // Append to end
+                    textInput.innerHTML += imgHtml;
+                }
+                
+                // Update placeholder
+                updatePlaceholder(textInput);
+                
+                // Update button state
+                updateImageButtonState(textInput);
+                
+                // Wait for image to load before resizing
+                const imgElement = textInput.querySelector('img[data-temp-image="true"]');
+                if (imgElement) {
+                    imgElement.onload = () => {
+                        textInput.style.height = 'auto';
+                        textInput.style.height = Math.max(textInput.scrollHeight, 44) + 'px';
+                    };
+                    // Fallback timeout in case onload doesn't fire
+                    setTimeout(() => {
+                        textInput.style.height = 'auto';
+                        textInput.style.height = Math.max(textInput.scrollHeight, 44) + 'px';
+                    }, 100);
+                } else {
+                    // Fallback if image element not found
+                    setTimeout(() => {
+                        textInput.style.height = 'auto';
+                        textInput.style.height = Math.max(textInput.scrollHeight, 44) + 'px';
+                    }, 50);
+                }
+            }
+            
+            // Trigger autosave
+            triggerAutosave();
+        };
+        reader.readAsDataURL(file);
+    } catch (error) {
+        console.error('Error handling image upload:', error);
+        showNotificationModal('Error', 'Failed to upload image', 'error');
+    }
+}
 
 // Modal functions
 
@@ -222,6 +456,11 @@ function setupTextareaAutoResize(textarea) {
 
     setupInputClickHandling(textarea);
 
+    // Add image upload button for textareas, but skip for specific ones
+    if (textarea.id !== 'instructions' && !textarea.classList.contains('fill-sentence')) {
+        addImageButton(textarea);
+    }
+
     
 
     function resize() {
@@ -264,6 +503,12 @@ function setupRichTextInput(element) {
     updatePlaceholder(element);
 
     setupInputClickHandling(element);
+
+    // Add image upload button, but skip for typing answer
+    if (!element.classList.contains('typing-answer')) {
+        addImageButton(element);
+    }
+
 
     
 
@@ -1495,7 +1740,7 @@ function populateFillInBlank(block, questionData) {
 
                 <span class="option-text text-sm font-medium">${optionText}</span>
 
-                <button class="remove-option-btn w-5 h-5 rounded-full bg-error/10 text-error flex items-center justify-center transition-all hover:bg-error hover:text-on-primary opacity-0 group-hover:opacity-100" onclick="this.parentElement.remove()">
+                <button class="remove-option-btn w-5 h-5 rounded-full bg-error/10 text-error flex items-center justify-center transition-all hover:bg-error hover:text-on-primary opacity-0 group-hover:opacity-100" onclick="if(this.parentElement.parentElement.querySelectorAll('.option-chip').length <= 2) { return; } this.parentElement.remove()">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -2342,7 +2587,7 @@ function addAnswer(grid) {
 
     const correctBtn = document.createElement("button");
 
-    correctBtn.className = "correct-answer-btn w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center text-on-surface-variant transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-primary group-hover:border-primary/20 flex-shrink-0";
+    correctBtn.className = "correct-answer-btn w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center text-on-surface-variant transition-all flex-shrink-0";
 
     correctBtn.innerHTML = getSVGIcon('check', 14);
 
@@ -2372,7 +2617,13 @@ function addAnswer(grid) {
 
     removeBtn.innerHTML = getSVGIcon('close', 12);
 
-    removeBtn.onclick = () => option.remove();
+    removeBtn.onclick = () => {
+        const currentAnswers = grid.querySelectorAll('.answer-option');
+        if (currentAnswers.length <= 2) {
+            return;
+        }
+        option.remove();
+    };
 
     
 
@@ -2496,11 +2747,12 @@ function addFillOptions(button) {
         removeBtn.innerHTML = getSVGIcon('close', 10);
 
         removeBtn.onclick = (e) => {
-
             e.stopPropagation();
-
+            const currentOptions = container.querySelectorAll('.option-chip');
+            if (currentOptions.length <= 2) {
+                return;
+            }
             optionChip.remove();
-
         };
 
         
@@ -2975,7 +3227,7 @@ function copyMultipleChoiceAnswers(sourceBlock, newBlock) {
 
         const correctBtn = document.createElement("button");
 
-        correctBtn.className = "correct-answer-btn w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center text-on-surface-variant transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-primary group-hover:border-primary/20 flex-shrink-0";
+        correctBtn.className = "correct-answer-btn w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center text-on-surface-variant transition-all flex-shrink-0";
 
         correctBtn.innerHTML = getSVGIcon('check', 14);
 
