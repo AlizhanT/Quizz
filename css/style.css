@@ -8,6 +8,8 @@
     --color-text-muted: #555555;
     --background-light: #ffffff;
     --background-hover: #e3e3e3;
+    --oimergen-blue: #2196F3;
+    --oimergen-orange: #ff5722;
 
     --color-primary: #000000;
     --color-danger: #000000;
@@ -1438,7 +1440,7 @@ button:active {
 }
 
 .question-block {
-    background: var(--background-light);
+    background: var(--oimergen-blue) !important;
     padding: 20px;
     border-radius: var(--border-radius-lg);
     margin-bottom: 20px;

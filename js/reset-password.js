@@ -2,6 +2,7 @@
 
 // DOM elements
 const resetPasswordForm = document.getElementById('resetPasswordForm');
+const resetPasswordFormContainer = document.getElementById('resetPasswordFormContainer');
 const newPasswordInput = document.getElementById('newPassword');
 const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
 const newPasswordCounter = document.getElementById('newPasswordCounter');
@@ -14,13 +15,29 @@ const successState = document.getElementById('successState');
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', async function() {
-    // Show modal with animation
-    const modalContent = document.querySelector('.auth-modal .modal-content');
-    if (modalContent) {
-        setTimeout(() => {
-            modalContent.style.transform = 'scale(1)';
-            modalContent.style.opacity = '1';
-        }, 100);
+    // Language dropdown functionality
+    const languageDropdown = document.querySelector('.language-dropdown');
+    const languageDropdownMenu = document.getElementById('languageDropdownMenu');
+    
+    if (languageDropdown && languageDropdownMenu) {
+        // Show dropdown on hover
+        languageDropdown.addEventListener('mouseenter', function() {
+            languageDropdownMenu.classList.remove('hidden');
+        });
+        
+        // Hide dropdown when leaving the dropdown area
+        languageDropdown.addEventListener('mouseleave', function() {
+            languageDropdownMenu.classList.add('hidden');
+        });
+        
+        // Keep dropdown open when hovering over the menu itself
+        languageDropdownMenu.addEventListener('mouseenter', function() {
+            languageDropdownMenu.classList.remove('hidden');
+        });
+        
+        languageDropdownMenu.addEventListener('mouseleave', function() {
+            languageDropdownMenu.classList.add('hidden');
+        });
     }
     
     // Extract reset token from URL - Supabase uses different parameter names
@@ -70,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             
             // Now show the reset form
             loadingState.style.display = 'none';
-            resetPasswordForm.style.display = 'block';
+            resetPasswordFormContainer.style.display = 'block';
         } else {
             // Try to verify the token directly
             const { data, error } = await window.supabaseClient.auth.verifyOtp({
@@ -87,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 showError();
             } else {
                 // Token is valid, show reset form
-                resetPasswordForm.style.display = 'block';
+                resetPasswordFormContainer.style.display = 'block';
             }
         }
     } catch (error) {
@@ -148,7 +165,7 @@ resetPasswordForm.addEventListener('submit', async function(e) {
         if (error) throw error;
         
         // Show success state
-        resetPasswordForm.style.display = 'none';
+        resetPasswordFormContainer.style.display = 'none';
         successState.style.display = 'block';
         
         // Sign out the user to prevent auto-login
@@ -168,7 +185,7 @@ resetPasswordForm.addEventListener('submit', async function(e) {
 // Show error state
 function showError() {
     loadingState.style.display = 'none';
-    resetPasswordForm.style.display = 'none';
+    resetPasswordFormContainer.style.display = 'none';
     errorState.style.display = 'block';
 }
 
@@ -187,50 +204,56 @@ async function goHomeSafely() {
 
 // Show notification function (reuse from welcome.js)
 function showNotification(message, type = 'info') {
+    // Create notification element
     const notification = document.createElement('div');
-    const bgColor = type === 'error' ? '#FF5722' : '#2196F3';
-    const icon = type === 'error' ? '!' : '✓';
-
-    notification.innerHTML = `<span style="margin-right: 12px; font-size: 16px;">${icon}</span> <span>${message}</span>`;
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
     
+    // Add styles
     notification.style.cssText = `
         position: fixed;
-        top: 30px;
-        right: 30px;
-        background-color: ${bgColor};
-        color: #ffffff;
-        padding: 16px 24px;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
         border-radius: 8px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        font-family: system-ui, -apple-system, sans-serif;
-        font-size: 15px;
+        color: white;
         font-weight: 500;
-        display: flex;
-        align-items: center;
-        max-width: min(360px, calc(100vw - 40px));
-        word-break: break-word;
         z-index: 10000;
-        opacity: 0;
-        transform: translateX(100px);
-        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        max-width: 300px;
+        word-wrap: break-word;
     `;
-
+    
+    // Set background color based on type
+    switch (type) {
+        case 'success':
+            notification.style.background = 'var(--success-color)';
+            break;
+        case 'error':
+            notification.style.background = 'var(--error-color)';
+            break;
+        default:
+            notification.style.background = 'var(--primary-color)';
+    }
+    
+    // Add to page
     document.body.appendChild(notification);
     
-    requestAnimationFrame(() => {
-        notification.style.opacity = '1';
-        notification.style.transform = 'translateX(0)';
-    });
-    
+    // Animate in
     setTimeout(() => {
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateX(100px)';
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.parentNode.removeChild(notification);
             }
-        }, 400);
-    }, 3500);
+        }, 300);
+    }, 3000);
 }
 
 // Language change function

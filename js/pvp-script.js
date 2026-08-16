@@ -88,6 +88,7 @@ function showModal(title, message, buttons = []) {
 
     
 
+    modal.classList.remove('hidden');
     modal.classList.add('show');
 
     
@@ -133,6 +134,7 @@ function closeModal() {
     const modal = document.getElementById('notificationModal');
 
     modal.classList.remove('show');
+    modal.classList.add('hidden');
 
 }
 
@@ -536,7 +538,7 @@ async function checkUnsavedChanges() {
 
 // Show save reminder modal
 
-function showSaveReminderModal(callback) {
+function showSaveReminderModal(saveCallback, dontSaveCallback) {
 
     showModal(t('modal.unsavedChanges'), t('modal.unsavedChangesMessage'), [
 
@@ -550,7 +552,7 @@ function showSaveReminderModal(callback) {
 
                 closeModal();
 
-                window.location.href = 'saved-quizzes.html';
+                if (dontSaveCallback) dontSaveCallback();
 
             }
 
@@ -576,7 +578,7 @@ function showSaveReminderModal(callback) {
 
                     setTimeout(() => {
 
-                        if (callback) callback();
+                        if (saveCallback) saveCallback();
 
                     }, 500);
 
@@ -616,10 +618,26 @@ async function goToSavedQuizzes() {
 
 
 
-// Save quiz and redirect to saved quizzes page
+// Save quiz and redirect to saved quizzes page with save check
 
 function GoHome() {
+    if (currentEditingQuizId) {
+        // Quiz is saved, go to saved quizzes
         window.location.href = 'saved-quizzes.html';
+    } else {
+        // Quiz is not saved, show save reminder modal
+        showSaveReminderModal(() => {
+            // After saving, check if it was successful
+            setTimeout(() => {
+                if (currentEditingQuizId) {
+                    window.location.href = 'saved-quizzes.html';
+                }
+            }, 1000);
+        }, () => {
+            // User clicked "Don't Save", go to saved quizzes anyway
+            window.location.href = 'saved-quizzes.html';
+        });
+    }
 }
 
 
@@ -705,6 +723,8 @@ async function goToWelcome() {
         showSaveReminderModal(() => {
 
             window.location.href = 'edit.html';
+
+        }, () => {
 
             window.location.href = 'edit.html';
 

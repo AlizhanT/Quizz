@@ -88,6 +88,7 @@ function showModal(title, message, buttons = []) {
 
     
 
+    modal.classList.remove('hidden');
     modal.classList.add('show');
 
     
@@ -133,6 +134,7 @@ function closeModal() {
     const modal = document.getElementById('notificationModal');
 
     modal.classList.remove('show');
+    modal.classList.add('hidden');
 
 }
 
@@ -537,7 +539,7 @@ async function checkUnsavedChanges() {
 
 // Show save reminder modal
 
-function showSaveReminderModal(callback) {
+function showSaveReminderModal(saveCallback, dontSaveCallback) {
 
     showModal(t('modal.unsavedChanges'), t('modal.unsavedChangesMessage'), [
 
@@ -551,7 +553,7 @@ function showSaveReminderModal(callback) {
 
                 closeModal();
 
-                window.location.href = 'saved-quizzes.html';
+                if (dontSaveCallback) dontSaveCallback();
 
             }
 
@@ -577,7 +579,7 @@ function showSaveReminderModal(callback) {
 
                     setTimeout(() => {
 
-                        if (callback) callback();
+                        if (saveCallback) saveCallback();
 
                     }, 500);
 
@@ -617,10 +619,26 @@ async function goToSavedQuizzes() {
 
 
 
-// Go to saved quizzes page without saving
+// Go to saved quizzes page with save check
 
 function GoHome() {
-    window.location.href = 'saved-quizzes.html';
+    if (currentEditingQuizId) {
+        // Quiz is saved, go to saved quizzes
+        window.location.href = 'saved-quizzes.html';
+    } else {
+        // Quiz is not saved, show save reminder modal
+        showSaveReminderModal(() => {
+            // After saving, check if it was successful
+            setTimeout(() => {
+                if (currentEditingQuizId) {
+                    window.location.href = 'saved-quizzes.html';
+                }
+            }, 1000);
+        }, () => {
+            // User clicked "Don't Save", go to saved quizzes anyway
+            window.location.href = 'saved-quizzes.html';
+        });
+    }
 }
 
 
@@ -706,6 +724,8 @@ async function goToWelcome() {
         showSaveReminderModal(() => {
 
             window.location.href = 'edit.html';
+
+        }, () => {
 
             window.location.href = 'edit.html';
 
@@ -2082,7 +2102,7 @@ function addQuestion(insertAfterElement = null) {
 
     const block = document.createElement("section");
 
-    block.className = "question-block bg-surface-container-lowest rounded-[2rem] p-8 shadow-sm border border-outline-variant/15 relative group overflow-hidden mb-6";
+    block.className = "question-block rounded-[2rem] p-8 shadow-sm border border-outline-variant/15 relative group overflow-hidden mb-6";
 
     
 
@@ -2260,7 +2280,11 @@ function setupQuestionBlock(block) {
 
     const copyBtn = block.querySelector(".copy-btn");
 
-    copyBtn.onclick = () => copyQuestion(block);
+    if (copyBtn) {
+        copyBtn.onclick = () => copyQuestion(block);
+    } else {
+        console.error('Copy button not found in question block');
+    }
 
     
 
@@ -2773,34 +2797,43 @@ function updateRemoveButtonsVisibility() {
 
 
 function copyQuestion(sourceBlock) {
+    console.log('copyQuestion called');
 
-    const questionType = sourceBlock.querySelector('.question-type').value;
+    const questionType = sourceBlock.querySelector('.question-type');
+    if (!questionType) {
+        console.error('Question type selector not found');
+        return;
+    }
+    console.log('Question type:', questionType.value);
 
     const questionTextElement = sourceBlock.querySelector('.rich-text-input.question-text');
 
     const questionText = questionTextElement ? questionTextElement.innerHTML : '';
-
-    
+    console.log('Question text length:', questionText.length);
 
     // Get all blocks before adding new one
 
     const allBlocksBefore = Array.from(document.querySelectorAll('.question-block'));
 
     const sourceIndex = allBlocksBefore.indexOf(sourceBlock);
+    console.log('Source index:', sourceIndex);
 
 
 
     addQuestion(sourceBlock);
+
+    console.log('addQuestion called');
 
 
 
     // Find the newly created block
 
     const allBlocksAfter = Array.from(document.querySelectorAll('.question-block'));
+    console.log('Blocks before:', allBlocksBefore.length, 'Blocks after:', allBlocksAfter.length);
 
     let newBlock = null;
 
-    
+
 
     // Find the block that wasn't in the original list
 
@@ -2816,6 +2849,8 @@ function copyQuestion(sourceBlock) {
 
     }
 
+    console.log('New block found:', newBlock !== null);
+
 
 
     if (!newBlock || newBlock === sourceBlock) {
@@ -2830,7 +2865,13 @@ function copyQuestion(sourceBlock) {
 
     // Copy basic question properties
 
-    newBlock.querySelector('.question-type').value = questionType;
+    const newQuestionType = newBlock.querySelector('.question-type');
+    if (newQuestionType) {
+        newQuestionType.value = questionType.value;
+        console.log('Question type set to:', questionType.value);
+    } else {
+        console.error('New block question type selector not found');
+    }
 
     const newQuestionTextElement = newBlock.querySelector('.rich-text-input.question-text');
 
@@ -2869,6 +2910,10 @@ function copyQuestion(sourceBlock) {
         } else if (questionType === 'matching') {
 
             copyMatchingPairs(sourceBlock, newBlock);
+
+        } else if (questionType === 'typing') {
+
+            copyTypingAnswer(sourceBlock, newBlock);
 
         }
 
@@ -2923,6 +2968,8 @@ function copyMultipleChoiceAnswers(sourceBlock, newBlock) {
         
 
         inputContainer.appendChild(input);
+
+        setupRichTextInput(input);
 
         
 
@@ -3026,6 +3073,11 @@ function copyFillInBlank(sourceBlock, newBlock) {
 
         });
 
+        // Setup rich text input for the sentence textarea
+        if (newSentence) {
+            setupTextareaAutoResize(newSentence);
+        }
+
         // Maintain consistent DOM structure
 
         newOptionsContainer.appendChild(newOptionsList);
@@ -3078,9 +3130,15 @@ function copyMatchingPairs(sourceBlock, newBlock) {
 
                 const newRight = newRow.querySelector('.rich-text-input.matching-right');
 
-                if (newLeft) newLeft.innerHTML = leftItem;
+                if (newLeft) {
+                    newLeft.innerHTML = leftItem;
+                    setupRichTextInput(newLeft);
+                }
 
-                if (newRight) newRight.innerHTML = rightItem;
+                if (newRight) {
+                    newRight.innerHTML = rightItem;
+                    setupRichTextInput(newRight);
+                }
 
             }
 
@@ -3088,6 +3146,16 @@ function copyMatchingPairs(sourceBlock, newBlock) {
 
     });
 
+}
+
+function copyTypingAnswer(sourceBlock, newBlock) {
+    const sourceTypingAnswer = sourceBlock.querySelector('.rich-text-input.typing-answer');
+    const newTypingAnswer = newBlock.querySelector('.rich-text-input.typing-answer');
+
+    if (sourceTypingAnswer && newTypingAnswer) {
+        newTypingAnswer.innerHTML = sourceTypingAnswer.innerHTML;
+        setupRichTextInput(newTypingAnswer);
+    }
 }
 
 

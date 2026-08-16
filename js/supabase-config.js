@@ -348,7 +348,7 @@ async function loadQuizzesFromSupabase() {
 
       const { data, error } = await supabaseClient
         .from("quizzes")
-        .select("*")
+        .select("*, public_quiz_id")
         .eq('user_id', user.id) // Only load user's own quizzes
         .order('updated_at', { ascending: false });
 
@@ -414,7 +414,7 @@ async function loadQuizFromSupabase(quizId) {
 
       const { data, error } = await supabaseClient
         .from('quizzes')
-        .select('*')
+        .select("*, public_quiz_id")
         .eq('id', quizId)
         .eq('user_id', user.id) // Ensure user owns the quiz
         .single();
@@ -1271,6 +1271,136 @@ async function uploadImageToSupabasePublic(file, quizId = null) {
   }
 }
 
+// Get or create permanent public quiz ID for a saved quiz
+// This ensures each quiz has exactly one permanent public link
+async function getOrCreatePublicQuizId(quiz) {
+  try {
+    console.log('getOrCreatePublicQuizId() called for quiz:', quiz.id);
+    
+    // Ensure user is authenticated
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    
+    if (authError) throw authError;
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
+    // First, check if the quiz already has a public_quiz_id
+    const { data: quizData, error: quizError } = await supabaseClient
+      .from('quizzes')
+      .select('public_quiz_id')
+      .eq('id', quiz.id)
+      .eq('user_id', user.id)
+      .single();
+
+    if (quizError && quizError.code !== 'PGRST116') {
+      throw quizError;
+    }
+
+    // Process images to upload data URLs to Supabase Storage
+    const processedQuizData = await processQuizImagesForPublic(quiz);
+
+    const publicQuizData = {
+      title: processedQuizData.title || 'Untitled Quiz',
+      instructions: processedQuizData.instructions || '',
+      quiz_data: {
+        title: processedQuizData.title || 'Untitled Quiz',
+        instructions: processedQuizData.instructions || '',
+        questions: processedQuizData.questions,
+        quiz_type: processedQuizData.quiz_type || 'single'
+      },
+      updated_at: new Date().toISOString()
+    };
+
+    // If quiz already has a public_quiz_id, update the existing public quiz
+    if (quizData && quizData.public_quiz_id) {
+      console.log('Quiz already has public_quiz_id:', quizData.public_quiz_id);
+      
+      const { data: updatedPublicQuiz, error: updateError } = await supabaseClient
+        .from('public_quizzes')
+        .update(publicQuizData)
+        .eq('id', quizData.public_quiz_id)
+        .select()
+        .single();
+
+      if (updateError) throw updateError;
+
+      console.log('Updated existing public quiz:', updatedPublicQuiz.id);
+      return { success: true, publicQuizId: updatedPublicQuiz.id };
+    }
+
+    // If no public_quiz_id exists, create a new public quiz
+    console.log('Creating new public quiz for quiz:', quiz.id);
+    
+    publicQuizData.created_at = new Date().toISOString();
+    
+    const { data: newPublicQuiz, error: insertError } = await supabaseClient
+      .from('public_quizzes')
+      .insert(publicQuizData)
+      .select()
+      .single();
+
+    if (insertError) throw insertError;
+
+    console.log('Created new public quiz:', newPublicQuiz.id);
+
+    // Save the public_quiz_id to the quizzes table
+    const { error: updateQuizError } = await supabaseClient
+      .from('quizzes')
+      .update({ public_quiz_id: newPublicQuiz.id })
+      .eq('id', quiz.id)
+      .eq('user_id', user.id);
+
+    if (updateQuizError) {
+      console.warn('Failed to save public_quiz_id to quizzes table:', updateQuizError.message);
+      // Don't throw - the public quiz was created successfully
+    }
+
+    return { success: true, publicQuizId: newPublicQuiz.id };
+  } catch (error) {
+    console.error('Error in getOrCreatePublicQuizId:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Delete a public quiz by ID
+async function deletePublicQuiz(publicQuizId) {
+  try {
+    console.log('deletePublicQuiz() called with ID:', publicQuizId);
+    
+    if (!publicQuizId) {
+      console.warn('No public quiz ID provided, skipping deletion');
+      return { success: true };
+    }
+    
+    // Ensure user is authenticated
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    
+    if (authError) throw authError;
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
+    const { error } = await supabaseClient
+      .from('public_quizzes')
+      .delete()
+      .eq('id', publicQuizId);
+      
+    if (error) {
+      console.error('Failed to delete public quiz:', error.message);
+      throw new Error(`Failed to delete public quiz: ${error.message}`);
+    }
+    
+    console.log('Public quiz deleted successfully:', publicQuizId);
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting public quiz:', error);
+    throw error;
+  }
+}
+
 // Export new functions for global access
 window.saveQuizForRun = saveQuizForRun;
 window.loadQuizForRun = loadQuizForRun;
+window.getOrCreatePublicQuizId = getOrCreatePublicQuizId;
+window.deletePublicQuiz = deletePublicQuiz;

@@ -334,19 +334,19 @@ async function runQuiz(index) {
     
     // Use the new Supabase-based system for single-player quizzes
     if (quizType === 'single') {
-        // Save quiz to public_quizzes table for sharing
-        const saveResult = await window.saveQuizForRun(quiz);
+        // Get or create permanent public quiz ID
+        const result = await window.getOrCreatePublicQuizId(quiz);
         
-        if (!saveResult.success) {
-            showNotification(t('js.savedQuizzes.errorSaving') + ': ' + saveResult.error, 'error');
+        if (!result.success) {
+            showNotification(t('js.savedQuizzes.errorSaving') + ': ' + result.error, 'error');
             return;
         }
         
-        const quizId = saveResult.quizId;
-        console.log('Quiz saved with ID:', quizId);
+        const publicQuizId = result.publicQuizId;
+        console.log('Quiz public ID:', publicQuizId);
         
-        // Open test runner with quiz ID
-        window.open('test-runner.html?id=' + quizId, '_blank');
+        // Open test runner with public quiz ID
+        window.open('test-runner.html?id=' + publicQuizId, '_blank');
     } else {
         // For PvP quizzes, keep using the old localStorage system for now
         localStorage.setItem('pvpTestData', JSON.stringify(quiz));
@@ -406,11 +406,24 @@ async function deleteQuiz(index) {
 async function confirmDelete() {
     const confirmBtn = document.querySelector('.btn-delete');
     const originalText = confirmBtn.textContent;
-    
+
     try {
         // Show loading state on confirm button
         await window.LoadingUtils.withButtonLoading(confirmBtn, async () => {
             const quizToDeleteData = currentFilteredQuizzes[quizToDelete];
+
+            // Delete the corresponding public quiz if it exists
+            if (quizToDeleteData.public_quiz_id) {
+                try {
+                    await window.deletePublicQuiz(quizToDeleteData.public_quiz_id);
+                    console.log('Public quiz deleted successfully');
+                } catch (publicQuizError) {
+                    console.error('Failed to delete public quiz:', publicQuizError);
+                    showNotification(t('quiz.deleteError') + ': Failed to delete public quiz data. ' + publicQuizError.message, 'error');
+                    return; // Stop deletion if public quiz deletion fails
+                }
+            }
+
             const result = await window.deleteQuizFromSupabase(quizToDeleteData.id);
             if (result.success) {
                 // Find and remove from original quizzes array
@@ -427,7 +440,7 @@ async function confirmDelete() {
         }, originalText);
     } catch (error) {
         console.error('Error deleting quiz:', error);
-        showNotification(t('quiz.deleteError'), 'error');
+        showNotification(t('quiz.deleteError') + ': ' + error.message, 'error');
     }
 }
 
@@ -460,13 +473,16 @@ async function createNewQuiz(mode = 'single') {
 // Duplicate quiz
 async function duplicateQuiz(index) {
     const quiz = currentFilteredQuizzes[index];
+    let originalHTML = '';
     
     try {
         // Show loading state
         const duplicateBtn = document.querySelectorAll('.btn-duplicate')[index];
-        const originalHTML = duplicateBtn.innerHTML;
-        duplicateBtn.innerHTML = '<div class="spinner"></div>';
-        duplicateBtn.disabled = true;
+        if (duplicateBtn) {
+            originalHTML = duplicateBtn.innerHTML;
+            duplicateBtn.innerHTML = '<div class="spinner"></div>';
+            duplicateBtn.disabled = true;
+        }
         
         // Create duplicate data with modified title, preserving quiz type
         const duplicateData = {
@@ -490,8 +506,10 @@ async function duplicateQuiz(index) {
         }
         
         // Restore button
-        duplicateBtn.innerHTML = originalHTML;
-        duplicateBtn.disabled = false;
+        if (duplicateBtn) {
+            duplicateBtn.innerHTML = originalHTML;
+            duplicateBtn.disabled = false;
+        }
         
     } catch (error) {
         console.error('Error duplicating quiz:', error);
@@ -499,8 +517,10 @@ async function duplicateQuiz(index) {
         
         // Restore button
         const duplicateBtn = document.querySelectorAll('.btn-duplicate')[index];
-        duplicateBtn.innerHTML = originalHTML;
-        duplicateBtn.disabled = false;
+        if (duplicateBtn) {
+            duplicateBtn.innerHTML = originalHTML;
+            duplicateBtn.disabled = false;
+        }
     }
 }
 
@@ -509,18 +529,18 @@ async function shareQuiz(index) {
     const quiz = currentFilteredQuizzes[index];
     
     try {
-        // Save quiz to public_quizzes table for sharing
-        const saveResult = await window.saveQuizForRun(quiz);
+        // Get or create permanent public quiz ID
+        const result = await window.getOrCreatePublicQuizId(quiz);
         
-        if (!saveResult.success) {
-            showNotification(t('js.savedQuizzes.errorSaving') + ': ' + saveResult.error, 'error');
+        if (!result.success) {
+            showNotification(t('js.savedQuizzes.errorSaving') + ': ' + result.error, 'error');
             return;
         }
         
-        const quizId = saveResult.quizId;
+        const publicQuizId = result.publicQuizId;
         
-        // Generate shareable link
-        const shareLink = `${window.location.origin}/test-runner.html?id=${quizId}`;
+        // Generate shareable link with full domain and /html/ path
+        const shareLink = `${window.location.origin}/html/test-runner.html?id=${publicQuizId}`;
         
         // Copy to clipboard
         await navigator.clipboard.writeText(shareLink);
