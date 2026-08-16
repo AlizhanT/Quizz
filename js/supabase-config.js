@@ -1028,23 +1028,24 @@ async function loadQuizForRun(quizId) {
     
     console.log('Raw quiz data from database:', data);
     
-    // Extract the quiz_data field
-    let quizData = data.quiz_data;
-    
-    // Handle quiz_data - Supabase might return it as string or object
-    if (quizData && typeof quizData === 'string') {
+    // Handle questions data - Supabase might return it as string or object
+    if (data.questions && typeof data.questions === 'string') {
       try {
-        quizData = JSON.parse(quizData);
-        console.log('Parsed quiz_data from JSON string:', quizData);
+        data.questions = JSON.parse(data.questions);
+        console.log('Parsed questions from JSON string:', data.questions);
       } catch (parseError) {
-        console.error('Error parsing quiz_data JSON:', parseError);
+        console.error('Error parsing questions JSON:', parseError);
         throw new Error('Invalid quiz data format');
       }
     }
     
-    if (!quizData) {
-      throw new Error('Quiz data is empty');
-    }
+    // Construct the quiz data object in the expected format
+    const quizData = {
+      title: data.title,
+      instructions: data.instructions,
+      questions: data.questions,
+      quiz_type: data.quiz_type || 'single'
+    };
     
     console.log('Final quiz data to return:', quizData);
     return quizData;
