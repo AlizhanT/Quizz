@@ -332,21 +332,10 @@ async function runQuiz(index) {
     const quiz = currentFilteredQuizzes[index];
     const quizType = quiz.quiz_type || 'single'; // Default to single if not specified
     
-    // Use the new Supabase-based system for single-player quizzes
+    // Use the quiz ID directly for single-player quizzes
     if (quizType === 'single') {
-        // Get or create permanent public quiz ID
-        const result = await window.getOrCreatePublicQuizId(quiz);
-        
-        if (!result.success) {
-            showNotification(t('js.savedQuizzes.errorSaving') + ': ' + result.error, 'error');
-            return;
-        }
-        
-        const publicQuizId = result.publicQuizId;
-        console.log('Quiz public ID:', publicQuizId);
-        
-        // Open test runner with public quiz ID
-        window.open('test-runner.html?id=' + publicQuizId, '_blank');
+        // Open test runner with quiz ID directly
+        window.open('test-runner.html?id=' + quiz.id, '_blank');
     } else {
         // For PvP quizzes, keep using the old localStorage system for now
         localStorage.setItem('pvpTestData', JSON.stringify(quiz));
@@ -411,18 +400,6 @@ async function confirmDelete() {
         // Show loading state on confirm button
         await window.LoadingUtils.withButtonLoading(confirmBtn, async () => {
             const quizToDeleteData = currentFilteredQuizzes[quizToDelete];
-
-            // Delete the corresponding public quiz if it exists
-            if (quizToDeleteData.public_quiz_id) {
-                try {
-                    await window.deletePublicQuiz(quizToDeleteData.public_quiz_id);
-                    console.log('Public quiz deleted successfully');
-                } catch (publicQuizError) {
-                    console.error('Failed to delete public quiz:', publicQuizError);
-                    showNotification(t('quiz.deleteError') + ': Failed to delete public quiz data. ' + publicQuizError.message, 'error');
-                    return; // Stop deletion if public quiz deletion fails
-                }
-            }
 
             const result = await window.deleteQuizFromSupabase(quizToDeleteData.id);
             if (result.success) {
@@ -529,18 +506,8 @@ async function shareQuiz(index) {
     const quiz = currentFilteredQuizzes[index];
     
     try {
-        // Get or create permanent public quiz ID
-        const result = await window.getOrCreatePublicQuizId(quiz);
-        
-        if (!result.success) {
-            showNotification(t('js.savedQuizzes.errorSaving') + ': ' + result.error, 'error');
-            return;
-        }
-        
-        const publicQuizId = result.publicQuizId;
-        
-        // Generate shareable link with full domain and /html/ path
-        const shareLink = `${window.location.origin}/html/test-runner.html?id=${publicQuizId}`;
+        // Generate shareable link with full domain and /html/ path using quiz ID directly
+        const shareLink = `${window.location.origin}/html/test-runner.html?id=${quiz.id}`;
         
         // Copy to clipboard
         await navigator.clipboard.writeText(shareLink);

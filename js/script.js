@@ -3226,15 +3226,15 @@ async function runTest() {
 
         
 
-        // Save quiz to Supabase for test runner
-        const saveResult = await window.saveQuizForRun(testData);
+        // Save quiz to Supabase first to get a permanent ID
+        const saveResult = await window.saveQuizToSupabase(testData);
         
         if (!saveResult.success) {
             alert('Error saving quiz: ' + saveResult.error);
             return;
         }
         
-        const quizId = saveResult.quizId;
+        const quizId = saveResult.data.id;
         console.log('Quiz saved with ID:', quizId);
         
         // Open test runner with quiz ID
