@@ -3704,9 +3704,9 @@ async function saveQuiz() {
 
 
             // Show success notification in notification area
-
-            const message = testData.id && testData.id !== currentEditingQuizId ? 'Quiz updated successfully!' : 'Quiz saved successfully!';
-
+            // If we had an ID before saving, it was an update; otherwise it was a new save
+            const wasUpdate = testData.id && testData.id === currentEditingQuizId;
+            const message = wasUpdate ? 'Quiz updated successfully!' : 'Quiz saved successfully!';
             showSubtleNotification(message, 'success');
 
         } else {
