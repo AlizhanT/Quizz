@@ -8,19 +8,6 @@ let draggedFillElement = null;
 
 let draggedBlankElement = null;
 
-const questionColors = [
-    'hsl(207, 90%, 55%)',  // Blue
-    'hsl(190, 80%, 50%)',  // Cyan
-    'hsl(175, 70%, 45%)',  // Teal
-    'hsl(145, 65%, 45%)',  // Green
-    'hsl(45, 90%, 55%)',   // Yellow
-    'hsl(25, 90%, 55%)',   // Orange
-    'hsl(5, 80%, 58%)',    // Red
-    'hsl(330, 75%, 58%)',  // Pink
-    'hsl(280, 65%, 60%)',  // Purple
-    'hsl(245, 70%, 60%)'   // Violet
-];
-
 
 // Helper function to get question text
 
@@ -101,6 +88,18 @@ window.draggedBlankElement = draggedBlankElement;
 // Main display function for fill-in-the-blank questions
 
 function displayFillInBlank(question, container, playerNum = null) {
+
+    // Get player-specific state and currentQuestionIndex FIRST
+    let state;
+    let currentQuestionIndex;
+
+    if (playerNum && typeof playerStates !== 'undefined' && playerStates[playerNum]) {
+        state = playerStates[playerNum];
+        currentQuestionIndex = state.currentQuestionIndex;
+    } else {
+        state = { userAnswers: userAnswers };
+        currentQuestionIndex = window.currentQuestionIndex || 0;
+    }
 
     // Display question text like other question types
 
@@ -502,30 +501,6 @@ function displayFillInBlank(question, container, playerNum = null) {
     container.appendChild(optionsContainer);
 
 
-
-    // Get player-specific state
-
-    let state;
-
-    let currentQuestionIndex;
-
-    
-
-    if (playerNum && typeof playerStates !== 'undefined' && playerStates[playerNum]) {
-
-        state = playerStates[playerNum];
-
-        currentQuestionIndex = state.currentQuestionIndex;
-
-    } else {
-
-        state = { userAnswers: userAnswers };
-
-        currentQuestionIndex = window.currentQuestionIndex;
-
-    }
-
-    
 
     // Initialize user answers if not exists
 

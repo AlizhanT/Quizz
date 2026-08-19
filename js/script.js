@@ -3151,19 +3151,19 @@ function copyQuestion(sourceBlock) {
 
         // Copy type-specific content
 
-        if (questionType === 'multiple') {
+        if (questionType.value === 'multiple') {
 
             copyMultipleChoiceAnswers(sourceBlock, newBlock);
 
-        } else if (questionType === 'fill') {
+        } else if (questionType.value === 'fill') {
 
             copyFillInBlank(sourceBlock, newBlock);
 
-        } else if (questionType === 'matching') {
+        } else if (questionType.value === 'matching') {
 
             copyMatchingPairs(sourceBlock, newBlock);
 
-        } else if (questionType === 'typing') {
+        } else if (questionType.value === 'typing') {
 
             copyTypingAnswer(sourceBlock, newBlock);
 
@@ -3478,6 +3478,11 @@ async function runTest() {
 
         
 
+        // Set the current editing ID if we're editing
+        if (currentEditingQuizId) {
+            testData.id = currentEditingQuizId;
+        }
+
         // Save quiz to Supabase first to get a permanent ID
         const saveResult = await window.saveQuizToSupabase(testData);
         
@@ -3485,10 +3490,13 @@ async function runTest() {
             alert('Error saving quiz: ' + saveResult.error);
             return;
         }
-        
+
         const quizId = saveResult.data.id;
         console.log('Quiz saved with ID:', quizId);
-        
+
+        // Update current editing ID
+        currentEditingQuizId = quizId;
+
         // Open test runner with quiz ID
         const url = 'test-runner.html?id=' + quizId;
         const newWindow = window.open(url, '_blank');
