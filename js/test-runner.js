@@ -546,14 +546,12 @@ function createMatchingContainer(question) {
     // Add pairs to columns
     question.pairs.forEach((pair, index) => {
         // Generate different random brightness for each element to avoid giving hints
-        const leftBrightness = Math.random() * 40 + 40;
-        const leftColor = `hsl(207, 90%, ${leftBrightness}%)`;
-        
-        const dropBrightness = Math.random() * 40 + 40;
-        const dropColor = `hsl(207, 90%, ${dropBrightness}%)`;
-        
-        const rightBrightness = Math.random() * 40 + 40;
-        const rightColor = `hsl(207, 90%, ${rightBrightness}%)`;
+        const questionColor =
+            questionColors[currentQuestionIndex % questionColors.length];
+
+        const leftColor = questionColor;
+        const dropColor = questionColor;
+        const rightColor = questionColor;
         
         // Left item + container group
         const leftGroup = document.createElement('div');

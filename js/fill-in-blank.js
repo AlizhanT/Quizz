@@ -300,11 +300,10 @@ function displayFillInBlank(question, container, playerNum = null) {
 
         // Generate random brightness for blue color
 
-        const randomBrightness = Math.random() * 40 + 40; // 40% to 80% lightness
+        const questionColor =
+            questionColors[currentQuestionIndex % questionColors.length];
 
-        const randomColor = `hsl(207, 90%, ${randomBrightness}%)`;
-
-        dropZone.style.setProperty('--option-color', randomColor);
+        dropZone.style.setProperty('--option-color', questionColor);
 
         
 
@@ -457,12 +456,10 @@ function displayFillInBlank(question, container, playerNum = null) {
                 
 
                 // Generate random brightness for blue color
+                const questionColor =
+                questionColors[currentQuestionIndex % questionColors.length];
 
-                const randomBrightness = Math.random() * 40 + 40; // 40% to 80% lightness
-
-                const randomColor = `hsl(207, 90%, ${randomBrightness}%)`;
-
-                optionChip.style.setProperty('--option-color', randomColor);
+                dropZone.style.setProperty('--option-color', questionColor);
 
                 
 
