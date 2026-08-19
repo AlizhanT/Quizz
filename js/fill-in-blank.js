@@ -471,7 +471,7 @@ function displayFillInBlank(question, container, playerNum = null) {
                 const questionColor =
                 questionColors[currentQuestionIndex % questionColors.length];
 
-                dropZone.style.setProperty('--option-color', questionColor);
+                optionChip.style.setProperty('--option-color', questionColor);
 
                 
 
