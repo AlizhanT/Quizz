@@ -21,6 +21,19 @@ const playerStates = {
     }
 };
 
+const questionColors = [
+    'hsl(207, 90%, 55%)',  // Blue
+    'hsl(190, 80%, 50%)',  // Cyan
+    'hsl(175, 70%, 45%)',  // Teal
+    'hsl(145, 65%, 45%)',  // Green
+    'hsl(45, 90%, 55%)',   // Yellow
+    'hsl(25, 90%, 55%)',   // Orange
+    'hsl(5, 80%, 58%)',    // Red
+    'hsl(330, 75%, 58%)',  // Pink
+    'hsl(280, 65%, 60%)',  // Purple
+    'hsl(245, 70%, 60%)'   // Violet
+];
+
 let globalTestData = null;
 
 // Initialize PvP test runner
@@ -203,45 +216,55 @@ function createQuestionText(question, playerNum) {
     return questionDiv;
 }
 
-function createAnswerOption(option, index, playerNum) {
+function createAnswerOption(option, index, questionColor) {
     const optionText = getOptionText(option);
+
     const optionDiv = document.createElement('div');
     optionDiv.className = 'answer-option';
-    optionDiv.onclick = () => selectAnswer(index, playerNum);
-    
-    // Generate random brightness for blue color
-    const randomBrightness = Math.random() * 40 + 40; // 40% to 80% lightness
-    const randomColor = `hsl(207, 90%, ${randomBrightness}%)`;
-    optionDiv.style.setProperty('--option-color', randomColor);
-    
-    optionDiv.addEventListener('click', () => clearValidationErrors(playerNum), { passive: true });
-    
+
+    // Use the same color for all options of this question
+    optionDiv.style.setProperty('--option-color', questionColor);
+
+    // Handle answer selection and clear validation errors
+    optionDiv.addEventListener('click', () => {
+        selectAnswer(index);
+        clearValidationErrors();
+    });
+
     const optionContent = document.createElement('div');
     optionContent.className = 'option-content';
-    
+
+    // Add option text
     if (optionText) {
         const textSpan = document.createElement('span');
         textSpan.className = 'option-text';
+
+        // Keep innerHTML if your questions support formatting/HTML
         textSpan.innerHTML = optionText;
+
         optionContent.appendChild(textSpan);
     }
-    
+
+    // Add option images
     if (option.images && option.images.length > 0) {
         const imagesContainer = document.createElement('div');
         imagesContainer.className = 'option-images';
-        
+
         option.images.forEach(imageData => {
             const img = document.createElement('img');
+
             img.src = imageData.src;
             img.className = 'option-image';
             img.alt = imageData.name || 'Option image';
+
             imagesContainer.appendChild(img);
         });
-        
+
         optionContent.appendChild(imagesContainer);
     }
-    
+
     optionDiv.appendChild(optionContent);
+
     return optionDiv;
 }
 
@@ -256,16 +279,24 @@ function getOptionText(option) {
 }
 
 // Question Type Display Functions
-function displayMultipleChoice(question, container, playerNum) {
-    const questionText = createQuestionText(question, playerNum);
+function displayMultipleChoice(question, container) {
+    const questionText = createQuestionText(question);
     container.appendChild(questionText);
 
     const optionsContainer = document.createElement('div');
     optionsContainer.className = 'answer-options';
-    optionsContainer.dataset.playerNum = playerNum;
+
+    // Pick ONE color for the entire question
+    const questionColor =
+        questionColors[currentQuestionIndex % questionColors.length];
 
     question.options.forEach((option, index) => {
-        const optionDiv = createAnswerOption(option, index, playerNum);
+        const optionDiv = createAnswerOption(
+            option,
+            index,
+            questionColor
+        );
+
         optionsContainer.appendChild(optionDiv);
     });
 
