@@ -79,7 +79,6 @@ async function loadCurrentUser() {
         
         if (error) {
             console.error('Error getting user:', error);
-            document.getElementById('userName').textContent = t('js.common.errorLoadingUser');
             document.getElementById('currentUsername').value = t('js.common.errorLoadingUser');
             return;
         }
@@ -102,7 +101,6 @@ async function loadCurrentUser() {
             }
             
             // Update username display
-            document.getElementById('userName').textContent = displayName;
             document.getElementById('currentUsername').value = displayName;
             
             console.log('Loaded user data:', { 
@@ -119,7 +117,6 @@ async function loadCurrentUser() {
         }
     } catch (error) {
         console.error('Error loading user data:', error);
-        document.getElementById('userName').textContent = t('js.common.errorLoadingUser');
         document.getElementById('currentUsername').value = t('js.common.errorLoadingUser');
     }
 }
@@ -157,7 +154,6 @@ function setupUsernameForm() {
                 if (error) throw error;
                 
                 // Update UI
-                document.getElementById('userName').textContent = newDisplayName;
                 document.getElementById('currentUsername').value = newDisplayName;
                 document.getElementById('newUsername').value = '';
                 

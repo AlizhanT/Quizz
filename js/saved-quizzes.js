@@ -123,6 +123,7 @@ function createQuizCard(quiz, index) {
     // Determine icon and color based on quiz type
     const typeIcon = quizType === 'pvp' ? 'groups' : 'person';
     const typeLabel = quizType === 'pvp' ? 'PvP' : 'Single';
+    const typeSvg = quizType === 'pvp' ? 'trophy' : 'Extension';
     const typeColor = quizType === 'pvp' ? 'bg-tertiary' : 'bg-primary';
     
     // Generate a random gradient background for the card header
@@ -139,8 +140,8 @@ function createQuizCard(quiz, index) {
     card.innerHTML = `
         <div class="h-44 relative rounded-t-[2rem] overflow-hidden" style="background: ${randomGradient};">
             <div class="absolute inset-0 flex items-center justify-center">
-                <div class="text-center">
-                    <span class="material-symbols-outlined text-6xl text-white/80">quiz</span>
+                <div class="material-symbols-outlined text-6xl text-white">
+                    ${typeSvg}
                 </div>
             </div>
             <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-extrabold text-primary uppercase">${questionCount} QUESTIONS</div>
