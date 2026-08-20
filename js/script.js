@@ -288,7 +288,7 @@ function showModal(title, message, buttons = []) {
 
         const okBtn = document.createElement('button');
 
-        okBtn.className = 'modal-btn-primary';
+        okBtn.className = 'px-6 py-2 bg-primary text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform';
 
         okBtn.textContent = t('modal.ok');
 
@@ -302,7 +302,7 @@ function showModal(title, message, buttons = []) {
 
             const button = document.createElement('button');
 
-            button.className = btn.className || 'modal-btn-primary';
+            button.className = btn.className || 'px-6 py-2 bg-primary text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform';
 
             button.textContent = btn.text;
 
@@ -376,11 +376,11 @@ function closeModal() {
 
 function showNotificationModal(title, message, type = 'info') {
 
-    const buttonClass = type === 'success' ? 'modal-btn-success' : 
+    const buttonClass = type === 'success' ? 'px-6 py-2 bg-green-500 text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform' : 
 
-                       type === 'error' || type === 'danger' ? 'modal-btn-danger' : 
+                       type === 'error' || type === 'danger' ? 'px-6 py-2 bg-red-500 text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform' : 
 
-                       type === 'warning' ? 'modal-btn-secondary' : 'modal-btn-primary';
+                       type === 'warning' ? 'px-6 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold shadow-sm hover:bg-slate-300 active:scale-95 duration-150 transition-transform' : 'px-6 py-2 bg-primary text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform';
 
     
 
@@ -404,7 +404,7 @@ function showConfirmModal(title, message, onConfirm, onCancel = null) {
 
             text: t('modal.cancel'),
 
-            className: 'modal-btn-secondary',
+            className: 'px-6 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold shadow-sm hover:bg-slate-300 active:scale-95 duration-150 transition-transform',
 
             onclick: onCancel || (() => {})
 
@@ -414,7 +414,7 @@ function showConfirmModal(title, message, onConfirm, onCancel = null) {
 
             text: t('modal.confirm'),
 
-            className: 'modal-btn-primary',
+            className: 'px-6 py-2 bg-primary text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform',
 
             onclick: onConfirm
 
@@ -792,7 +792,7 @@ function showSaveReminderModal(saveCallback, dontSaveCallback) {
 
             text: t('modal.dontSave'),
 
-            className: 'modal-btn-secondary',
+            className: 'px-6 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold shadow-sm hover:bg-slate-300 active:scale-95 duration-150 transition-transform',
 
             onclick: () => {
 
@@ -808,7 +808,7 @@ function showSaveReminderModal(saveCallback, dontSaveCallback) {
 
             text: t('modal.save'),
 
-            className: 'modal-btn-primary',
+            className: 'px-6 py-2 bg-primary text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform',
 
             onclick: () => {
 
@@ -904,7 +904,7 @@ function showUnsavedProjectModal() {
 
                 text: t('modal.leaveAnyway'),
 
-                className: 'modal-btn-secondary',
+                className: 'px-6 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold shadow-sm hover:bg-slate-300 active:scale-95 duration-150 transition-transform',
 
                 onclick: () => {
 
@@ -920,7 +920,7 @@ function showUnsavedProjectModal() {
 
                 text: t('modal.saveProject'),
 
-                className: 'modal-btn-primary',
+                className: 'px-6 py-2 bg-primary text-white rounded-lg font-semibold shadow-sm hover:brightness-110 active:scale-95 duration-150 transition-transform',
 
                 onclick: () => {
 
